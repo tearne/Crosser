@@ -323,7 +323,7 @@ case class Crosser(val recombProb: Probability){
 		new Plant(name, chromosomes)
 	}
 
-	def chromosomeCross(left: Chromosome, right: Chromosome, rnd: Random): Chromosome = {
+	private def chromosomeCross(left: Chromosome, right: Chromosome, rnd: Random): Chromosome = {
 		import Probability.half
 		def chooseTid(c: Chromosome) = if(rnd.nextBoolean(half)) c.left else c.right
 		def recombines() = rnd.nextBoolean(recombProb)
