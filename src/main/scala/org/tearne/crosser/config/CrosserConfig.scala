@@ -1,15 +1,13 @@
 package org.tearne.crosser.config
+
 import java.nio.file.Path
-import org.tearne.crosser.proto.RootPlant
-import org.tearne.crosser.proto.Cross
 import com.typesafe.config.ConfigFactory
-import org.tearne.crosser.proto.Species
-import org.tearne.crosser.proto.Zygosity
-import org.tearne.crosser.proto.Protocol
-import org.tearne.crosser.proto.Locus
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Buffer
 import com.typesafe.config.ConfigException
+import org.tearne.crosser.plant._
+import org.tearne.crosser.cross._
+import com.typesafe.config.Config
 
 class CrosserConfig(path: Path) {
 	import scala.collection.JavaConversions._
@@ -61,13 +59,32 @@ class CrosserConfig(path: Path) {
 			val name = crossConfig.getString("name")
 			val left = everythingSoFar(crossConfig.getString("left"))
 			val right = everythingSoFar(crossConfig.getString("right"))
-			val protocol = Protocol(
-				Zygosity.withName(crossConfig.getString("protocol.zygosity")),
-				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet
-			)
+			
+			Zygosity.withName(crossConfig.getString("protocol.zygosity"))
+			val protocol = crossConfig.getString("protocol.zygosity") match {
+				case s: String if s.toLowerCase == "heterozygous" => makeHetProtocol(crossConfig, lociMap)
+				case s: String if s.toLowerCase == "homozygous" => makeHomProtocol(crossConfig, lociMap)
+			} 
 			crossesBuiltSoFar += name -> Cross(left, right, protocol, name)
 		}
 		
 		crossesBuiltSoFar.toMap
+	}
+	
+	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
+		HeterozygousProtocol(
+				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet,
+				try{
+					Some(crossConfig.getInt("protocol.numHomozygously"))
+				}catch{
+					case e: ConfigException.Missing => None
+				}
+		)
+	}
+	
+	private def makeHomProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
+		HeterozygousProtocol(
+				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet
+		)
 	}
 }
