@@ -7,6 +7,7 @@ import org.specs2.mutable._
 @RunWith(classOf[JUnitRunner])
 class CrossSpec extends Specification {
 	"Cross" should {
+		"be crossable" in todo
 		"have value based hashcode and equals" in todo
 	}
 
