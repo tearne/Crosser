@@ -17,7 +17,6 @@ class TidSpec extends Specification with Mockito{
 			val instance = Tid(testAlleles)
 			
 			instance.alleles must_== testAlleles
-			
 		}
 		"have companion to build tid for root plants" in {
 			val instance = Tid(5, p1)
