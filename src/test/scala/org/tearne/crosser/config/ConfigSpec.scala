@@ -33,7 +33,7 @@ class ConfigSpec extends Specification {
 		val config = new CrosserConfig(path)
 		
 		//Expected objects
-		val species: Species = Species(IndexedSeq(11,23,45,22,10,80,121))
+		val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))
 		
 		val prefVar = RootPlant("PreferedVariety", species)
 		

@@ -1,9 +1,9 @@
 package org.tearne.crosser.plant
 
-class Species(val cMLengths: IndexedSeq[Int]){
-	def buildChromosomesFrom(plant: RootPlant): IndexedSeq[Chromosome] = {
+class Species(val name: String, val cMLengths: IndexedSeq[Int]){
+	def buildChromosomesFrom(rootPlant: RootPlant): IndexedSeq[Chromosome] = {
 		cMLengths.map{length => 
-			Chromosome(Tid(length, plant),Tid(length, plant))
+			Chromosome(Tid(length, rootPlant),Tid(length, rootPlant))
 		}.toIndexedSeq
 	}
 	
@@ -12,15 +12,16 @@ class Species(val cMLengths: IndexedSeq[Int]){
 		other match {
 			case that: Species =>
 				(that canEqual this) &&
-				cMLengths == that.cMLengths
+				cMLengths == that.cMLengths &&
+				name == that.name
 			case _ => false
 		}
 	}
 	override def hashCode(): Int = {
-		41 + cMLengths.hashCode
+		41 * (41 + cMLengths.hashCode) + name.hashCode
 	}
 }
 object Species{
-	def apply(lengths: Int*) = new Species(lengths.toIndexedSeq)
-	def apply(lengths: IndexedSeq[Int]) = new Species(lengths)
+	def apply(name: String, lengths: Int*) = new Species(name, lengths.toIndexedSeq)
+	def apply(name: String, lengths: IndexedSeq[Int]) = new Species(name, lengths)
 }

@@ -20,7 +20,8 @@ class CrosserConfig(path: Path) {
 	
 	val plants: Map[String, RootPlant] = {
 		val species = Species(
-				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species")).map{_.intValue()}.toIndexedSeq
+				config.getString("species.name"),
+				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species.chromosomeLengths")).map{_.intValue()}.toIndexedSeq
 		)
 		
 		config.getConfigList("plants").map{ plantConfig =>
