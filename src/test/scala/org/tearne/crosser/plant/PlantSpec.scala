@@ -6,6 +6,7 @@ import org.specs2.mutable.Specification
 import org.tearne.crosser.cross.Crossable
 import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.exception.PlantException
+import org.tearne.crosser.util.Random
 
 @RunWith(classOf[JUnitRunner])
 class PlantSpec extends Specification with Mockito{
@@ -20,7 +21,10 @@ class PlantSpec extends Specification with Mockito{
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
 		}
-		"be samplable" in todo
+		"return itself when sampled" in {
+			val random = mock[Random]
+			instance.sample(null, random) mustEqual instance
+		}
 		"throw exception if chromosome lengths incompatible with species" in {
 			Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species) must
 				throwA[PlantException]
