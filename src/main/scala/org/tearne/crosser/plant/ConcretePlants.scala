@@ -11,15 +11,13 @@ case class RootPlant(val name: String, val species: Species) extends ConcretePla
 	val chromosomes = species.buildChromosomesFrom(this)
 
 	override def toString() = name
-	def canEqual(other: Any) = other.isInstanceOf[Plant]
+	def canEqual(other: Any) = other.isInstanceOf[RootPlant]
 	override def equals(other: Any) = {
 		other match {
-			case that: Plant => 
+			case that: RootPlant => 
 				(that canEqual this) &&
-				super.equals(that) &&
 				name == that.name && 	
-				species == that.species &&	
-				chromosomes == that.chromosomes
+				species == that.species
 		}
 	}
 }
