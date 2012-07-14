@@ -18,6 +18,7 @@ class RootPlantSpec extends Specification{
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
 		}
+		"be samplable" in todo
 		"have chromosomes entirely containing references to self" in {
 			instance.chromosomes must beEqualTo(IndexedSeq[Chromosome](
 					Chromosome(Tid(1,instance), Tid(1,instance)),

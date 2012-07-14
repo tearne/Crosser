@@ -20,6 +20,7 @@ class PlantSpec extends Specification with Mockito{
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
 		}
+		"be samplable" in todo
 		"throw exception if chromosome lengths incompatible with species" in {
 			Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species) must
 				throwA[PlantException]
