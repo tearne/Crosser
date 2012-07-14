@@ -9,5 +9,5 @@ trait Crossable{
 }
 
 case class Cross(left: Crossable, right: Crossable, protocol: Protocol, name: String) extends Crossable{
-	def sample(cBank: ChromosomeBank, rnd: Random): ConcretePlant = throw new UnsupportedOperationException("TODO")
+	def sample(cBank: ChromosomeBank, rnd: Random): ConcretePlant = cBank.sample(this, rnd)
 }

@@ -4,6 +4,9 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mutable._
 import org.specs2.mock.Mockito
+import org.tearne.crosser.distribution.ChromosomeBank
+import org.tearne.crosser.plant.ConcretePlant
+import org.tearne.crosser.util.Random
 
 @RunWith(classOf[JUnitRunner])
 class CrossSpec extends Specification with Mockito{
@@ -16,8 +19,15 @@ class CrossSpec extends Specification with Mockito{
 			Cross(leftCrossable, leftCrossable, protocol, "bert") must
 				beAnInstanceOf[Crossable]
 		}
-		"be samplable" in {
-			todo
+		"use chromosome bank for sampling" in {
+			val instance = Cross(leftCrossable, rightCrossable, protocol, "bert")
+			val sampledPlant = mock[ConcretePlant]
+			val chromosomeBank = mock[ChromosomeBank]
+			val random = mock[Random]
+			chromosomeBank.sample(instance, random) returns sampledPlant
+			
+			val result:ConcretePlant  = instance.sample(chromosomeBank, random)
+			result mustEqual sampledPlant
 		}
 		"have value based hashcode and equals" in {
 			val instance1a = Cross(leftCrossable, rightCrossable, protocol, "bert")
