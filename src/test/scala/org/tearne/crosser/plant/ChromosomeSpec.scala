@@ -4,7 +4,8 @@ import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
-import org.tearne.crosser.plant.exception.ChromosomeException
+import org.tearne.crosser.cross.Locus
+import org.tearne.crosser.cross.LocusPresence._
 
 @RunWith(classOf[JUnitRunner])
 class ChromosomeSpec extends Specification with Mockito {
@@ -35,6 +36,67 @@ class ChromosomeSpec extends Specification with Mockito {
 		}
 		"report it's size" in {
 			instance.size mustEqual 4
+		}
+		"confirm loci heterozygous" in {
+			val leftTid = Tid(5, mock[RootPlant])
+			val rightTid = Tid(5, mock[RootPlant])
+			
+			val locus = mock[Locus]
+			
+			leftTid.satisfies(locus) returns true
+			rightTid.satisfies(locus) returns false
+			
+			val instance = Chromosome(rightTid, leftTid)
+			instance.satisfies(locus) mustEqual Heterozygously
+		}
+		"confirm loci at least heterozugous even if might be hom when using short circuit" in {
+			val leftTid = Tid(5, mock[RootPlant])
+			val rightTid = Tid(5, mock[RootPlant])
+			
+			val locus = mock[Locus]
+			
+			leftTid.satisfies(locus) returns true
+			
+			val instance = Chromosome(rightTid, leftTid)
+			
+			(there were no(rightTid).satisfies(locus)) and
+			(instance.satisfies(locus, true) mustEqual AtLeastHeterozygously)
+		}
+		"confirm loci homozygous" in {
+			val leftTid = Tid(5, mock[RootPlant])
+			val rightTid = Tid(5, mock[RootPlant])
+			
+			val locus = mock[Locus]
+			
+			leftTid.satisfies(locus) returns true
+			rightTid.satisfies(locus) returns true
+			
+			val instance = Chromosome(rightTid, leftTid)
+			instance.satisfies(locus) mustEqual Homozygously
+		}
+		"confirm it doesn't satisfy loci" in{
+			val leftTid = Tid(5, mock[RootPlant])
+			val rightTid = Tid(5, mock[RootPlant])
+			
+			val locus = mock[Locus]
+			
+			leftTid.satisfies(locus) returns false
+			rightTid.satisfies(locus) returns false
+			
+			val instance = Chromosome(rightTid, leftTid)
+			instance.satisfies(locus) mustEqual No
+		}
+		"confirm it doesn't satisfy loci with short circuit" in{
+			val leftTid = Tid(5, mock[RootPlant])
+			val rightTid = Tid(5, mock[RootPlant])
+			
+			val locus = mock[Locus]
+			
+			leftTid.satisfies(locus) returns false
+			rightTid.satisfies(locus) returns false
+			
+			val instance = Chromosome(rightTid, leftTid)
+			instance.satisfies(locus, true) mustEqual No
 		}
 	}
 }
