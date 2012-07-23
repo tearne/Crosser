@@ -128,7 +128,7 @@ class HeterozygousProtocolSpec extends Specification with Mockito{
 			c2.satisfies(locusOnC2) returns Homozygously
 			
 			val chromosomes = IndexedSeq[Chromosome](c1, c2)
-			val plant = mock[Plant]
+			val plant = mock[ConcretePlant]
 			plant.chromosomes returns chromosomes
 			
 			instance.isSatisfiedBy(plant) must throwA[ProtocolException]
