@@ -8,9 +8,9 @@ class ChromosomeException(message: String, cause: Throwable) extends RuntimeExce
 }
 
 case class Chromosome(left: Tid, right: Tid) {
-	if(left.alleles.size != right.alleles.size) throw new ChromosomeException("Chromosomes not of same length: %d != %d".format(left.alleles.size, right.alleles.size))
+	if(left.size != right.size) throw new ChromosomeException("Chromosomes not of same length: %d != %d".format(left.size, right.size))
 	
-	val size: Int = left.alleles.size
+	val size: Int = left.size
 	def proportionOf(plant: RootPlant): Double = {
 		def numberInTid(t: Tid): Int = {
 			t.alleles.foldLeft(0){(acc,a) => acc + (if(a == plant) 1 else 0)}
@@ -20,6 +20,15 @@ case class Chromosome(left: Tid, right: Tid) {
 	}
 	
 	def satisfies(locus: Locus, shortCircuit: Boolean = false): LocusPresence.Value = {
-		throw new UnsupportedOperationException()
+		val leftResult = left.satisfies(locus)
+		val rightResult = right.satisfies(locus)
+		
+		if(leftResult){
+			if(shortCircuit) LocusPresence.AtLeastHeterozygously
+			else if(rightResult) LocusPresence.Homozygously
+			else LocusPresence.Heterozygously
+		}
+		else if(rightResult) LocusPresence.Heterozygously
+		else LocusPresence.No
 	}
 }

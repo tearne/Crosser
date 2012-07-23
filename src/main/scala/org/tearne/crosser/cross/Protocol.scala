@@ -8,7 +8,22 @@ sealed trait Protocol{
 }
 
 case class HeterozygousProtocol(val requiredLoci: Set[Locus], val homRequirement: Option[Int] = None) extends Protocol {
-	def isSatisfiedBy(plant: ConcretePlant): Boolean = false
+	def isSatisfiedBy(plant: ConcretePlant): Boolean = {
+		if(homRequirement.isDefined){
+			val requirements = requiredLoci.toSeq.map(locus => {
+				plant.chromosomes(locus.linkGroupIndex).satisfies(locus)
+			})
+			
+			if(requirements.contains(LocusPresence.AtLeastHeterozygously)) throw new ProtocolException("Non short circuit question should not return short circuit answer")
+			
+			requirements.find(_ == LocusPresence.No).isEmpty && requirements.count(_ == LocusPresence.Homozygously) >= homRequirement.get
+		}else{
+			requiredLoci.map(locus => {
+				val presence = plant.chromosomes(locus.linkGroupIndex).satisfies(locus, true)
+				(presence == LocusPresence.AtLeastHeterozygously) || (presence == LocusPresence.Heterozygously)
+			}).find(!_).isEmpty
+		}
+	}
 }
 
 object HeterozygousProtocol{

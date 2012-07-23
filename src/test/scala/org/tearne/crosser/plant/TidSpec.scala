@@ -21,6 +21,10 @@ class TidSpec extends Specification with Mockito{
 			
 			instance.alleles must_== testAlleles
 		}
+		"have easy access to alleles size" in new Setup{
+			val testAlleles = IndexedSeq(p1, p1, p1, p2, p3)
+			Tid(testAlleles).size mustEqual 5
+		}
 		"have companion to build tid for root plants" in new Setup{
 			val instance = Tid(5, p1)
 			

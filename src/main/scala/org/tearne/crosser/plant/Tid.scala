@@ -3,8 +3,10 @@ package org.tearne.crosser.plant
 import org.tearne.crosser.cross.Locus
 
 case class Tid(val alleles: IndexedSeq[RootPlant]){
+	val size = alleles.size
+	
 	def satisfies(locus: Locus): Boolean = {
-		false
+		alleles(locus.cMIndex) == locus.rootPlant
 	}
 }
 object Tid{
