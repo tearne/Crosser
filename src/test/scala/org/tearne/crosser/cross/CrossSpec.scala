@@ -7,19 +7,33 @@ import org.specs2.mock.Mockito
 import org.tearne.crosser.distribution.ChromosomeBank
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.util.Random
+import org.tearne.crosser.plant.Species
+import org.specs2.specification.Scope
 
 @RunWith(classOf[JUnitRunner])
 class CrossSpec extends Specification with Mockito{
-	val leftCrossable = mock[Crossable]
-	val rightCrossable = mock[Crossable]
-	val protocol = mock[Protocol]
-	
 	"Cross" should {
-		"be crossable" in {
+		"be crossable" in new Setup{
 			Cross(leftCrossable, leftCrossable, protocol, "bert") must
 				beAnInstanceOf[Crossable]
 		}
-		"use chromosome bank for sampling" in {
+		"know it's species from it's parents" in  new Setup{
+			val species = mock[Species]
+			leftCrossable.species returns species
+			rightCrossable.species returns species
+			
+			val instance = Cross(leftCrossable, rightCrossable, protocol, "bert")
+			
+			instance.species mustEqual species
+			
+		}
+		"throw exception if parent species don't agree" in new Setup{
+			leftCrossable.species returns mock[Species]
+			rightCrossable.species returns mock[Species]
+			
+			Cross(leftCrossable, rightCrossable, protocol, "bert") must throwA[CrossableException]
+		}
+		"use chromosome bank for sampling" in new Setup{
 			val instance = Cross(leftCrossable, rightCrossable, protocol, "bert")
 			val sampledPlant = mock[ConcretePlant]
 			val chromosomeBank = mock[ChromosomeBank]
@@ -29,7 +43,7 @@ class CrossSpec extends Specification with Mockito{
 			val result:ConcretePlant  = instance.sample(chromosomeBank, random)
 			result mustEqual sampledPlant
 		}
-		"have value based hashcode and equals" in {
+		"have value based hashcode and equals" in new Setup{
 			val instance1a = Cross(leftCrossable, rightCrossable, protocol, "bert")
 			val instance1b = Cross(leftCrossable, rightCrossable, protocol, "bert")
 			val instance2 = Cross(mock[Crossable], rightCrossable, protocol, "bert")
@@ -51,4 +65,9 @@ class CrossSpec extends Specification with Mockito{
 		}
 	}
 
+	trait Setup extends Scope{
+		val leftCrossable = mock[Crossable]
+		val rightCrossable = mock[Crossable]
+		val protocol = mock[Protocol]		
+	}
 }

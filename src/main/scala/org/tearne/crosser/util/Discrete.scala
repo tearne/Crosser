@@ -4,7 +4,7 @@ class Discrete[T](val elements: IndexedSeq[T]) {
 	override def toString() = "DiscreteDistribution: "+countsMap.toString
 	
 	val countsMap = elements.groupBy(identity).mapValues(_.size)
-	val size = countsMap.values.foldLeft(0)((acc,count) => acc+count) 
+	val size = countsMap.values.sum //foldLeft(0)((acc,count) => acc+count) 
 	val densityMap = countsMap.mapValues(count => count.asInstanceOf[Double]/size)
 	
 	def distanceTo(that: Discrete[T]): Double = {

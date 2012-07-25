@@ -15,8 +15,6 @@ class ChromosomeSpec extends Specification with Mockito {
 	val rightTid = Tid(IndexedSeq(p1, p1, p2, p2))
 	val instance = Chromosome(leftTid, rightTid)
 	
-	//sequential
-	
 	def makeMockTid(length: Int) = {val t = mock[Tid]; t.size returns length; t}
 	
 	"Chromosome" should {
