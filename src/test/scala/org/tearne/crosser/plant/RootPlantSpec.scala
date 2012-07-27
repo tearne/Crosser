@@ -5,7 +5,6 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Crossable
 import org.specs2.mock.Mockito
-import org.tearne.crosser.distribution.ChromosomeBank
 import org.tearne.crosser.util.Random
 
 @RunWith(classOf[JUnitRunner])

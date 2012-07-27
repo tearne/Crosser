@@ -14,3 +14,7 @@ object Tid{
 		Tid((1 to length).map(i => plant))
 	}
 }
+
+class TidBuilder{
+	def apply(alleles: IndexedSeq[RootPlant]) = new Tid(alleles)
+}

@@ -1,12 +1,12 @@
 package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Crossable
-import org.tearne.crosser.distribution.ChromosomeBank
 import org.tearne.crosser.util.Random
+import org.tearne.crosser.distribution.CrossBank
 
 sealed trait ConcretePlant extends Crossable{
 	val chromosomes: IndexedSeq[Chromosome]
-	def sample(cBank: ChromosomeBank, rnd: Random): ConcretePlant = this
+	def sample(cBank: CrossBank, rnd: Random): ConcretePlant = this
 }
 
 case class RootPlant(val name: String, val species: Species) extends ConcretePlant{
@@ -31,4 +31,9 @@ class PlantException(message: String, cause: Throwable) extends RuntimeException
 case class Plant(val name: String, val chromosomes: IndexedSeq[Chromosome], val species: Species) extends ConcretePlant {
 	if(species.cMLengths != chromosomes.map(_.size))
 		throw new PlantException("Chromosomes for plant %s do not match species (%s)".format(name, species))
+}
+
+class PlantFactory{
+	def build(name: String, chromosomes: IndexedSeq[Chromosome], species: Species) = 
+		new Plant(name, chromosomes, species)
 }

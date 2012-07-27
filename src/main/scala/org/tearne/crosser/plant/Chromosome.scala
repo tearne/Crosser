@@ -2,6 +2,7 @@ package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Locus
 import org.tearne.crosser.cross.LocusPresence
+import org.tearne.crosser.util.Random
 
 class ChromosomeException(message: String, cause: Throwable) extends RuntimeException(message, cause) {
 	def this(message: String) { this(message, null) }
@@ -31,4 +32,12 @@ case class Chromosome(left: Tid, right: Tid) {
 		else if(rightResult) LocusPresence.Heterozygously
 		else LocusPresence.No
 	}
+}
+
+class ChromosomeCrosser(gameter: Gameter){
+	def cross(left: Chromosome, right: Chromosome): Chromosome = null
+}
+
+class ChromosomeBuilder{
+	def apply(left: Tid, right: Tid) = new Chromosome(left, right)
 }
