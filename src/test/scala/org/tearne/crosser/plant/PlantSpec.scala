@@ -20,10 +20,6 @@ class PlantSpec extends Specification with Mockito{
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
 		}
-		"return itself when sampled" in {
-			val random = mock[Random]
-			instance.sample(null, random) mustEqual instance
-		}
 		"throw exception if chromosome lengths incompatible with species" in {
 			Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species) must
 				throwA[PlantException]

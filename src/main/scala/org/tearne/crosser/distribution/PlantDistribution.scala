@@ -8,7 +8,7 @@ import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
 
-class PlantDistribution(val chromoDists: Seq[Discrete[Chromosome]], val name: String, species: Species, failures: Int) {
+class PlantDistribution(val chromoDists: Seq[Discrete[Chromosome]], val name: String, species: Species, val failures: Int) {
 	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException("Number of chromosome distributions incompatible with specified species")
 	
 	val total = chromoDists(0).size

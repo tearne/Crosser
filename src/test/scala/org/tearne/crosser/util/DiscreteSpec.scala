@@ -1,8 +1,9 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.util
 import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
-import org.tearne.crosser.util.Discrete
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class DiscreteSpec extends Specification{

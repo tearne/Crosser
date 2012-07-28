@@ -20,10 +20,6 @@ class RootPlantSpec extends Specification with Mockito{
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
 		}
-		"return itself when sampled" in {
-			val random = mock[Random]
-			instance.sample(null, random) mustEqual instance
-		}
 		"have chromosomes entirely containing references to self" in {
 			instance.chromosomes must beEqualTo(IndexedSeq[Chromosome](
 					Chromosome(Tid(1,instance), Tid(1,instance)),

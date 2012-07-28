@@ -2,11 +2,9 @@ package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.util.Random
-import org.tearne.crosser.distribution.CrossBank
 
 sealed trait ConcretePlant extends Crossable{
 	val chromosomes: IndexedSeq[Chromosome]
-	def sample(cBank: CrossBank, rnd: Random): ConcretePlant = this
 }
 
 case class RootPlant(val name: String, val species: Species) extends ConcretePlant{

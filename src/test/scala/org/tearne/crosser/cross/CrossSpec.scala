@@ -9,7 +9,6 @@ import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.Species
 import org.specs2.specification.Scope
 import org.tearne.crosser.proto.ChromosomeBank
-import org.tearne.crosser.distribution.CrossBank
 import org.tearne.crosser.plant.Plant
 
 @RunWith(classOf[JUnitRunner])

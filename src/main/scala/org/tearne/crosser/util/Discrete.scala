@@ -43,4 +43,5 @@ class Discrete[T](val elements: IndexedSeq[T]) {
 }
 object Discrete{
 	def apply[T]() = new Discrete[T](IndexedSeq[T]())
+	def apply[T](elements: T*) = new Discrete[T](elements.toIndexedSeq)
 }
