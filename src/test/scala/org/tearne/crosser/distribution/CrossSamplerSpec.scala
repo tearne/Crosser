@@ -10,13 +10,14 @@ import org.tearne.crosser.cross.Crossable
 import org.specs2.specification.Scope
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
+import org.tearne.crosser.util.Random
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplerSpec extends Specification with Mockito{
 	val name = "crossName"
 	
 	"CrossSamplerSpec" should {
-		"generate samples from a plant distribution obtained from the bank" in new Instance {
+		"generate plant samples by obtaining it distribution from the bank" in new Instance {
 			val cross = mock[Cross]
 			val plantDistribution = mock[PlantDistribution]
 			plantDistBank.get(cross) returns plantDistribution
@@ -25,7 +26,7 @@ class CrossSamplerSpec extends Specification with Mockito{
 			val sample2 = mock[Plant]
 			val sample3 = mock[Plant]
 			
-			plantDistribution.sample(any) returns (sample1, sample2, sample3)
+			plantDistribution.sample(rnd) returns (sample1, sample2, sample3)
 			
 			(instance.sample(cross) mustEqual sample1) and
 			(instance.sample(cross) mustEqual sample2) and
@@ -40,7 +41,8 @@ class CrossSamplerSpec extends Specification with Mockito{
 	trait Instance extends Scope with 
 			CrossSamplerService with
 			PlantDistBankComponent{
-		val crossSampler = new CrossSampler()
+		val rnd = mock[Random]
+		val crossSampler = new CrossSampler(rnd)
 		val plantDistBank = mock[PlantDistBank]
 		val instance = crossSampler
 	}
