@@ -18,11 +18,14 @@ class CrosserSpec extends Specification with Mockito{
 	val name = "myCross"
 
 	"Crosser" should {
-		"generate offspring plants from concrete plants" in {
+		"generate offspring plants from concrete parent plants" in {
 			val species = mock[Species]
 			val plantFactory = mock[PlantFactory]
 			val chromosomeCrosser = mock[ChromosomeCrosser]
 			val rnd = mock[Random]
+			val cross = mock[Cross]
+			cross.name returns name
+			cross.species returns species
 			
 			val instance = new Crosser(plantFactory, chromosomeCrosser)
 			
@@ -41,14 +44,14 @@ class CrosserSpec extends Specification with Mockito{
 			val c1offspring = mock[Chromosome]
 			val c2offspring = mock[Chromosome]
 			val c3offspring = mock[Chromosome]
-			chromosomeCrosser.cross(c1left, c1right) returns c1offspring
-			chromosomeCrosser.cross(c2left, c2right) returns c2offspring
-			chromosomeCrosser.cross(c3left, c3right) returns c3offspring
+			chromosomeCrosser(c1left, c1right) returns c1offspring
+			chromosomeCrosser(c2left, c2right) returns c2offspring
+			chromosomeCrosser(c3left, c3right) returns c3offspring
 			
 			val offspringPlant = mock[Plant]
-			plantFactory.build(name, IndexedSeq(c1offspring, c2offspring, c2offspring), species) returns offspringPlant
+			plantFactory(name, IndexedSeq(c1offspring, c2offspring, c2offspring), species) returns offspringPlant
 			
-			instance.cross(left, right, name) mustEqual offspringPlant
+			instance(left, right, cross) mustEqual offspringPlant
 		}
 		"throw exception if left and right are different species" in {
 			val left = mock[ConcretePlant]
@@ -57,7 +60,7 @@ class CrosserSpec extends Specification with Mockito{
 			val right = mock[ConcretePlant]
 			right.species returns mock[Species]
 			
-			new Crosser(null, null).cross(left, right, name) must throwA[CrosserException]
+			new Crosser(null, null)(left, right, null) must throwA[CrosserException]
 		}
 	}
 }

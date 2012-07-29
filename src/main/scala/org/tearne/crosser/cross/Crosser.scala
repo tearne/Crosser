@@ -8,7 +8,11 @@ import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.util.Random
 
 class Crosser(plantFactory: PlantFactory, chromosomeCrosser: ChromosomeCrosser) {
-	def cross(left: ConcretePlant, right: ConcretePlant, name: String): Plant = null
+	def apply(left: ConcretePlant, right: ConcretePlant, cross: Cross): Plant = {
+		if(left.species != right.species) throw new CrosserException("Parents are of different species")
+		val chromosomes = (left.chromosomes zip right.chromosomes).map{case (lch, rch) => chromosomeCrosser(lch, rch)}
+		plantFactory(cross.name, chromosomes, cross.species)
+	}
 }
 
 class CrosserException(msg: String, cause: Throwable) extends RuntimeException(msg, cause){

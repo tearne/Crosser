@@ -13,8 +13,6 @@ class CrosserConfig(path: Path) {
 	import scala.collection.JavaConversions._
 	
 	private val config = ConfigFactory.parseFile(path.toFile())
-	//println(path.toAbsolutePath().toString())
-	//println(config.root().render())	
 	
 	val name: String = config.getString("name")
 	

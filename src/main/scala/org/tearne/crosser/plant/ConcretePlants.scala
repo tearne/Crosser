@@ -37,6 +37,6 @@ case class Plant(val name: String, val chromosomes: IndexedSeq[Chromosome], val 
 }
 
 class PlantFactory{
-	def build(name: String, chromosomes: IndexedSeq[Chromosome], species: Species) = 
+	def apply(name: String, chromosomes: IndexedSeq[Chromosome], species: Species) = 
 		new Plant(name, chromosomes, species)
 }

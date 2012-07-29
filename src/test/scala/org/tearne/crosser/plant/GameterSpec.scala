@@ -20,11 +20,11 @@ class GameterSpec extends Specification with Mockito{
 			val chromosome = Chromosome(tidA, tidB)
 			val recombProb = Probability(0.01)
 			val rnd = mock[Random]
-			rnd.nextBoolean(Probability.half) returns true
-			rnd.nextBoolean(recombProb) returns (false, true, true)
+			rnd.nextBoolean(Probability.half) returns true //start on A
+			rnd.nextBoolean(recombProb) returns (false, true, true, false) //A, B, A, A
 			
 			val instance = new Gameter(rnd, recombProb)
-			instance.buildFrom(chromosome) mustEqual Tid(IndexedSeq(pA,pA,pB,pA))
+			instance(chromosome) mustEqual Tid(IndexedSeq(pA,pB,pA,pA))
 		}
 	}
 }

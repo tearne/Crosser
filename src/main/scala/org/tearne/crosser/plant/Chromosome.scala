@@ -34,8 +34,15 @@ case class Chromosome(left: Tid, right: Tid) {
 	}
 }
 
-class ChromosomeCrosser(gameter: Gameter, rnd: Random){
-	def cross(left: Chromosome, right: Chromosome): Chromosome = null
+class ChromosomeCrosser(cBuilder: ChromosomeBuilder, gameter: Gameter){
+	def apply(left: Chromosome, right: Chromosome): Chromosome = {
+		if(left.size != right.size) throw new ChromosomeCrosserException("Chromosomes of different lengths")
+		cBuilder(gameter(left), gameter(right))
+	}
+}
+
+class ChromosomeCrosserException(msg: String, cause: Throwable) extends Exception(msg, cause){
+	def this(msg: String) = this(msg, null)
 }
 
 class ChromosomeBuilder{

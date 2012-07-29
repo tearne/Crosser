@@ -9,29 +9,38 @@ import org.tearne.crosser.plant.Gameter
 import org.tearne.crosser.plant.ChromosomeBuilder
 import org.tearne.crosser.plant.ChromosomeCrosser
 import org.tearne.crosser.util.Random
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
+import org.tearne.crosser.plant.ChromosomeCrosserException
 
+@RunWith(classOf[JUnitRunner])
 class ChromosomeCrosserSpec extends Specification with Mockito{
 	"ChromosomeCrosser" should {
 		"cross pairs of chromosomes" in {
 			val leftChromosome = mock[Chromosome]
 			val rightChromosome = mock[Chromosome]
 			val offspringChromosome = mock[Chromosome]
-			val rnd = mock[Random]
 			
 			val gameter = mock[Gameter]
 			val leftGamete = mock[Tid]
 			val rightGamete = mock[Tid]
-			gameter.buildFrom(leftChromosome) returns leftGamete
-			gameter.buildFrom(rightChromosome) returns rightGamete
+			gameter(leftChromosome) returns leftGamete
+			gameter(rightChromosome) returns rightGamete
 			
 			val cBuilder = mock[ChromosomeBuilder]
 			cBuilder(leftGamete, rightGamete) returns offspringChromosome
 			
-			val instance = new ChromosomeCrosser(gameter, rnd)
-			instance.cross(leftChromosome, rightChromosome) mustEqual offspringChromosome
+			val instance = new ChromosomeCrosser(cBuilder, gameter)
+			instance(leftChromosome, rightChromosome) mustEqual offspringChromosome
 		}
 		"throw exception if chromosomes are of differnet lengths" in {
-			todo
+			val leftChromosome = mock[Chromosome]
+			val rightChromosome = mock[Chromosome]
+			leftChromosome.size returns 3
+			rightChromosome.size returns 4
+			
+			val instance = new ChromosomeCrosser(null, null)
+			instance(leftChromosome, rightChromosome) must throwA[ChromosomeCrosserException]
 		}
 	}
 }

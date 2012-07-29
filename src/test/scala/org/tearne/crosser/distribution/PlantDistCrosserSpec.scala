@@ -68,12 +68,12 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 			val sampleCross4 = mock[Plant]
 			val sampleCross5 = mock[Plant]
 			val sampleCross6 = mock[Plant]
-			crosser.cross(sampleLeft1, sampleRight1, name) returns sampleCross1
-			crosser.cross(sampleLeft2, sampleRight2, name) returns sampleCross2
-			crosser.cross(sampleLeft3, sampleRight3, name) returns sampleCross3
-			crosser.cross(sampleLeft4, sampleRight4, name) returns sampleCross4
-			crosser.cross(sampleLeft5, sampleRight5, name) returns sampleCross5
-			crosser.cross(sampleLeft6, sampleRight6, name) returns sampleCross6
+			crosser(sampleLeft1, sampleRight1, cross) returns sampleCross1
+			crosser(sampleLeft2, sampleRight2, cross) returns sampleCross2
+			crosser(sampleLeft3, sampleRight3, cross) returns sampleCross3
+			crosser(sampleLeft4, sampleRight4, cross) returns sampleCross4
+			crosser(sampleLeft5, sampleRight5, cross) returns sampleCross5
+			crosser(sampleLeft6, sampleRight6, cross) returns sampleCross6
 			
 			protocol.isSatisfiedBy(sampleCross1) returns false
 			protocol.isSatisfiedBy(sampleCross2) returns true
