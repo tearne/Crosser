@@ -5,6 +5,7 @@ import org.tearne.crosser.util.Probability
 import org.tearne.crosser.plant.ChromosomeCrosser
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.ConcretePlant
+import org.tearne.crosser.util.Random
 
 class Crosser(plantFactory: PlantFactory, chromosomeCrosser: ChromosomeCrosser) {
 	def cross(left: ConcretePlant, right: ConcretePlant, name: String): Plant = null

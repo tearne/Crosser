@@ -17,7 +17,14 @@ class CrossSamplerSpec extends Specification with Mockito{
 	val name = "crossName"
 	
 	"CrossSamplerSpec" should {
-		"generate plant samples by obtaining it distribution from the bank" in new Instance {
+		"return plant distributions obtained from the bank" in new Instance{
+			val cross = mock[Cross]
+			val plantDistribution = mock[PlantDistribution]
+			plantDistBank.get(cross) returns plantDistribution
+			
+			instance.getDistributionFor(cross) mustEqual plantDistribution
+		}
+		"generate plant samples by obtaining it's distribution from the bank" in new Instance {
 			val cross = mock[Cross]
 			val plantDistribution = mock[PlantDistribution]
 			plantDistBank.get(cross) returns plantDistribution
@@ -32,11 +39,7 @@ class CrossSamplerSpec extends Specification with Mockito{
 			(instance.sample(cross) mustEqual sample2) and
 			(instance.sample(cross) mustEqual sample3)
 		}
-		
-		"produce a concrete plant when sampling a concrete plant" in new Instance{
-			val concretePlant = mock[ConcretePlant]
-			instance.sample(concretePlant) mustEqual concretePlant
-		}
+
 	}
 	trait Instance extends Scope with 
 			CrossSamplerService with

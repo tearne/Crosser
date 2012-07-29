@@ -22,6 +22,7 @@ class CrosserSpec extends Specification with Mockito{
 			val species = mock[Species]
 			val plantFactory = mock[PlantFactory]
 			val chromosomeCrosser = mock[ChromosomeCrosser]
+			val rnd = mock[Random]
 			
 			val instance = new Crosser(plantFactory, chromosomeCrosser)
 			

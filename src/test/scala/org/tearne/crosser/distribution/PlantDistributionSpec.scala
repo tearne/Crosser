@@ -18,7 +18,10 @@ class PlantDistributionSpec extends Specification with Mockito{
 	val name = "plantName"
 	val threeCSpecies =  Species("mySpecies", 4,5,6)
 	
-	"PlantDistribution" should{
+	"PlantDistribution" should {
+		"be samplable" in{
+			mock[PlantDistribution] must beAnInstanceOf[Samplable]
+		}
 		"throw exception if species inconsistent with distributions" in{
 			val chromoDists = Seq(mock[Discrete[Chromosome]], mock[Discrete[Chromosome]])//Two chromosomes
 			
@@ -97,9 +100,11 @@ class PlantDistributionSpec extends Specification with Mockito{
 			)
 		}
 		"have companion object for creating empty distribution for a cross" in {
-			val cross = mock[Cross]; cross.species returns threeCSpecies
+			val cross = mock[Cross]
+			cross.species returns threeCSpecies
+			cross.name returns name
 			
-			val instance = PlantDistribution(cross, name)
+			val instance = PlantDistribution(cross)
 			(instance.chromoDists.size mustEqual 3) and
 			(instance.name mustEqual name)
 		}

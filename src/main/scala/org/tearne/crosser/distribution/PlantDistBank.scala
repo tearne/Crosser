@@ -13,11 +13,21 @@ trait PlantDistBankComponent{
 	this: CrossSamplerService =>
 		
 	val plantDistBank: PlantDistBank
+	val distributionTable = collection.mutable.Map[Cross, PlantDistribution]()
 	
-	class PlantDistBank(plantDistBuilder: PlantDistBuilder) {
-		def get(cross: Crossable): PlantDistribution = {
-			//uses plant dist builder
-			throw new UnsupportedOperationException("todo")
+	class PlantDistBank(plantDistCrosser: PlantDistCrosser) {
+		def get(crossable: Crossable): Samplable = {
+			crossable match {
+				case cross: Cross => 
+					distributionTable.getOrElseUpdate(cross,
+						plantDistCrosser.build(
+							crossSampler.getDistributionFor(cross.left),
+							crossSampler.getDistributionFor(cross.right),
+							cross
+						)
+					)
+				case concretePlant: ConcretePlant => concretePlant
+			}
 		}
 	}
 }

@@ -17,33 +17,62 @@ class PlantDistBankSpec extends Specification with Mockito{
 	val name = "myCross"
 	
 	"PlantDistBank" should {
-		"build distributions using parent samples obtained from the cross sampler" in new Instance {
+		"build distributions with parent dists obtained from self via the cross sampler" in new Instance {
 			val cross = mock[Cross]
 			val leftParent = mock[Crossable]
 			val rightParent = mock[Crossable]
+			cross.left returns leftParent
+			cross.right returns rightParent
 			
 			val leftParentDistribution = mock[PlantDistribution]
 			val rightParentDistribution = mock[PlantDistribution]
 			val crossDistribution = mock[PlantDistribution]
 	
+			crossSampler.getDistributionFor(leftParent) returns leftParentDistribution
+			crossSampler.getDistributionFor(rightParent) returns rightParentDistribution
+			
 			//TODO pimping with implicits, so it looks like...
 			// leftPDist x rightPDist
-			plantDistBuilder.build(leftParentDistribution, rightParentDistribution) returns crossDistribution
+			plantDistCrosser.build(leftParentDistribution, rightParentDistribution, cross) returns crossDistribution
 			
 			instance.get(cross) mustEqual crossDistribution
 		}
-		"throw exception if asked for distribution of concrete plant" in new Instance {
-			instance.get(mock[ConcretePlant]) must throwA[PlantDistBankException]
+		"return the (samplable) concrete plant when asked for distribution of a concrete plant" in new Instance {
+			val concretePlant = mock[ConcretePlant]
+			instance.get(concretePlant) mustEqual concretePlant
+		}
+		"cache results once calculated" in new Instance {
+			val cross = mock[Cross]
+			val leftParent = mock[Crossable]
+			val rightParent = mock[Crossable]
+			cross.left returns leftParent
+			cross.right returns rightParent
+			
+			val leftParentDistribution = mock[PlantDistribution]
+			val rightParentDistribution = mock[PlantDistribution]
+			val crossDistribution = mock[PlantDistribution]
+	
+			crossSampler.getDistributionFor(leftParent) returns leftParentDistribution
+			crossSampler.getDistributionFor(rightParent) returns rightParentDistribution
+			
+			//TODO pimping with implicits, so it looks like...
+			// leftPDist x rightPDist
+			plantDistCrosser.build(leftParentDistribution, rightParentDistribution, cross) returns crossDistribution
+			
+			(instance.get(cross) mustEqual crossDistribution) and
+			(instance.get(cross) mustEqual crossDistribution) and
+			(instance.get(cross) mustEqual crossDistribution) and
+			(there was one(plantDistCrosser).build(any, any, any))
 		}
 	}
 	trait Instance extends 
 			Scope with 
 			CrossSamplerService with 
 			PlantDistBankComponent{
-		val plantDistBuilder = mock[PlantDistBuilder]
+		val plantDistCrosser = mock[PlantDistCrosser]
 		
 		val crossSampler = mock[CrossSampler]
-		val plantDistBank = new PlantDistBank(plantDistBuilder)
+		val plantDistBank = new PlantDistBank(plantDistCrosser)
 		val instance = plantDistBank
 	}
 }

@@ -34,7 +34,7 @@ case class Chromosome(left: Tid, right: Tid) {
 	}
 }
 
-class ChromosomeCrosser(gameter: Gameter){
+class ChromosomeCrosser(gameter: Gameter, rnd: Random){
 	def cross(left: Chromosome, right: Chromosome): Chromosome = null
 }
 

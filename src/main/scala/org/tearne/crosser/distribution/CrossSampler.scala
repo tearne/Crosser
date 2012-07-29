@@ -5,6 +5,7 @@ import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.ConcretePlant
+import org.tearne.crosser.cross.Cross
 
 trait CrossSamplerService{
 	//Cake pattern allows immutable mutual dependency 
@@ -14,10 +15,13 @@ trait CrossSamplerService{
 	val crossSampler: CrossSampler 
 
 	class CrossSampler(rnd: Random) {
+		def getDistributionFor(crossable: Crossable): Samplable = 
+			plantDistBank.get(crossable)
+		
 		def sample(crossable: Crossable): ConcretePlant = {
 			crossable match{
 				case c: ConcretePlant => c
-				case _ => plantDistBank.get(crossable).sample(rnd)
+				case cross: Cross => plantDistBank.get(cross).sample(rnd)
 			}
 		}
 	}

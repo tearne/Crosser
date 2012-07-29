@@ -6,6 +6,7 @@ import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Crossable
 import org.specs2.mock.Mockito
 import org.tearne.crosser.util.Random
+import org.tearne.crosser.distribution.Samplable
 
 @RunWith(classOf[JUnitRunner])
 class RootPlantSpec extends Specification with Mockito{
@@ -19,6 +20,12 @@ class RootPlantSpec extends Specification with Mockito{
 		}
 		"be crossable" in {
 			instance must beAnInstanceOf[Crossable]
+		}
+		"be samplable" in{
+			instance must beAnInstanceOf[Samplable]
+		}
+		"return itself when sampled" in {
+			instance.sample(null) mustEqual instance
 		}
 		"have chromosomes entirely containing references to self" in {
 			instance.chromosomes must beEqualTo(IndexedSeq[Chromosome](

@@ -7,14 +7,25 @@ import org.tearne.crosser.util.Random
 import org.specs2.specification.Scope
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Crosser
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
+import org.tearne.crosser.cross.Protocol
+import org.tearne.crosser.plant.Species
 
-class PlantDistBuilderSpec extends Specification with Mockito{
+@RunWith(classOf[JUnitRunner])
+class PlantDistCrosserSpec extends Specification with Mockito{
 	val name = "myCross"
 	
-	"PlantDistBuilder" should {
+	"PlantDistCrosser" should {
 		"build distribution using samples from CrossSampler" in new MockCrossSamplerService{
-			val leftParentDist = mock[PlantDistribution]
-			val rightParentDist = mock[PlantDistribution]
+			val leftParentDist = mock[Samplable]
+			val rightParentDist = mock[Samplable]
+			val cross = mock[Cross]
+			val species = mock[Species]
+			val protocol = mock[Protocol]
+			cross.name returns name
+			cross.protocol returns protocol
+			cross.species returns species
 			
 			val rnd = mock[Random]
 			val chunkSize = 2
@@ -64,23 +75,33 @@ class PlantDistBuilderSpec extends Specification with Mockito{
 			crosser.cross(sampleLeft5, sampleRight5, name) returns sampleCross5
 			crosser.cross(sampleLeft6, sampleRight6, name) returns sampleCross6
 			
+			protocol.isSatisfiedBy(sampleCross1) returns false
+			protocol.isSatisfiedBy(sampleCross2) returns true
+			protocol.isSatisfiedBy(sampleCross3) returns true
+			protocol.isSatisfiedBy(sampleCross4) returns true
+			protocol.isSatisfiedBy(sampleCross5) returns false
+			protocol.isSatisfiedBy(sampleCross6) returns false
+			
 			val distFactory = mock[PlantDistFactory]
+			val dist0 = mock[PlantDistribution]
 			val dist1 = mock[PlantDistribution]
 			val dist2 = mock[PlantDistribution]
 			val dist3 = mock[PlantDistribution]
-			distFactory.build(Seq(sampleCross1, sampleCross2), 1) returns dist1
-			distFactory.augment(dist1, Seq(sampleCross3, sampleCross4), 2) returns dist2
-			distFactory.augment(dist2, Seq(sampleCross5, sampleCross6), 3) returns dist3
+			distFactory.build(cross) returns dist0
+			dist0 ++(Seq(sampleCross1, sampleCross2), 1) returns dist1
+			dist1 ++(Seq(sampleCross3, sampleCross4), 0) returns dist2
+			dist2 ++(Seq(sampleCross5, sampleCross6), 2) returns dist3
 			
-			dist1.distanceTo(dist2) returns 0.9
+			dist0.distanceTo(dist1) returns 1.0
+			dist1.distanceTo(dist2) returns 0.6
 			dist2.distanceTo(dist3) returns 0.1
 			dist3.distanceTo(any) throws new RuntimeException("This shouldn't happen")
 			
-			val instance = new PlantDistBuilder(crosser, distFactory, rnd, chunkSize, tolerance)
+			val instance = new PlantDistCrosser(crosser, distFactory, rnd, chunkSize, tolerance)
 			
-			val result = instance.build(leftParentDist, rightParentDist)
+			val result = instance.build(leftParentDist, rightParentDist, cross)
 			
-			(result mustEqual dist3) and (result.failures mustEqual 6)
+			result mustEqual dist3
 		}
 	}
 	trait MockCrossSamplerService extends Scope with
