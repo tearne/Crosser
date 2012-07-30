@@ -7,6 +7,7 @@ import org.tearne.crosser.cross.Crossable
 import org.specs2.mock.Mockito
 import org.tearne.crosser.util.Random
 import org.tearne.crosser.distribution.Samplable
+import org.tearne.crosser.util.AlleleCount
 
 @RunWith(classOf[JUnitRunner])
 class PlantSpec extends Specification with Mockito{
@@ -15,6 +16,21 @@ class PlantSpec extends Specification with Mockito{
 	val otherSpecies = Species("foo2", 1,2,3,4)
 	
 	"Plant" should {
+		"give a count of donor alleles present" in {
+			val chromosomes = IndexedSeq(mock[Chromosome],mock[Chromosome],mock[Chromosome])
+			val donor = mock[RootPlant]
+			
+			chromosomes(0).size returns 1
+			chromosomes(1).size returns 2
+			chromosomes(2).size returns 3
+			
+			chromosomes(0).alleleCount(donor) returns AlleleCount(10,20)
+			chromosomes(1).alleleCount(donor) returns AlleleCount(11,30)
+			chromosomes(2).alleleCount(donor) returns AlleleCount(12,40)
+			
+			val instance = Plant("bar", chromosomes, species)
+			instance.alleleCount(donor) mustEqual AlleleCount(33, 90)
+		}
 		"be a concrete plant" in {
 			instance must beAnInstanceOf[ConcretePlant]
 		}

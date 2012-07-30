@@ -1,4 +1,4 @@
-package org.tearne.crosser.proto
+	package org.tearne.crosser.proto
 import scala.annotation.tailrec
 
 case class ProbabilityException(msg: String = "", cause: Throwable = null) extends Exception

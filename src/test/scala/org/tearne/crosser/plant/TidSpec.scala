@@ -6,6 +6,7 @@ import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
 import org.tearne.crosser.cross.Locus
 import org.specs2.specification.Scope
+import org.tearne.crosser.util.AlleleCount
 
 @RunWith(classOf[JUnitRunner])
 class TidSpec extends Specification with Mockito{
@@ -15,6 +16,12 @@ class TidSpec extends Specification with Mockito{
 	val nameIrrelevant = "whatever"
 	
 	"Tid" should {
+		"give a count of donor alleles present" in new Setup {
+			val testAlleles = IndexedSeq(p1, p1, p1, p2, p3)
+			val instance = Tid(testAlleles)
+			
+			instance.alleleCount(p1) mustEqual AlleleCount(3,5)
+		}
 		"store alleles" in new Setup {
 			val testAlleles = IndexedSeq(p1, p1, p1, p2, p3)
 			val instance = Tid(testAlleles)

@@ -6,6 +6,7 @@ import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
 import org.tearne.crosser.cross.Locus
 import org.tearne.crosser.cross.LocusPresence._
+import org.tearne.crosser.util.AlleleCount
 
 @RunWith(classOf[JUnitRunner])
 class ChromosomeSpec extends Specification with Mockito {
@@ -18,14 +19,26 @@ class ChromosomeSpec extends Specification with Mockito {
 	def makeMockTid(length: Int) = {val t = mock[Tid]; t.size returns length; t}
 	
 	"Chromosome" should {
+		"give a count of donor alleles present" in {
+			val rootPlant = mock[RootPlant]
+			val leftTid = mock[Tid]
+			val rightTid = mock[Tid]
+			
+			val alleleCount1 = mock[AlleleCount]
+			val alleleCount2 = mock[AlleleCount]
+			val alleleCount3 = mock[AlleleCount]
+			alleleCount1 + alleleCount2 returns alleleCount3
+			
+			leftTid.alleleCount(rootPlant) returns alleleCount1
+			rightTid.alleleCount(rootPlant) returns alleleCount2
+			
+			Chromosome(leftTid, rightTid).alleleCount(rootPlant) mustEqual alleleCount3
+		}
 		"throw exception if left and right tid differ in length" in {
 			val leftTid = Tid(5, mock[RootPlant])
 			val rightTid = Tid(4, mock[RootPlant])
 			
 			Chromosome(leftTid, rightTid) must throwA[ChromosomeException]
-		}
-		"give the proportion of a plant present" in {
-			Chromosome(leftTid, rightTid).proportionOf(p1) must beEqualTo(5.0/8)
 		}
 		"have value based hashcode and equals" in{
 			val instance2 = Chromosome(leftTid, rightTid)

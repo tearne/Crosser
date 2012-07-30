@@ -3,9 +3,11 @@ package org.tearne.crosser.plant
 import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.util.Random
 import org.tearne.crosser.distribution.Samplable
+import org.tearne.crosser.util.AlleleCount
 
 sealed trait ConcretePlant extends Crossable with Samplable{
 	val chromosomes: IndexedSeq[Chromosome]
+	def alleleCount(donor: RootPlant): AlleleCount = chromosomes.foldLeft(AlleleCount(0,0)){(acc, item) => acc + item.alleleCount(donor)}
 }
 
 case class RootPlant(val name: String, val species: Species) extends ConcretePlant{
