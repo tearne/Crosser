@@ -3,15 +3,14 @@ package org.tearne.crosser.cross
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mutable.Specification
-import org.tearne.crosser.util.Probability
 import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.Chromosome
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.PlantFactory
 import org.tearne.crosser.plant.ChromosomeCrosser
 import org.tearne.crosser.plant.Plant
+import sampler.math.Random
 
 @RunWith(classOf[JUnitRunner])
 class CrosserSpec extends Specification with Mockito{

@@ -1,6 +1,5 @@
 package org.tearne.crosser.cross
 
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.Plant

@@ -5,7 +5,6 @@ import org.specs2.runner.JUnitRunner
 import org.specs2.mutable._
 import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.Species
 import org.specs2.specification.Scope
 import org.tearne.crosser.proto.ChromosomeBank

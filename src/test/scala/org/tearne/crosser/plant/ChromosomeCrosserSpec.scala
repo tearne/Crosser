@@ -8,7 +8,6 @@ import org.tearne.crosser.plant.TidBuilder
 import org.tearne.crosser.plant.Gameter
 import org.tearne.crosser.plant.ChromosomeFactory
 import org.tearne.crosser.plant.ChromosomeCrosser
-import org.tearne.crosser.util.Random
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.plant.ChromosomeCrosserException

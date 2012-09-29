@@ -1,18 +1,15 @@
 package org.tearne.crosser.distribution
 
-import org.tearne.crosser.util.Discrete
 import org.tearne.crosser.plant.Chromosome
 import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
+import sampler.math.Random
+import sampler.data.FrequencyTable
+import sampler.data.Samplable
 
-trait Samplable{
-	def sample(rnd: Random): ConcretePlant
-}
-
-class PlantDistribution(val chromoDists: Seq[Discrete[Chromosome]], val name: String, species: Species, val failures: Int) extends Samplable{
+class PlantDistribution(val chromoDists: Seq[FrequencyTable[Chromosome]], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
 	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException("Number of chromosome distributions incompatible with specified species")
 	
 	val total = chromoDists(0).size
@@ -27,17 +24,14 @@ class PlantDistribution(val chromoDists: Seq[Discrete[Chromosome]], val name: St
 			new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
 	}
 	
-	def distanceTo(that: PlantDistribution): Double = 
-		(chromoDists zip that.chromoDists).map{case (d1, d2) => d1.distanceTo(d2)}.sum
-	
-	def sample(rnd: Random): ConcretePlant = {
+	def sample(implicit rnd: Random): ConcretePlant = {
 		val chromosomes = chromoDists.map(_.sample(rnd))
 		new Plant(name, chromosomes.toIndexedSeq, species)
 	}
 }
 object PlantDistribution{
 	def apply(cross: Cross): PlantDistribution = 
-		new PlantDistribution(cross.species.cMLengths.map(l => Discrete[Chromosome]()), cross.name, cross.species, 0)
+		new PlantDistribution(cross.species.cMLengths.map(l => FrequencyTable[Chromosome](Nil)), cross.name, cross.species, 0)
 }
 
 class PlantDistributionException(message: String, cause: Throwable) extends RuntimeException(message, cause) {

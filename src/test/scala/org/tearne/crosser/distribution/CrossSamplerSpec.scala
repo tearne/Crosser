@@ -10,7 +10,8 @@ import org.tearne.crosser.cross.Crossable
 import org.specs2.specification.Scope
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
-import org.tearne.crosser.util.Random
+import sampler.math.Random
+import sampler.data.EmpiricalMetricComponent
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplerSpec extends Specification with Mockito{
@@ -41,12 +42,20 @@ class CrossSamplerSpec extends Specification with Mockito{
 		}
 
 	}
-	trait Instance extends Scope with 
-			CrossSamplerService with
-			PlantDistBankComponent{
+	
+	//TODO this looks a bit mad
+	trait Instance extends Scope 
+			with CrossSamplerComponent 
+			with PlantDistBankComponent 
+			with PlantDistCrosserComponent
+			with PlantDistMetricComponent
+			with EmpiricalMetricComponent{
 		val rnd = mock[Random]
+		
 		val crossSampler = new CrossSampler(rnd)
-		val plantDistBank = mock[PlantDistBank]
+		val plantDistCrosser = null
+		override val plantDistBank = mock[PlantDistBank]
+		
 		val instance = crossSampler
 	}
 }

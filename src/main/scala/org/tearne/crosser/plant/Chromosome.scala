@@ -2,7 +2,6 @@ package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Locus
 import org.tearne.crosser.cross.LocusPresence
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.util.AlleleCount
 
 class ChromosomeException(message: String, cause: Throwable) extends RuntimeException(message, cause) {

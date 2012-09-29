@@ -1,9 +1,12 @@
 package org.tearne.crosser.plant
 
-import org.tearne.crosser.util.Random
-import org.tearne.crosser.util.Probability
+import sampler.math.Random
+import sampler.math.Probability
+
 
 class Gameter(rnd: Random, recombinationProb: Probability) {
+	val coin = Probability(0.5)
+	
 	def apply(chromosome: Chromosome): Tid = {
 		//TODO would this be faster as a private method in the class
 		def recombines() = rnd.nextBoolean(recombinationProb)
@@ -11,7 +14,7 @@ class Gameter(rnd: Random, recombinationProb: Probability) {
 		val leftAlleles = chromosome.left.alleles
 		val rightAlleles = chromosome.right.alleles
 		
-		val booleans = (1 to leftAlleles.size).map(i => recombines).scanLeft(rnd.nextBoolean(Probability.half)){case (acc, recombine) => if(recombine) !acc else acc}.tail
+		val booleans = (1 to leftAlleles.size).map(i => recombines).scanLeft(rnd.nextBoolean(coin)){case (acc, recombine) => if(recombine) !acc else acc}.tail
 		
 		val triples = IndexedSeq(booleans, leftAlleles, rightAlleles).transpose
 		

@@ -1,11 +1,11 @@
 package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Crossable
-import org.tearne.crosser.util.Random
-import org.tearne.crosser.distribution.Samplable
 import org.tearne.crosser.util.AlleleCount
+import sampler.math.Random
+import sampler.data.Samplable
 
-sealed trait ConcretePlant extends Crossable with Samplable{
+sealed trait ConcretePlant extends Crossable with Samplable[ConcretePlant]{
 	val chromosomes: IndexedSeq[Chromosome]
 	def alleleCount(donor: RootPlant): AlleleCount = chromosomes.foldLeft(AlleleCount(0,0)){(acc, item) => acc + item.alleleCount(donor)}
 }
@@ -13,7 +13,7 @@ sealed trait ConcretePlant extends Crossable with Samplable{
 case class RootPlant(val name: String, val species: Species) extends ConcretePlant{
 	val chromosomes = species.buildChromosomesFrom(this)
 	
-	def sample(rnd: Random): ConcretePlant = this
+	def sample(implicit rnd: Random): ConcretePlant = this
 	
 	override def toString() = name
 	def canEqual(other: Any) = other.isInstanceOf[RootPlant]
@@ -35,7 +35,7 @@ case class Plant(val name: String, val chromosomes: IndexedSeq[Chromosome], val 
 	if(species.cMLengths != chromosomes.map(_.size))
 		throw new PlantException("Chromosomes for plant %s do not match species (%s)".format(name, species))
 	
-	def sample(rnd: Random): ConcretePlant = this
+	def sample(implicit rnd: Random): ConcretePlant = this
 }
 
 class PlantFactory{

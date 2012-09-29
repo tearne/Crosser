@@ -1,22 +1,22 @@
 package org.tearne.crosser.distribution
 
 import org.tearne.crosser.cross.Cross
-import org.tearne.crosser.util.Random
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Crosser
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Crossable
+import sampler.data.Samplable
 
 trait PlantDistBankComponent{
 	//Cake pattern allows immutable mutual dependency 
 	// between CrossSampler and PlantDistBank
-	this: CrossSamplerService =>
+	this: CrossSamplerComponent with PlantDistCrosserComponent =>
 		
-	val plantDistBank: PlantDistBank
+	val plantDistBank: PlantDistBank = new PlantDistBank
 	val distributionTable = collection.mutable.Map[Cross, PlantDistribution]()
 	
-	class PlantDistBank(plantDistCrosser: PlantDistCrosser) {
-		def get(crossable: Crossable): Samplable = {
+	class PlantDistBank {
+		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
 				case cross: Cross => 
 					distributionTable.getOrElseUpdate(cross,

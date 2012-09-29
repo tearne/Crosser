@@ -11,6 +11,7 @@ import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.RootPlant
 import org.specs2.specification.Scope
+import sampler.data.EmpiricalMetricComponent
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistBankSpec extends Specification with Mockito{
@@ -55,8 +56,7 @@ class PlantDistBankSpec extends Specification with Mockito{
 			crossSampler.getDistributionFor(leftParent) returns leftParentDistribution
 			crossSampler.getDistributionFor(rightParent) returns rightParentDistribution
 			
-			//TODO pimping with implicits, so it looks like...
-			// leftPDist x rightPDist
+			//TODO pimping so it looks like... leftPDist x rightPDist
 			plantDistCrosser.build(leftParentDistribution, rightParentDistribution, cross) returns crossDistribution
 			
 			(instance.get(cross) mustEqual crossDistribution) and
@@ -65,14 +65,15 @@ class PlantDistBankSpec extends Specification with Mockito{
 			(there was one(plantDistCrosser).build(any, any, any))
 		}
 	}
-	trait Instance extends 
-			Scope with 
-			CrossSamplerService with 
-			PlantDistBankComponent{
+	trait Instance extends Scope  
+			with CrossSamplerComponent 
+			with PlantDistBankComponent 
+			with PlantDistCrosserComponent
+			with PlantDistMetricComponent
+			with EmpiricalMetricComponent{
 		val plantDistCrosser = mock[PlantDistCrosser]
-		
 		val crossSampler = mock[CrossSampler]
-		val plantDistBank = new PlantDistBank(plantDistCrosser)
+
 		val instance = plantDistBank
 	}
 }
