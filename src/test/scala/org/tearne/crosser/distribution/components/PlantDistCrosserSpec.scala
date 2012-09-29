@@ -1,4 +1,4 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
@@ -14,6 +14,9 @@ import sampler.math.Random
 import sampler.data.Samplable
 import org.tearne.crosser.plant.ConcretePlant
 import sampler.data.EmpiricalMetricComponent
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
+import org.tearne.crosser.distribution.CrossSamplerComponent
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistCrosserSpec extends Specification with Mockito{

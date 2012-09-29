@@ -1,4 +1,4 @@
-package org.tearne.crosser.config
+package org.tearne.crosser.scheme
 
 import org.specs2.mutable._
 import org.specs2.specification.Scope
@@ -13,13 +13,13 @@ import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.RootPlant
 
 @RunWith(classOf[JUnitRunner])
-class ConfigSpec extends Specification {
+class SchemeSpec extends Specification {
 	
-	"Example config" should {
-		"have a name" in new GoodConfig{ 
+	"Example scheme" should {
+		"have a name" in new GoodScheme{ 
 			config.name must_== "MyCross"
 		}
-		"have correct crosses" in new GoodConfig {
+		"have correct crosses" in new GoodScheme {
 			val crosses: Map[String, Cross] = config.crosses
 			crosses.size must_== 3
 			crosses("F1") must_== f1
@@ -27,10 +27,10 @@ class ConfigSpec extends Specification {
 		}
 	}
 	
-	trait GoodConfig extends Scope {
+	trait GoodScheme extends Scope {
 		val path = Paths.get("src/test/resource/example.config")
 		Files.exists(path) must beTrue
-		val config = new CrosserConfig(path)
+		val config = new Scheme(path)
 		
 		//Expected objects
 		val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))

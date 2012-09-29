@@ -1,14 +1,12 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
-import org.tearne.crosser.cross.Crossable
-import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Crosser
 import scala.annotation.tailrec
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Cross
-import org.tearne.crosser.plant.Species
 import sampler.math.Random
 import sampler.data.Samplable
+
 trait PlantDistCrosserComponent{
 	this: PlantDistMetricComponent =>
 		

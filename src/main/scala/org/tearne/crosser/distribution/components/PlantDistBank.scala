@@ -1,11 +1,10 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.cross.Crosser
-import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Crossable
 import sampler.data.Samplable
+import org.tearne.crosser.distribution.CrossSamplerComponent
 
 trait PlantDistBankComponent{
 	//Cake pattern allows immutable mutual dependency 

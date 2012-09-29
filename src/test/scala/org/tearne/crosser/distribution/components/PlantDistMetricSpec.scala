@@ -1,4 +1,4 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
@@ -7,6 +7,8 @@ import org.specs2.specification.Scope
 import sampler.data.FrequencyTable
 import org.tearne.crosser.plant.Chromosome
 import org.tearne.crosser.plant.Species
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 

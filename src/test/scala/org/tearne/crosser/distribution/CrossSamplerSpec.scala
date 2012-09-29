@@ -12,6 +12,10 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import sampler.math.Random
 import sampler.data.EmpiricalMetricComponent
+import org.tearne.crosser.distribution.components.PlantDistCrosserComponent
+import org.tearne.crosser.distribution.components.PlantDistribution
+import org.tearne.crosser.distribution.components.PlantDistMetricComponent
+import org.tearne.crosser.distribution.components.PlantDistBankComponent
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplerSpec extends Specification with Mockito{

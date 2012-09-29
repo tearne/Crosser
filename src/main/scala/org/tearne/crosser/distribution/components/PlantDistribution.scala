@@ -1,4 +1,4 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.tearne.crosser.plant.Chromosome
 import org.tearne.crosser.plant.ConcretePlant

@@ -1,15 +1,15 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.Chromosome
-import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Cross
 import sampler.data.FrequencyTable
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistFactorySpec extends Specification with Mockito{

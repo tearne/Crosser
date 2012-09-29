@@ -7,6 +7,10 @@ import sampler.math.Random
 import sampler.data.Samplable
 import sampler.data.EmpiricalMetricComponent
 import org.tearne.crosser.cross.Crosser
+import org.tearne.crosser.distribution.components.PlantDistFactory
+import org.tearne.crosser.distribution.components.PlantDistCrosserComponent
+import org.tearne.crosser.distribution.components.PlantDistMetricComponent
+import org.tearne.crosser.distribution.components.PlantDistBankComponent
 
 class CrossSamplerService(
 		rnd: Random, 

@@ -1,5 +1,6 @@
 package org.tearne.crosser.proto
-import org.tearne.crosser.config.CrosserConfig
+
+import org.tearne.crosser.scheme.Scheme
 import java.nio.file.Paths
 import java.io.File
 

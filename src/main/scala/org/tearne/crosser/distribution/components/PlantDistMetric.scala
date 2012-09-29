@@ -1,8 +1,7 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import sampler.data.EmpiricalMetricComponent
 
-//TODO test
 trait PlantDistMetricComponent {
 	this: EmpiricalMetricComponent =>
 		

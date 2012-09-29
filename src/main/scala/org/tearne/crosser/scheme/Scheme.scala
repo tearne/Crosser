@@ -1,4 +1,4 @@
-package org.tearne.crosser.config
+package org.tearne.crosser.scheme
 
 import java.nio.file.Path
 import com.typesafe.config.ConfigFactory
@@ -9,7 +9,7 @@ import org.tearne.crosser.plant._
 import org.tearne.crosser.cross._
 import com.typesafe.config.Config
 
-class CrosserConfig(path: Path) {
+class Scheme(path: Path) {
 	import scala.collection.JavaConversions._
 	
 	private val config = ConfigFactory.parseFile(path.toFile())

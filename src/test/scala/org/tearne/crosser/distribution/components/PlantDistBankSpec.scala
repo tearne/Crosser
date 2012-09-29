@@ -1,17 +1,17 @@
-package org.tearne.crosser.distribution
+package org.tearne.crosser.distribution.components
 
 import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mock.Mockito
-import org.tearne.crosser.cross.Crosser
 import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.cross.Cross
-import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.plant.RootPlant
 import org.specs2.specification.Scope
 import sampler.data.EmpiricalMetricComponent
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
+import org.tearne.crosser.distribution.CrossSamplerComponent
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistBankSpec extends Specification with Mockito{
