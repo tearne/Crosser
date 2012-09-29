@@ -14,6 +14,10 @@ class Scheme(path: Path) {
 	
 	private val config = ConfigFactory.parseFile(path.toFile())
 	
+	val chunkSize = config.getInt("config.chunkSize")
+	val recombinationProb = config.getDouble("config.recombinationProb")
+	val tolerance = config.getDouble("config.tolerance")
+	
 	val name: String = config.getString("name")
 	
 	val plants: Map[String, RootPlant] = {
@@ -81,8 +85,8 @@ class Scheme(path: Path) {
 		)
 	}
 	
-	private def makeHomProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
-		HeterozygousProtocol(
+	private def makeHomProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HomozygousProtocol = {
+		HomozygousProtocol(
 				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet
 		)
 	}

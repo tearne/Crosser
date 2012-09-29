@@ -10,7 +10,9 @@ import sampler.data.FrequencyTable
 import sampler.data.Samplable
 
 class PlantDistribution(val chromoDists: Seq[FrequencyTable[Chromosome]], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
-	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException("Number of chromosome distributions incompatible with specified species")
+	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException(
+			"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
+		)
 	
 	val total = chromoDists(0).size
 	chromoDists.foreach(dist => if(dist.size != total) throw new PlantDistributionException("Chromosome distributions inconsistent with stated total"))

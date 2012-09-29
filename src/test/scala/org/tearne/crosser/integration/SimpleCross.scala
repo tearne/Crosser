@@ -14,15 +14,16 @@ import org.tearne.crosser.util.AlleleCount
 
 @RunWith(classOf[JUnitRunner])
 class SimpleCross extends Specification{
-	"this example" in{
-		import CrosserServiceFactory._
+	"this example" in new CrosserServiceFactory with Scope{
+		val scheme = new Scheme(Paths.get("src/test/resource/simpleScheme.config"))
 		
-		val path = Paths.get("src/test/resource/SimpleScheme.config")
-		val myConfig = new Scheme(path)
+		val tolerance = scheme.tolerance
+		val recombinationProb = scheme.recombinationProb
+		val chunkSize = scheme.chunkSize
 		
-		val result = crossSamplerService.getDistributionFor(myConfig.crosses.last._2)
+		val result = crossSamplerService.getDistributionFor(scheme.crosses.last._2)
+		val ac = (for(i <- 1 to 1000) yield result.sample.alleleCount(scheme.plants("Donor1"))).foldLeft(AlleleCount(0,0)){_+_}
 		
-		val ac = (for(i <- 1 to 100) yield result.sample.alleleCount(myConfig.plants("Donor1"))).foldLeft(AlleleCount(0,0)){_+_}
 		ac.proportion must beCloseTo(0.745, 0.01)
 	}
 }

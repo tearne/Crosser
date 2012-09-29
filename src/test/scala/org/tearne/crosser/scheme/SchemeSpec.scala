@@ -15,54 +15,66 @@ import org.tearne.crosser.plant.RootPlant
 @RunWith(classOf[JUnitRunner])
 class SchemeSpec extends Specification {
 	
-	"Example scheme" should {
-		"have a name" in new GoodScheme{ 
-			config.name must_== "MyCross"
-		}
-		"have correct crosses" in new GoodScheme {
-			val crosses: Map[String, Cross] = config.crosses
-			crosses.size must_== 3
-			crosses("F1") must_== f1
-			crosses("BC1") must_== bc1
-		}
-	}
+	val path = Paths.get("src/test/resource/example.config")
+	Files.exists(path) must beTrue
+	val scheme = new Scheme(path)
 	
-	trait GoodScheme extends Scope {
-		val path = Paths.get("src/test/resource/example.config")
-		Files.exists(path) must beTrue
-		val config = new Scheme(path)
+	"Example scheme" should {
+		"have a name" in { 
+			scheme.name must_== "MyCross"
+		}
 		
-		//Expected objects
-		val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))
+		"have correct crosses" in {
+			val crosses: Map[String, Cross] = scheme.crosses
+			crosses.size must_== 3
+			
+			//Expected objects
+			val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))
+			
+			val prefVar = RootPlant("PreferedVariety", species)
+			
+			val donor1 = RootPlant("Donor1", species)
+			val locus1_1 = Locus(donor1, 5, 50, "D1C1")
+			val locus1_2 = Locus(donor1, 6, 60, "D1C2")
+			
+			val donor2 = RootPlant("Donor2", species)
+			val locus2 = Locus(donor2, 1, 10, "D2C1")
+			
+			val f1 = Cross(
+				donor1,
+				donor2,
+				HeterozygousProtocol(Set(locus1_1, locus1_2, locus2)),
+				"F1"
+			)
+			
+			val bc1 = Cross(
+				f1,
+				prefVar,
+				HeterozygousProtocol(Set(locus1_1, locus1_2, locus2), Some(1)),
+				"BC1"
+			)
+			
+			val self = Cross(
+				bc1,
+				bc1,
+				HomozygousProtocol(Set(locus1_1, locus1_2, locus2)),
+				"Self"
+			)
+				
+			
+			crosses("Self") must_== self
+		}
 		
-		val prefVar = RootPlant("PreferedVariety", species)
+		"specify chunk size" in {
+			scheme.chunkSize must_== 100
+		}
 		
-		val donor1 = RootPlant("Donor1", species)
-		val locus1_1 = Locus(donor1, 5, 50, "D1C1")
-		val locus1_2 = Locus(donor1, 6, 60, "D1C2")
+		"specify recombination probability per cM" in{
+			scheme.recombinationProb must_== 0.01
+		}
 		
-		val donor2 = RootPlant("Donor2", species)
-		val locus2 = Locus(donor2, 1, 10, "D2C1")
-		
-		val f1 = Cross(
-			donor1,
-			donor2,
-			HeterozygousProtocol(Set(locus1_1, locus1_2, locus2)),
-			"F1"
-		)
-		
-		val bc1 = Cross(
-			f1,
-			prefVar,
-			HeterozygousProtocol(Set(locus1_1, locus1_2, locus2), Some(1)),
-			"BC1"
-		)
-		
-		val self = Cross(
-			bc1,
-			bc1,
-			HomozygousProtocol(Set(locus1_1, locus1_2, locus2)),
-			"Self"
-		)
+		"specify distribution tolerance" in{
+			scheme.tolerance must_== 0.05
+		}
 	}
 }

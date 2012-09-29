@@ -10,16 +10,21 @@ import org.tearne.crosser.cross.Crosser
 import org.tearne.crosser.distribution.components.PlantDistFactory
 import org.tearne.crosser.distribution.CrossSamplerService
 
-object CrosserServiceFactory {
+trait CrosserServiceFactory{
+	val recombinationProb: Double
+	val chunkSize: Int
+	val tolerance: Double
+	
 	implicit val rnd = new Random
 	
-	private val plantFactory = new PlantFactory()
-	private val chromosomeFactory = new ChromosomeFactory()
-	private val recombinationProb = Probability(0.01)
-	private val gameter = new Gameter(rnd, recombinationProb)
-	private val chromosomeCrosser = new ChromosomeCrosser(chromosomeFactory, gameter)
-	private val crosser = new Crosser(plantFactory, chromosomeCrosser)
-	private val plantDistFactory = new PlantDistFactory()
-	
-	val crossSamplerService = new CrossSamplerService(rnd, crosser, plantDistFactory, 100, 0.05)
+	lazy val crossSamplerService = {
+		val plantFactory = new PlantFactory()
+		val chromosomeFactory = new ChromosomeFactory()
+		val gameter = new Gameter(rnd, Probability(recombinationProb))
+		val chromosomeCrosser = new ChromosomeCrosser(chromosomeFactory, gameter)
+		val crosser = new Crosser(plantFactory, chromosomeCrosser)
+		val plantDistFactory = new PlantDistFactory()
+		
+		new CrossSamplerService(rnd, crosser, plantDistFactory, chunkSize, tolerance)
+	}
 }
