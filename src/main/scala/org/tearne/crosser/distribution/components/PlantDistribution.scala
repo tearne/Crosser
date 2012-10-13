@@ -6,16 +6,20 @@ import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
 import sampler.math.Random
-import sampler.data.FrequencyTable
 import sampler.data.Samplable
+import sampler.data.EmpiricalTable
+import sampler.data.Empirical._
 
-class PlantDistribution(val chromoDists: Seq[FrequencyTable[Chromosome]], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
+class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
 	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException(
-			"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
-		)
+		"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
+	)
 	
-	val total = chromoDists(0).size
-	chromoDists.foreach(dist => if(dist.size != total) throw new PlantDistributionException("Chromosome distributions inconsistent with stated total"))
+	//def numObservations(dist: EmpiricalTable[Chromosome]) = dist.counts.foldLeft(0){case (acc, (chrom, count)) => acc + count}
+	
+	//TODO better way to do this
+	val total = chromoDists(0).size//numObservations(chromoDists(0))
+	chromoDists.foreach(dist => if(dist.size != total) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
 
 	lazy val successProbability: Double = if(total == 0) 0 else failures.asInstanceOf[Double]/total
 	def ++(plants: Seq[ConcretePlant], failures: Int): PlantDistribution = {
@@ -33,7 +37,7 @@ class PlantDistribution(val chromoDists: Seq[FrequencyTable[Chromosome]], val na
 }
 object PlantDistribution{
 	def apply(cross: Cross): PlantDistribution = 
-		new PlantDistribution(cross.species.cMLengths.map(l => FrequencyTable[Chromosome](Nil)), cross.name, cross.species, 0)
+		new PlantDistribution(cross.species.cMLengths.map(l => ChromosomeDistribution.empty), cross.name, cross.species, 0)
 }
 
 class PlantDistributionException(message: String, cause: Throwable) extends RuntimeException(message, cause) {

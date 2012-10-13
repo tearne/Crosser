@@ -4,7 +4,6 @@ import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import sampler.data.EmpiricalMetricComponent
 import org.specs2.specification.Scope
-import sampler.data.FrequencyTable
 import org.tearne.crosser.plant.Chromosome
 import org.tearne.crosser.plant.Species
 import org.junit.runner.RunWith
@@ -19,9 +18,9 @@ class PlantDistMetricSpec extends Specification with Mockito{
 	
 	"PlantDistMetric" should{
 		"use max on each chromosme" in new Instance{ 
-			val d1a, d1b = mock[FrequencyTable[Chromosome]]
-			val d2a, d2b = mock[FrequencyTable[Chromosome]]
-			val d3a, d3b = mock[FrequencyTable[Chromosome]]
+			val d1a, d1b = mock[ChromosomeDistribution]
+			val d2a, d2b = mock[ChromosomeDistribution]
+			val d3a, d3b = mock[ChromosomeDistribution]
 			
 			implicit val empiricalMetric = mock[EmpiricalMetric]
 			

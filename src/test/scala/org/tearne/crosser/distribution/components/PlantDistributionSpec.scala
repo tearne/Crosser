@@ -9,11 +9,11 @@ import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.cross.Cross
-import sampler.data.FrequencyTable
 import sampler.math.Random
 import sampler.data.Samplable
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
+import sampler.data.EmpiricalTable
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistributionSpec extends Specification with Mockito{
@@ -25,12 +25,13 @@ class PlantDistributionSpec extends Specification with Mockito{
 			mock[PlantDistribution] must beAnInstanceOf[Samplable[ConcretePlant]]
 		}
 		"throw exception if species inconsistent with distributions" in{
-			val chromoDists = Seq(mock[FrequencyTable[Chromosome]], mock[FrequencyTable[Chromosome]])//Two chromosomes
+			val chromoDists = Seq(mock[ChromosomeDistribution], mock[ChromosomeDistribution])//Two chromosomes
 			
 			new PlantDistribution(chromoDists, "myPlant", threeCSpecies, 0) must throwA[PlantDistributionException]
 		}
+		"throw exception if inconsistent number of observations across chromosomes" in todo
 		"determine non-zero success probability given inputs" in {
-			val dist = mock[FrequencyTable[Chromosome]]
+			val dist = mock[ChromosomeDistribution]
 			dist.size returns 100
 			val chromoDists = Seq(dist, dist, dist)
 			
@@ -38,7 +39,7 @@ class PlantDistributionSpec extends Specification with Mockito{
 			instance.successProbability mustEqual 0.1
 		}
 		"determine zero success probability given inputs" in {
-			val dist = mock[FrequencyTable[Chromosome]]
+			val dist = mock[ChromosomeDistribution]
 			dist.size returns 0
 			val chromoDists = Seq(dist, dist, dist)
 			
@@ -48,9 +49,9 @@ class PlantDistributionSpec extends Specification with Mockito{
 		"have ++ to generate augmented distribution" in {
 			//These are the chromosomes which will are already in the plant distribution instance
 			val c0_1 = mock[Chromosome]; val c0_2 = mock[Chromosome]; val c0_3 = mock[Chromosome]
-			val d1 = FrequencyTable[Chromosome](IndexedSeq(c0_1))
-			val d2 = FrequencyTable[Chromosome](IndexedSeq(c0_2))
-			val d3 = FrequencyTable[Chromosome](IndexedSeq(c0_3))
+			val d1 = new ChromosomeDistribution(IndexedSeq(c0_1))
+			val d2 = new ChromosomeDistribution(IndexedSeq(c0_2))
+			val d3 = new ChromosomeDistribution(IndexedSeq(c0_3))
 			val instance = new PlantDistribution(Seq(d1,d2,d3), name, threeCSpecies, 10)
 			
 			val c1_1 = mock[Chromosome]; val c1_2 = mock[Chromosome]; val c1_3 = mock[Chromosome]
@@ -71,9 +72,9 @@ class PlantDistributionSpec extends Specification with Mockito{
 			(resultD3.samples must containAllOf(Seq(c0_3, c1_3, c2_3, c3_3)))
 		}
 		"generate individual plants" in {
-			val d1 = mock[FrequencyTable[Chromosome]]
-			val d2 = mock[FrequencyTable[Chromosome]]
-			val d3 = mock[FrequencyTable[Chromosome]]
+			val d1 = mock[ChromosomeDistribution]
+			val d2 = mock[ChromosomeDistribution]
+			val d3 = mock[ChromosomeDistribution]
 			val instance = new PlantDistribution(Seq(d1, d2, d3), name, threeCSpecies, 2)
 			val rnd = mock[Random]
 			

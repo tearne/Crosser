@@ -7,7 +7,6 @@ import org.tearne.crosser.plant.Species
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Cross
-import sampler.data.FrequencyTable
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 
@@ -27,9 +26,9 @@ class PlantDistFactorySpec extends Specification with Mockito{
 			//TODO improve equality checks with Discrete
 			val result = instance.build(cross)
 			(result.chromoDists mustEqual Seq(
-				FrequencyTable[Chromosome](Nil),
-				FrequencyTable[Chromosome](Nil),
-				FrequencyTable[Chromosome](Nil)
+				ChromosomeDistribution.empty,
+				ChromosomeDistribution.empty,
+				ChromosomeDistribution.empty
 			)) and
 			(result.failures mustEqual 0) and
 			(result.name mustEqual name)
