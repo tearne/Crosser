@@ -71,6 +71,8 @@ class PlantDistributionSpec extends Specification with Mockito{
 			(resultD2.samples must containAllOf(Seq(c0_2, c1_2, c2_2, c3_2))) and
 			(resultD3.samples must containAllOf(Seq(c0_3, c1_3, c2_3, c3_3)))
 		}
+		"accept ++ with Nil new samples" in todo
+		"know how many samples it contains" in todo
 		"generate individual plants" in {
 			val d1 = mock[ChromosomeDistribution]
 			val d2 = mock[ChromosomeDistribution]

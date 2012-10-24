@@ -29,6 +29,7 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 			
 			result mustEqual dist3
 		}
+		"not crash if no good offsping on first chunk" in todo
 	}
 	
 	trait MockCrossSamplerService extends Scope

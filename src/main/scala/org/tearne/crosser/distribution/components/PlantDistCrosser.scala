@@ -20,7 +20,7 @@ trait PlantDistCrosserComponent{
 			@tailrec
 			def addSamples(dist: PlantDistribution): PlantDistribution = {
 				val oldDist = dist
-				val offspringWithFailures = (1 to chunkSize).map(i => buildOffspring).groupBy(o => cross.protocol.isSatisfiedBy(o))
+				val offspringWithFailures = (1 to chunkSize).par.map(i => buildOffspring).seq.groupBy(o => cross.protocol.isSatisfiedBy(o))
 				
 				val numNewFailures =  offspringWithFailures.get(false).map(_.size).getOrElse(0)
 				val newDist = oldDist ++(offspringWithFailures.getOrElse(true, Nil), numNewFailures)
@@ -29,7 +29,8 @@ trait PlantDistCrosserComponent{
 				else addSamples(newDist)
 			}
 			
-			addSamples(distFactory.build(cross))
+			val result = addSamples(distFactory.build(cross))
+			result
 		}
 	}
 }

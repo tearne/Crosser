@@ -23,6 +23,7 @@ case class RootPlant(val name: String, val species: Species) extends ConcretePla
 				(that canEqual this) &&
 				name == that.name && 	
 				species == that.species
+			case _ => false
 		}
 	}
 }

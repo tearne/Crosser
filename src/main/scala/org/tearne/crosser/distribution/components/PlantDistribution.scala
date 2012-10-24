@@ -18,16 +18,21 @@ class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: 
 	//def numObservations(dist: EmpiricalTable[Chromosome]) = dist.counts.foldLeft(0){case (acc, (chrom, count)) => acc + count}
 	
 	//TODO better way to do this
-	val total = chromoDists(0).size//numObservations(chromoDists(0))
-	chromoDists.foreach(dist => if(dist.size != total) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
+	val size = chromoDists(0).size//numObservations(chromoDists(0))
+	chromoDists.foreach(dist => if(dist.size != size) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
 
-	lazy val successProbability: Double = if(total == 0) 0 else failures.asInstanceOf[Double]/total
+	lazy val successProbability: Double = if(size == 0) 0 else failures.asInstanceOf[Double]/size
 	def ++(plants: Seq[ConcretePlant], failures: Int): PlantDistribution = {
+		val newDistributions = if(plants.size == 0)	 chromoDists
+		else {
 			val chromosomesByIndex = plants.map(_.chromosomes).transpose
-			val newDistributions = (chromosomesByIndex zip chromoDists).map{case (chroms, dist) =>
+			val newDists = (chromosomesByIndex zip chromoDists).map{case (chroms, dist) =>
 				dist ++ chroms
 			} 
-			new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
+			newDists
+		}
+			
+		new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
 	}
 	
 	def sample(implicit rnd: Random): ConcretePlant = {

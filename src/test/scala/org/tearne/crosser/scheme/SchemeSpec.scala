@@ -76,5 +76,7 @@ class SchemeSpec extends Specification {
 		"specify distribution tolerance" in{
 			scheme.tolerance must_== 0.05
 		}
+		
+		"specify seq of crosses to output donor proportions on" in todo
 	}
 }

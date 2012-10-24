@@ -24,7 +24,7 @@ class SimpleCross extends Specification{
 		val recombinationProb = scheme.recombinationProb
 		val chunkSize = scheme.chunkSize
 		
-		val resultPlantDist = crossSamplerService.getDistributionFor(scheme.crosses("Cross2"))
+		val resultPlantDist = crossSamplerService.getDistributionFor(scheme.crosses.last._2)
 		val donorOfInterest = scheme.plants("Donor1")
 		
 		val proportionD1 = new ParallelSampleBuilder(chunkSize)(resultPlantDist)(seq => 

@@ -17,6 +17,7 @@ class PlantDistMetricSpec extends Specification with Mockito{
 	val threeChromSpecies =  Species("mySpecies", 4,5,6)
 	
 	"PlantDistMetric" should{
+		"return Double,maxValue if an empty distribution is passed in" in todo
 		"use max on each chromosme" in new Instance{ 
 			val d1a, d1b = mock[ChromosomeDistribution]
 			val d2a, d2b = mock[ChromosomeDistribution]

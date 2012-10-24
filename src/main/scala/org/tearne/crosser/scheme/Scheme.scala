@@ -8,6 +8,7 @@ import com.typesafe.config.ConfigException
 import org.tearne.crosser.plant._
 import org.tearne.crosser.cross._
 import com.typesafe.config.Config
+import scala.collection.immutable.ListMap
 
 class Scheme(path: Path) {
 	import scala.collection.JavaConversions._
@@ -35,7 +36,7 @@ class Scheme(path: Path) {
 		}toMap	
 	}
 	
-	val crosses: Map[String, Cross] = {
+	val crosses: ListMap[String, Cross] = {
 		val loci: Buffer[Locus] = config.getConfigList("plants").flatMap{ plantConfig =>
 			val plant = plants(plantConfig.getString("name"))
 			try{
@@ -55,7 +56,7 @@ class Scheme(path: Path) {
 
 		}
 		val lociMap = loci.map(l => l.name -> l).toMap
-		val crossesBuiltSoFar = collection.mutable.Map[String, Cross]()
+		val crossesBuiltSoFar = collection.mutable.ListMap[String, Cross]()
 		
 		for(crossConfig <- config.getConfigList("crosses")){ 
 			val everythingSoFar = crossesBuiltSoFar ++ plants
@@ -71,8 +72,14 @@ class Scheme(path: Path) {
 			crossesBuiltSoFar += name -> Cross(left, right, protocol, name)
 		}
 		
-		crossesBuiltSoFar.toMap
+		collection.immutable.ListMap(crossesBuiltSoFar.toSeq.reverse: _*)
 	}
+	
+	val output: Seq[Cross] = config
+		.getStringList("output.for")
+		.map(name => crosses{name})
+		
+	val outputDonor: RootPlant = plants(config.getString("output.proportionsOf"))
 	
 	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
 		HeterozygousProtocol(
