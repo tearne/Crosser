@@ -13,6 +13,14 @@ import sampler.r.ScriptRunner
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.RootPlant
 import scala.collection.immutable.ListMap
+import sampler.data.Empirical._
+import sampler.data.Empirical
+import sampler.math.Probability
+import sampler.math.Random
+import sampler.data.EmpiricalMetricSubComponent
+import org.tearne.crosser.cross.Crossable
+import java.io.FileWriter
+import java.nio.charset.Charset
 
 object ExampleAppOne{
 	
@@ -23,59 +31,88 @@ object ExampleAppOne{
 		new Application(new Scheme(path))
 	}
 	
-	class Application(scheme: Scheme) extends CrosserServiceFactory with StatisticsComponent{
+	class Application(scheme: Scheme) extends CrosserServiceFactory with EmpiricalMetricSubComponent with StatisticsComponent{
 		val tolerance = scheme.tolerance
 		val recombinationProb = scheme.recombinationProb
 		val chunkSize = scheme.chunkSize
-		
-		val finalCross = scheme.crosses.last._2
-		println(finalCross.name)
-		println("Final cross is "+finalCross.protocol)
-		
-		println("done 1")
-		
-		def getDistribution(cross: Cross, donor: RootPlant): Seq[Double] = {
-			val crossDistribution = crossSamplerService.getDistributionFor(cross)
-			new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => 
-				seq.size == 1e6
-			)
-			.map(_.alleleCount(donor).proportion).seq
+
+		def buildDistribution(plant: Crossable, donor: Crossable) = (plant, donor) match {
+			case (cross: Cross, donor: RootPlant) => {
+				val crossDistribution = crossSamplerService.getDistributionFor(cross)
+				new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => {
+					println("loop size = "+seq.size)
+					metric.max(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
+					seq.size == 1e8
+				})
+				.map(_.alleleCount(donor).proportion).seq
+			}
+			case _ => throw new UnsupportedOperationException()
 		}
 		
-		println(scheme.output.map(_.name))
+		val requiredOutputs = scheme.outputTables
+		val distributions = requiredOutputs.map{case (plant, donor) => 
+			buildDistribution(plant, donor).toEmpiricalSeq
+		}
 		
-		val dists = ListMap(
-			scheme
-			.output
-			.map{cross => (cross.name, getDistribution(cross, scheme.outputDonor))}: _*
+		val plants = requiredOutputs.map(_._1.name)
+		val contributionsFrom = requiredOutputs.map(_._2.name)
+		val titles = (plants zip contributionsFrom).map{case (p,d) => p + ":" + d}
+		
+		def getQuantiles(quantile: Double) = distributions.map{dist => 
+			dist.quantile(Probability(quantile))
+		}
+		val columns = Seq(
+			new Column(titles, "Contribution"),
+			new Column(getQuantiles(0.025), "2.5%"),
+			new Column(getQuantiles(0.5), "Median"),
+			new Column(getQuantiles(0.975), "97.5%")
+		)
+		new CSVTableWriter(Paths.get("confidence.csv"), true).apply(columns: _*)
+		
+		
+		val toWrite = titles zip distributions.map(_.values) 
+		val data = toWrite.map{case (title, samples) =>
+			(Stream.continually(title) zip samples)
+		}.flatten.unzip
+		new CSVTableWriter(Paths.get("distributions.csv"), true).apply(
+				new Column(data._1, "distribution"),
+				new Column(data._2, "sample")
 		)
 		
-		val writer = new CSVTableWriter(Paths.get("out.csv"), true)
-		val columns = dists.map{case (name, dist) =>
-				new Column(dist, name)
-			}.toSeq
-		writer.apply(columns: _*)
-	
-		val posteriorPlotScript = 
+		val rmd =
 """
+Generated Report
+			
+This plot shows an (equal tailed) 95% credible interval around the median proportion of preferred variety in each cross.
+```{r}
+data = read.csv("confidence.csv")
+melted = melt(data, id='Contribution')
+ggplot(melted, aes(x=Contribution, y=value, group=variable, colour=variable)) +
+	geom_line()
+```
+
+The next plot shows an approximation of the distributions themselves.	
+```{r}			
+data = read.csv("distributions.csv")
+ggplot(data, aes(x=sample, colour=distribution)) +
+	geom_freqpoly(binwidth=0.001)
+```
+"""
+		val writer = Files.newBufferedWriter(Paths.get("myTest.Rmd"), Charset.forName("UTF-8"))
+		writer.write(rmd)
+		writer.close()
+		
+		val knit = 
+"""
+require(knitr)
+require(markdown)
 require(ggplot2)
 require(reshape)
-			
-data = read.csv("out.csv")
-			
-pdf("out.pdf", width=8.27, height=5.83)
-ggplot(melt(data), aes(x=value, colour=variable)) +
-	geom_freqpoly() +
-	scale_x_continuous(limits=c(0,1), name="Proportion of donor present") +
-	scale_y_continuous(name="Density")
-dev.off()
+
+#opts_chunk$set(echo=FALSE, message=FALSE, results='hide'	)
+knit('myTest.Rmd')
+markdownToHTML('myTest.md', 'myTest.html', options=c('use_xhml'))
 """
-	val p = Paths.get("out.r").toAbsolutePath()
-	println(p.toString())
-			
-	ScriptRunner(posteriorPlotScript, p)
-	
+		ScriptRunner(knit, Paths.get("knit.R").toAbsolutePath())
 	}
-		
-		
 }

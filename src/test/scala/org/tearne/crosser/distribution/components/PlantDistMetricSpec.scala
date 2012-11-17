@@ -17,22 +17,22 @@ class PlantDistMetricSpec extends Specification with Mockito{
 	val threeChromSpecies =  Species("mySpecies", 4,5,6)
 	
 	"PlantDistMetric" should{
-		"return Double,maxValue if an empty distribution is passed in" in todo
+		"return Double,maxValue if either distribution is empty" in todo
 		"use max on each chromosme" in new Instance{ 
-			val d1a, d1b = mock[ChromosomeDistribution]
-			val d2a, d2b = mock[ChromosomeDistribution]
-			val d3a, d3b = mock[ChromosomeDistribution]
+			val d1a, d1b = mock[ChromosomeDistribution]; d1a.size returns 1; d1b.size returns 1 
+			val d2a, d2b = mock[ChromosomeDistribution]; d2a.size returns 1; d2b.size returns 1
+			val d3a, d3b = mock[ChromosomeDistribution]; d3a.size returns 1; d3b.size returns 1
 			
 			implicit val empiricalMetric = mock[EmpiricalMetric]
 			
-			val instanceA = new PlantDistribution(Seq(d1a, d2a, d3a), name, threeChromSpecies, 10)
-			val instanceB = new PlantDistribution(Seq(d1b, d2b, d3b), name, threeChromSpecies, 10)
+			val plantDistA = new PlantDistribution(Seq(d1a, d2a, d3a), name, threeChromSpecies, 10)
+			val plantDistB = new PlantDistribution(Seq(d1b, d2b, d3b), name, threeChromSpecies, 10)
 			
 			metric.max(d1a, d1b) returns 1
 			metric.max(d2a, d2b) returns 2
 			metric.max(d3a, d3b) returns 3
 			
-			instance(instanceA, instanceB) mustEqual (1+2+3)
+			instance(plantDistA, plantDistB) mustEqual (1+2+3)
 		}
 	}
 	
