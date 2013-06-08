@@ -17,7 +17,6 @@ import sampler.data.Empirical._
 import sampler.data.Empirical
 import sampler.math.Probability
 import sampler.math.Random
-import sampler.data.EmpiricalMetricSubComponent
 import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
@@ -31,7 +30,7 @@ object ExampleAppOne{
 		new Application(new Scheme(path))
 	}
 	
-	class Application(scheme: Scheme) extends CrosserServiceFactory with EmpiricalMetricSubComponent with StatisticsComponent{
+	class Application(scheme: Scheme) extends CrosserServiceFactory with StatisticsComponent{
 		val tolerance = scheme.tolerance
 		val recombinationProb = scheme.recombinationProb
 		val chunkSize = scheme.chunkSize
@@ -41,7 +40,7 @@ object ExampleAppOne{
 				val crossDistribution = crossSamplerService.getDistributionFor(cross)
 				new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => {
 					println("loop size = "+seq.size)
-					metric.max(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
+					maxDistance(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
 					seq.size == 1e8
 				})
 				.map(_.alleleCount(donor).proportion).seq
@@ -58,8 +57,8 @@ object ExampleAppOne{
 		val contributionsFrom = requiredOutputs.map(_._2.name)
 		val titles = (plants zip contributionsFrom).map{case (p,d) => p + ":" + d}
 		
-		def getQuantiles(quantile: Double) = distributions.map{dist => 
-			dist.quantile(Probability(quantile))
+		def getQuantiles(q: Double) = distributions.map{dist => 
+			quantile(dist, Probability(q))
 		}
 		val columns = Seq(
 			new Column(titles, "Contribution"),
