@@ -29,14 +29,14 @@ class PlantDistMetricSpec extends Specification with Mockito{
 				t
 			}
 			
-			val instanceA = new PlantDistribution(Seq(d1a, d2a, d3a), name, threeChromSpecies, 10)
-			val instanceB = new PlantDistribution(Seq(d1b, d2b, d3b), name, threeChromSpecies, 10)
+			val plantDistA = new PlantDistribution(Seq(d1a, d2a, d3a), name, threeChromSpecies, 10)
+			val plantDistB = new PlantDistribution(Seq(d1b, d2b, d3b), name, threeChromSpecies, 10)
 			
 			statistics.maxDistance(d1a, d1b) returns 1
 			statistics.maxDistance(d2a, d2b) returns 2
 			statistics.maxDistance(d3a, d3b) returns 3
 			
-			instance(instanceA, instanceB) mustEqual (1+2+3)
+			instance(plantDistA, plantDistB) mustEqual (1+2+3)
 		}
 	}
 	

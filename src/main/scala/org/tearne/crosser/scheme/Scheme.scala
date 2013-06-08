@@ -75,11 +75,17 @@ class Scheme(path: Path) {
 		collection.immutable.ListMap(crossesBuiltSoFar.toSeq.reverse: _*)
 	}
 	
-	val output: Seq[Cross] = config
-		.getStringList("output.for")
-		.map(name => crosses{name})
+	
+	val outputTables: List[(Crossable, Crossable)] = {
+		val crossables = crosses ++ plants
 		
-	val outputDonor: RootPlant = plants(config.getString("output.proportionsOf"))
+		config.getConfigList("output.table").map{c =>
+			(
+				crossables(c.getString("subject")), 
+				crossables(c.getString("contribution"))
+			)
+		}.toList
+	}
 	
 	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
 		HeterozygousProtocol(

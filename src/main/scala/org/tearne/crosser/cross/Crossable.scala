@@ -6,6 +6,7 @@ import org.tearne.crosser.plant.Plant
 
 trait Crossable{
 	val species: Species
+	val name: String
 }
 
 case class Cross(left: Crossable, right: Crossable, protocol: Protocol, name: String) extends Crossable{
