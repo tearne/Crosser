@@ -13,7 +13,7 @@ sealed trait ConcretePlant extends Crossable with Samplable[ConcretePlant]{
 case class RootPlant(val name: String, val species: Species) extends ConcretePlant{
 	val chromosomes = species.buildChromosomesFrom(this)
 	
-	def sample(implicit rnd: Random): ConcretePlant = this
+	def sample: ConcretePlant = this
 	
 	override def toString() = name
 	def canEqual(other: Any) = other.isInstanceOf[RootPlant]
@@ -36,7 +36,7 @@ case class Plant(val name: String, val chromosomes: IndexedSeq[Chromosome], val 
 	if(species.cMLengths != chromosomes.map(_.size))
 		throw new PlantException("Chromosomes for plant %s do not match species (%s)".format(name, species))
 	
-	def sample(implicit rnd: Random): ConcretePlant = this
+	def sample: ConcretePlant = this
 }
 
 class PlantFactory{

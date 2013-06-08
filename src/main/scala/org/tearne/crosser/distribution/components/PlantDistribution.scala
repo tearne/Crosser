@@ -35,8 +35,8 @@ class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: 
 		new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
 	}
 	
-	def sample(implicit rnd: Random): ConcretePlant = {
-		val chromosomes = chromoDists.map(_.sample(rnd))
+	def sample: ConcretePlant = {
+		val chromosomes = chromoDists.map(_.sample)
 		new Plant(name, chromosomes.toIndexedSeq, species)
 	}
 }

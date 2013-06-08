@@ -12,10 +12,10 @@ trait PlantDistCrosserComponent{
 		
 	val plantDistCrosser: PlantDistCrosser
 	
-	class PlantDistCrosser(crosser: Crosser, distFactory: PlantDistFactory, rnd: Random, chunkSize: Int, tolerance: Double) {
+	class PlantDistCrosser(crosser: Crosser, distFactory: PlantDistFactory, chunkSize: Int, tolerance: Double) {
 		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantDistribution = {
 			def buildOffspring() = 
-				crosser(leftParentDist.sample(rnd), rightParentDist.sample(rnd), cross)
+				crosser(leftParentDist.sample, rightParentDist.sample, cross)
 			
 			@tailrec
 			def addSamples(dist: PlantDistribution): PlantDistribution = {
@@ -23,8 +23,12 @@ trait PlantDistCrosserComponent{
 				val offspringWithFailures = (1 to chunkSize).par.map(i => buildOffspring).seq.groupBy(o => cross.protocol.isSatisfiedBy(o))
 				
 				val numNewFailures =  offspringWithFailures.get(false).map(_.size).getOrElse(0)
-				val newDist = oldDist ++(offspringWithFailures.getOrElse(true, Nil), numNewFailures)
+				
+				val passed = offspringWithFailures.getOrElse(true, Nil)
+				val newDist = oldDist ++(passed, numNewFailures)
+				
 				val diff = plantDistMetric(oldDist, newDist)
+				
 				if(diff < tolerance) newDist
 				else addSamples(newDist)
 			}

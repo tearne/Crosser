@@ -8,10 +8,10 @@ import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.ConcretePlant
 import org.specs2.specification.Scope
-import sampler.data.EmpiricalMetricComponent
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.distribution.CrossSamplerComponent
+import sampler.math.StatisticsComponent
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistBankSpec extends Specification with Mockito{
@@ -69,8 +69,9 @@ class PlantDistBankSpec extends Specification with Mockito{
 			with CrossSamplerComponent 
 			with PlantDistBankComponent 
 			with PlantDistCrosserComponent
-			with PlantDistMetricComponent
-			with EmpiricalMetricComponent{
+			with PlantDistMetricComponent{
+		val statistics = mock[StatisticsComponent]
+		
 		val plantDistCrosser = mock[PlantDistCrosser]
 		val crossSampler = mock[CrossSampler]
 

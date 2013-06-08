@@ -19,6 +19,7 @@ import sampler.data.EmpiricalTable
 class PlantDistributionSpec extends Specification with Mockito{
 	val name = "plantName"
 	val threeCSpecies =  Species("mySpecies", 4,5,6)
+	implicit val r: Random = null
 	
 	"PlantDistribution" should {
 		"be samplable" in{
@@ -78,13 +79,12 @@ class PlantDistributionSpec extends Specification with Mockito{
 			val d2 = mock[ChromosomeDistribution]
 			val d3 = mock[ChromosomeDistribution]
 			val instance = new PlantDistribution(Seq(d1, d2, d3), name, threeCSpecies, 2)
-			val rnd = mock[Random]
 			
-			val sampledC1 = mock[Chromosome]; sampledC1.size returns 4; d1.sample(rnd) returns sampledC1
-			val sampledC2 = mock[Chromosome]; sampledC2.size returns 5; d2.sample(rnd) returns sampledC2
-			val sampledC3 = mock[Chromosome]; sampledC3.size returns 6; d3.sample(rnd) returns sampledC3
+			val sampledC1 = mock[Chromosome]; sampledC1.size returns 4; d1.sample returns sampledC1
+			val sampledC2 = mock[Chromosome]; sampledC2.size returns 5; d2.sample returns sampledC2
+			val sampledC3 = mock[Chromosome]; sampledC3.size returns 6; d3.sample returns sampledC3
 			
-			instance.sample(rnd) mustEqual Plant(
+			instance.sample mustEqual Plant(
 				name,
 				IndexedSeq(sampledC1, sampledC2, sampledC3),
 				threeCSpecies

@@ -40,7 +40,7 @@ class PlantSpec extends Specification with Mockito{
 			instance must beAnInstanceOf[Samplable[ConcretePlant]]
 		}
 		"return itself when sampled" in {
-			instance.sample(null) mustEqual instance
+			instance.sample mustEqual instance
 		}
 		"throw exception if chromosome lengths incompatible with species" in {
 			Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species) must

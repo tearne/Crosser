@@ -11,11 +11,11 @@ import org.specs2.specification.Scope
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import sampler.math.Random
-import sampler.data.EmpiricalMetricComponent
 import org.tearne.crosser.distribution.components.PlantDistCrosserComponent
 import org.tearne.crosser.distribution.components.PlantDistribution
 import org.tearne.crosser.distribution.components.PlantDistMetricComponent
 import org.tearne.crosser.distribution.components.PlantDistBankComponent
+import sampler.math.StatisticsComponent
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplerSpec extends Specification with Mockito{
@@ -38,7 +38,7 @@ class CrossSamplerSpec extends Specification with Mockito{
 			val sample2 = mock[Plant]
 			val sample3 = mock[Plant]
 			
-			plantDistribution.sample(rnd) returns (sample1, sample2, sample3)
+			plantDistribution.sample returns (sample1, sample2, sample3)
 			
 			(instance.sample(cross) mustEqual sample1) and
 			(instance.sample(cross) mustEqual sample2) and
@@ -52,10 +52,10 @@ class CrossSamplerSpec extends Specification with Mockito{
 			with CrossSamplerComponent 
 			with PlantDistBankComponent 
 			with PlantDistCrosserComponent
-			with PlantDistMetricComponent
-			with EmpiricalMetricComponent{
+			with PlantDistMetricComponent{
 		val rnd = mock[Random]
 		
+		val statistics = mock[StatisticsComponent]
 		val crossSampler = new CrossSampler(rnd)
 		val plantDistCrosser = null
 		override val plantDistBank = mock[PlantDistBank]

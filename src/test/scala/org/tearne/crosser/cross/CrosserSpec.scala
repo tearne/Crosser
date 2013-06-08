@@ -21,12 +21,11 @@ class CrosserSpec extends Specification with Mockito{
 			val species = mock[Species]
 			val plantFactory = mock[PlantFactory]
 			val chromosomeCrosser = mock[ChromosomeCrosser]
-			val rnd = mock[Random]
+			
 			val cross = mock[Cross]
 			cross.name returns name
 			cross.species returns species
 			
-			val instance = new Crosser(plantFactory, chromosomeCrosser)
 			
 			val left = mock[ConcretePlant]
 			val c1left = mock[Chromosome]
@@ -48,7 +47,8 @@ class CrosserSpec extends Specification with Mockito{
 			chromosomeCrosser(c3left, c3right) returns c3offspring
 			
 			val offspringPlant = mock[Plant]
-			plantFactory(name, IndexedSeq(c1offspring, c2offspring, c2offspring), species) returns offspringPlant
+			plantFactory(name, IndexedSeq(c1offspring, c2offspring, c3offspring), species) returns offspringPlant
+			val instance = new Crosser(plantFactory, chromosomeCrosser)
 			
 			instance(left, right, cross) mustEqual offspringPlant
 		}

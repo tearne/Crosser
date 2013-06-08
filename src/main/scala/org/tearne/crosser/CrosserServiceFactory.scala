@@ -15,7 +15,7 @@ trait CrosserServiceFactory{
 	val chunkSize: Int
 	val tolerance: Double
 	
-	implicit val rnd = new Random
+	implicit val rnd = Random
 	
 	lazy val crossSamplerService = {
 		val plantFactory = new PlantFactory()
