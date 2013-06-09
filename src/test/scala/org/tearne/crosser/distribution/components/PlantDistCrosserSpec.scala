@@ -24,9 +24,7 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 	
 	"PlantDistCrosser" should {
 		"build distribution using samples from CrossSampler" in new MockCrossSamplerService{
-			
 			val result = instance.build(leftParentDist, rightParentDist, cross)
-			
 			result mustEqual dist3
 		}
 		"not crash if no good offsping on first chunk" in todo

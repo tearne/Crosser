@@ -40,10 +40,6 @@ class PlantDistMetricSpec extends Specification with Mockito{
 		}
 	}
 	
-	trait MockStatisticsComponent extends StatisticsComponent{
-		
-	}
-	
 	trait Instance extends Scope with PlantDistMetricComponent{
 		val statistics = mock[StatisticsComponent]
 		val instance = plantDistMetric
