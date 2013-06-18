@@ -9,16 +9,23 @@ import scala.io.BufferedSource
 import java.nio.ByteBuffer
 import java.util.Date
 import java.nio.channels.SocketChannel
+import java.nio.charset.Charset
+import java.nio.CharBuffer
+
+/*
+ * 
+ * Playing with sockets
+ * 
+ */
 
 object TestClient extends App{
+	val encoder = Charset.forName("UTF-8").newEncoder
 	val socChannel = SocketChannel.open
 	socChannel.connect(new InetSocketAddress("localhost",8888))
 	
-	val msg = new Date().toString() + " > " + "Hello"
-	val bb = ByteBuffer.allocate(msg.getBytes().length)
-	bb.clear();  
-	bb.put(msg.getBytes());  
-	bb.flip();
+	val msg = new Date().toString() + " --> " + "Hello"
+	println(s"message is: $msg")
+	val bb = encoder.encode(CharBuffer.wrap(msg))
 	while (bb.hasRemaining()) {
 		socChannel.write(bb);  
   }  
@@ -32,7 +39,7 @@ object SocketApplication extends App{
     val system = ActorSystem("MySystem")
     val mainActor = system.actorOf(Props(new Actor{
     	def receive = {
-    		case m => println("Got message "+m)
+    		case m => println(s"Got message of type ${m.getClass}, $m")
     	}
     }))
     
@@ -42,7 +49,9 @@ object SocketApplication extends App{
     		val bb = ByteBuffer.allocate(1024);
     		s.read(bb)
     		s.close
-    		bb.flip().toString()
+    		bb.flip()
+    		val str = Charset.forName("UTF-8").newDecoder.decode(bb).toString
+    		str
     	}
     }
 }
