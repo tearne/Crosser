@@ -15,9 +15,9 @@ import org.tearne.crosser.plant.RootPlant
 @RunWith(classOf[JUnitRunner])
 class SchemeSpec extends Specification {
 	
-	val path = Paths.get("src/test/resource/example.config")
+	val path = Paths.get("src/test/resource/test.config")
 	Files.exists(path) must beTrue
-	val scheme = new Scheme(path)
+	val scheme = new ConfigScheme(path)
 	
 	val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))
 	val prefVar = RootPlant("PreferedVariety", species)

@@ -1,7 +1,7 @@
 package org.tearne.crosser
 
 import sampler.math.StatisticsComponent
-import org.tearne.crosser.scheme.Scheme
+import org.tearne.crosser.scheme.ConfigScheme
 import java.nio.file.Paths
 import java.nio.file.Files
 import java.io.FileNotFoundException
@@ -20,6 +20,7 @@ import sampler.math.Random
 import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
+import org.tearne.crosser.scheme.Scheme
 
 object ExampleAppOne{
 	
@@ -27,7 +28,7 @@ object ExampleAppOne{
 		val path = Paths.get(args(0)).toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
-		new Application(new Scheme(path))
+		new Application(new ConfigScheme(path))
 	}
 	
 	class Application(scheme: Scheme) extends CrosserServiceFactory with StatisticsComponent{

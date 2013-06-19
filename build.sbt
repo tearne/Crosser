@@ -18,7 +18,9 @@ libraryDependencies ++= Seq(
 	"com.typesafe" % "config" % "0.4.1",
 	"com.typesafe.akka" %% "akka-actor" % "2.1.4",
 	"com.typesafe.akka" %% "akka-remote" % "2.1.4",
-	"com.typesafe.akka" %% "akka-cluster-experimental" % "2.1.4"
+	"com.typesafe.akka" %% "akka-cluster-experimental" % "2.1.4",
+	"postgresql" % "postgresql" % "8.4-702.jdbc4",
+	"com.typesafe.slick" %% "slick" % "1.0.1"
 )
 
 scalaVersion := "2.10.1"
