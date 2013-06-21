@@ -1,0 +1,147 @@
+{
+	"config" : {
+		"chunkSize" : 100,
+		"recombinationProb" : 0.01
+		"tolerance" : 0.05
+	}
+	"name" : "Tanzania1", 
+	"species" : {
+		name : "PhaseolusVulgaris"
+		chromosomeLengths : [203, 276, 236, 200, 133, 163, 188, 206, 143, 132, 164]
+	}, 
+	"output" : {
+		"table" : []
+	}, 
+	"plants" : [ 
+	    { 
+	    	"name" : "Mex54", 
+			"loci" : [
+	        	{
+	        		"name" : "Phg-2",
+			        "type" : "Trait", 
+			        "linkageGroup" : 8, 
+			        "position" : 200 
+			    },
+			    {
+	        		"name" : "SN02",
+			        "type" : "Marker", 
+			        "linkageGroup" : 8, 
+			        "position" : 202
+			    }
+			] 
+		} , 
+	    { 
+	    	"name" : "Vax", 
+			"loci" : [
+	        	{
+	        		"name" : "QTL from GN#1 sel 27",
+			        "type" : "Trait", 
+			        "linkageGroup" : 10, 
+			        "position" : 123
+			    },
+			    {
+	        		"name" : "SAP6",
+			        "type" : "Marker", 
+			        "linkageGroup" : 10, 
+			        "position" : 124
+			    }
+			] 
+		}, 
+	    { 
+	    	"name" : "Mshindi", 
+			"loci" : [
+	        	{
+	        		"name" : "bc-3",
+			        "type" : "Trait", 
+			        "linkageGroup" : 6, 
+			        "position" : 142
+			    },
+			    {
+	        		"name" : "ROC11",
+			        "type" : "Marker", 
+			        "linkageGroup" : 6, 
+			        "position" : 143
+			    }
+			] 
+		},
+		{
+			"name" : "Kablanketi", 
+			"loci" : [] 
+		}
+  	],
+	"crosses" : [
+		{
+			"name" : "F1", 
+			"left" : "Mex54", 
+      		"right" : "Vax", 
+            "protocol" : {
+            	"zygosity" : "Heterozygous",
+            	"loci" : ["Phg-2", "SN02"]
+            }
+		},{
+			"name" : "F1_1", 
+			"left" : "Mshindi", 
+      		"right" : "F1", 
+            "protocol" : {
+            	"zygosity" : "Heterozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "F1_2", 
+			"left" : "Kablanketi", 
+      		"right" : "F1", 
+            "protocol" : {
+            	"zygosity" : "Heterozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC1F1", 
+			"left" : "Kablanketi", 
+      		"right" : "F1", 
+            "protocol" : {
+            	"zygosity" : "Heterozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC2F1", 
+			"left" : "Kablanketi", 
+      		"right" : "BC1F1", 
+            "protocol" : {
+            	"zygosity" : "Heterozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC2F1S1", 
+			"left" : "BC1F1", 
+      		"right" : "BC1F1", 
+            "protocol" : {
+            	"zygosity" : "Homozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC2F1S2", 
+			"left" : "BC1F1S1", 
+      		"right" : "BC1F1S1", 
+            "protocol" : {
+            	"zygosity" : "Homozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC2F1S3", 
+			"left" : "BC1F1S2", 
+      		"right" : "BC1F1S2", 
+            "protocol" : {
+            	"zygosity" : "Homozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		},{
+			"name" : "BC2F1S4", 
+			"left" : "BC1F1S3", 
+      		"right" : "BC1F1S3", 
+            "protocol" : {
+            	"zygosity" : "Homozygous",
+            	"loci" : ["Phg-2", "SN02", "bc-3", "ROC11"]
+            }
+		}
+	]
+}
