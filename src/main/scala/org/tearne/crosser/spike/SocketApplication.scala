@@ -1,16 +1,16 @@
-package org.tearne.crosser
+package org.tearne.crosser.spike
 
 import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.Actor
-import scala.io.BufferedSource
 import java.nio.ByteBuffer
 import java.util.Date
 import java.nio.channels.SocketChannel
 import java.nio.charset.Charset
 import java.nio.CharBuffer
+import akka.actor.actorRef2Scala
 
 /*
  * 

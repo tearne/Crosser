@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	    <encoder>
+	    	<pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
+	    </encoder>
+	</appender>
+	     
+	<appender name="SAMPLER_RUN" class="ch.qos.logback.core.FileAppender">
+	    <File>log/Sampler.log</File>
+		<encoder>
+			<pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+	    <File>log/Other.log</File>
+		<encoder>
+			<pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="sampler.run" level="NULL" additivity="false">
+		<appender-ref ref="SAMPLER_RUN" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	<root>
+	    <level value="DEBUG" />
+	    <appender-ref ref="STDOUT" />
+	    <appender-ref ref="FILE" />
+	</root>
+</configuration>
