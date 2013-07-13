@@ -26,7 +26,7 @@
 	</logger>
 	
 	<root>
-	    <level value="DEBUG" />
+	    <level value="trace" />
 	    <appender-ref ref="STDOUT" />
 	    <appender-ref ref="FILE" />
 	</root>

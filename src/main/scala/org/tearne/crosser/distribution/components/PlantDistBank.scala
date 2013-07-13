@@ -5,11 +5,14 @@ import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Crossable
 import sampler.data.Samplable
 import org.tearne.crosser.distribution.CrossSamplerComponent
+import org.slf4j.LoggerFactory
 
 trait PlantDistBankComponent{
 	//Cake pattern allows immutable mutual dependency 
 	// between CrossSampler and PlantDistBank
 	this: CrossSamplerComponent with PlantDistCrosserComponent =>
+		
+	val log = LoggerFactory.getLogger(getClass().getName())	
 		
 	val plantDistBank: PlantDistBank = new PlantDistBank
 	val distributionTable = collection.mutable.Map[Cross, PlantDistribution]()
@@ -18,6 +21,8 @@ trait PlantDistBankComponent{
 		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
 				case cross: Cross => 
+					if(!distributionTable.contains(cross)) log.info("Cross {} not in the bank.  Building...", cross.name)
+					else log.info("Cross {} was in the bank", cross.name)
 					distributionTable.getOrElseUpdate(cross,
 						plantDistCrosser.build(
 							crossSampler.getDistributionFor(cross.left),

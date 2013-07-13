@@ -38,6 +38,7 @@ object ExampleAppOne{
 
 		def buildDistribution(plant: Crossable, donor: Crossable) = (plant, donor) match {
 			case (cross: Cross, donor: RootPlant) => {
+				println(s"Cross $cross, Donor $donor")
 				val crossDistribution = crossSamplerService.getDistributionFor(cross)
 				new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => {
 					println("loop size = "+seq.size)
@@ -69,50 +70,51 @@ object ExampleAppOne{
 		)
 		new CSVTableWriter(Paths.get("confidence.csv"), true).apply(columns: _*)
 		
-		
+//		
+//		
 		val toWrite = titles zip distributions.map(_.values) 
-		val data = toWrite.map{case (title, samples) =>
-			(Stream.continually(title) zip samples)
-		}.flatten.unzip
-		new CSVTableWriter(Paths.get("distributions.csv"), true).apply(
-				new Column(data._1, "distribution"),
-				new Column(data._2, "sample")
-		)
-		
-		val rmd =
-"""
-Generated Report
-			
-This plot shows an (equal tailed) 95% credible interval around the median proportion of preferred variety in each cross.
-```{r}
-data = read.csv("confidence.csv")
-melted = melt(data, id='Contribution')
-ggplot(melted, aes(x=Contribution, y=value, group=variable, colour=variable)) +
-	geom_line()
-```
-
-The next plot shows an approximation of the distributions themselves.	
-```{r}			
-data = read.csv("distributions.csv")
-ggplot(data, aes(x=sample, colour=distribution)) +
-	geom_freqpoly(binwidth=0.001)
-```
-"""
-		val writer = Files.newBufferedWriter(Paths.get("myTest.Rmd"), Charset.forName("UTF-8"))
-		writer.write(rmd)
-		writer.close()
-		
-		val knit = 
-"""
-require(knitr)
-require(markdown)
-require(ggplot2)
-require(reshape)
-
-#opts_chunk$set(echo=FALSE, message=FALSE, results='hide'	)
-knit('myTest.Rmd')
-markdownToHTML('myTest.md', 'myTest.html', options=c('use_xhml'))
-"""
-		ScriptRunner(knit, Paths.get("knit.R").toAbsolutePath())
+//		val data = toWrite.map{case (title, samples) =>
+//			(Stream.continually(title) zip samples)
+//		}.flatten.unzip
+//		new CSVTableWriter(Paths.get("distributions.csv"), true).apply(
+//				new Column(data._1, "distribution"),
+//				new Column(data._2, "sample")
+//		)
+//		
+//		val rmd =
+//"""
+//Generated Report
+//			
+//This plot shows an (equal tailed) 95% credible interval around the median proportion of preferred variety in each cross.
+//```{r}
+//data = read.csv("confidence.csv")
+//melted = melt(data, id='Contribution')
+//ggplot(melted, aes(x=Contribution, y=value, group=variable, colour=variable)) +
+//	geom_line()
+//```
+//
+//The next plot shows an approximation of the distributions themselves.	
+//```{r}			
+//data = read.csv("distributions.csv")
+//ggplot(data, aes(x=sample, colour=distribution)) +
+//	geom_freqpoly(binwidth=0.001)
+//```
+//"""
+//		val writer = Files.newBufferedWriter(Paths.get("myTest.Rmd"), Charset.forName("UTF-8"))
+//		writer.write(rmd)
+//		writer.close()
+//		
+//		val knit = 
+//"""
+//require(knitr)
+//require(markdown)
+//require(ggplot2)
+//require(reshape)
+//
+//#opts_chunk$set(echo=FALSE, message=FALSE, results='hide'	)
+//knit('myTest.Rmd')
+//markdownToHTML('myTest.md', 'myTest.html', options=c('use_xhml'))
+//"""
+//		ScriptRunner(knit, Paths.get("knit.R").toAbsolutePath())
 	}
 }

@@ -56,6 +56,7 @@ class ConfigScheme(path: Path) extends Scheme{
 
 		}
 		val lociMap = loci.map(l => l.name -> l).toMap
+		lociMap.values.foreach(println)
 		val crossesBuiltSoFar = collection.mutable.ListMap[String, Cross]()
 		
 		for(crossConfig <- config.getConfigList("crosses")){ 
