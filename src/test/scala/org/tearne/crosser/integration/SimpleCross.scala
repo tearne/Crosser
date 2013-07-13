@@ -19,7 +19,7 @@ import org.specs2.execute.Pending
 @RunWith(classOf[JUnitRunner])
 class SimpleCross extends Specification{
 	//	"this example" in new CrosserServiceFactory with StatisticsComponent with Scope{
-	//		val scheme = new Scheme(Paths.get("src/test/resource/simpleScheme.config"))
+	//		val scheme = new Scheme(Paths.get("src/test/resource/integrationTest.config"))
 	//		
 	//		val tolerance = scheme.tolerance
 	//		val recombinationProb = scheme.recombinationProb

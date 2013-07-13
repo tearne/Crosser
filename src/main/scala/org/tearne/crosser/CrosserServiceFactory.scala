@@ -11,7 +11,7 @@ import org.tearne.crosser.distribution.components.PlantDistFactory
 import org.tearne.crosser.distribution.CrossSamplerService
 
 trait CrosserServiceFactory{
-	val recombinationProb: Double
+	val recombinationProb: Double = 0.01 //TODO in future support alternative recombination models
 	val chunkSize: Int
 	val tolerance: Double
 	

@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
 	"com.typesafe.akka" %% "akka-actor" % "2.1.4",
 	"com.typesafe.akka" %% "akka-remote" % "2.1.4",
 	"com.typesafe.akka" %% "akka-cluster-experimental" % "2.1.4",
+	"com.typesafe.slick" %% "slick" % "1.0.1",
 	"postgresql" % "postgresql" % "8.4-702.jdbc4",
 	"io.netty" % "netty-all" % "4.0.0.CR6",
 	"ch.qos.logback" % "logback-classic" % "1.0.12"

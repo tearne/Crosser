@@ -13,14 +13,14 @@ import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.RootPlant
 
 @RunWith(classOf[JUnitRunner])
-class SchemeSpec extends Specification {
+class ConfigSchemeSpec extends Specification {
 	
-	val path = Paths.get("src/test/resource/test.config")
+	val path = Paths.get("src/test/resource/schemeTest.config")
 	Files.exists(path) must beTrue
 	val scheme = new ConfigScheme(path)
 	
-	val species: Species = Species("PhaseolusVulgaris", IndexedSeq(11,23,45,22,10,80,121))
-	val prefVar = RootPlant("PreferedVariety", species)
+	val species: Species = Species("Phaseolus_Vulgaris", IndexedSeq(11,23,45,22,10,80,121))
+	val prefVar = RootPlant("Prefered_Variety", species)
 	
 	val donor1 = RootPlant("Donor1", species)
 	val locus1_1 = Locus(donor1, 5, 50, "D1C1")
@@ -57,31 +57,21 @@ class SchemeSpec extends Specification {
 		
 		"have correct crosses" in {
 			val crosses: Map[String, Cross] = scheme.crosses
-			crosses.size must_== 3
-			
-			crosses("Self") must_== self
+			(crosses.size must_== 3) and
+			(crosses("BC1") must_== bc1)
+			(crosses("Self") must_== self)
+		}
+		
+		"specify db url" in {
+			scheme.dbURL must_== "jdbc:etc"
 		}
 		
 		"specify chunk size" in {
 			scheme.chunkSize must_== 100
 		}
 		
-		"specify recombination probability per cM" in{
-			scheme.recombinationProb must_== 0.01
-		}
-		
 		"specify distribution tolerance" in {
 			scheme.tolerance must_== 0.05
-		}
-		
-		"list the plants to produce summary tables for" in {
-			//( Plant to report on , % genes from... )
-			scheme.outputTables === List[(Crossable, Crossable)](
-				(donor1, prefVar),
-				(f1, prefVar),
-				(bc1, prefVar),
-				(self, prefVar)
-			)
 		}
 	}
 }

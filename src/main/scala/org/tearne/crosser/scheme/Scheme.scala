@@ -7,13 +7,11 @@ import org.tearne.crosser.cross.Crossable
 
 trait Scheme {
 	val chunkSize: Int
-	val recombinationProb: Double
 	val tolerance: Double
+	val dbURL: String
 	
 	val name: String
 	
 	val plants: Map[String, RootPlant]
 	val crosses: ListMap[String, Cross]
-	
-	val outputTables: List[(Crossable, Crossable)]
 }

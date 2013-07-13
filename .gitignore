@@ -4,3 +4,4 @@ target/
 .classpath
 lib
 /log
+bin

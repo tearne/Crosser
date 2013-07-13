@@ -21,11 +21,12 @@ import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
 import org.tearne.crosser.scheme.Scheme
+import org.tearne.crosser.cross.Crossable
 
 object ExampleAppOne{
 	
 	def main(args: Array[String]) {
-		val path = Paths.get(args(0)).toAbsolutePath
+		val path = Paths.get("examples/eg1.config").toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
 		new Application(new ConfigScheme(path))
@@ -33,7 +34,6 @@ object ExampleAppOne{
 	
 	class Application(scheme: Scheme) extends CrosserServiceFactory with StatisticsComponent{
 		val tolerance = scheme.tolerance
-		val recombinationProb = scheme.recombinationProb
 		val chunkSize = scheme.chunkSize
 
 		def buildDistribution(plant: Crossable, donor: Crossable) = (plant, donor) match {
@@ -50,7 +50,18 @@ object ExampleAppOne{
 			case _ => throw new UnsupportedOperationException()
 		}
 		
-		val requiredOutputs = scheme.outputTables
+		val crossables = scheme.plants ++ scheme.crosses
+		val requiredOutputs = List[(String, String)](
+				("Cross1_Het","PreferredVariety"),
+				("Cross2_Het","PreferredVariety"),
+				("Cross3_Het","PreferredVariety"),
+				("Cross4_Het","PreferredVariety"),
+				("Cross5_Het","PreferredVariety"),
+				("Cross6_Hom","PreferredVariety")
+		).map{case (subject, contribution) => 
+			(crossables(subject), crossables(contribution))
+		}.toList
+			
 		val distributions = requiredOutputs.map{case (plant, donor) => 
 			buildDistribution(plant, donor).toEmpiricalSeq
 		}

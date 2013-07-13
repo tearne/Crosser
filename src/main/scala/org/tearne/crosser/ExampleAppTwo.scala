@@ -33,7 +33,6 @@ object ExampleAppTwo{
 	
 	class Application(scheme: Scheme) extends CrosserServiceFactory with StatisticsComponent{
 		val tolerance = scheme.tolerance
-		val recombinationProb = scheme.recombinationProb
 		val chunkSize = scheme.chunkSize
 
 		def buildContributionDist(plant: Crossable, donor: Crossable) = (plant, donor) match {

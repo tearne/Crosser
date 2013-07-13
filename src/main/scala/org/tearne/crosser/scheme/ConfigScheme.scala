@@ -15,16 +15,16 @@ class ConfigScheme(path: Path) extends Scheme{
 	
 	private val config = ConfigFactory.parseFile(path.toFile())
 	
-	val chunkSize = config.getInt("config.chunkSize")
-	val recombinationProb = config.getDouble("config.recombinationProb")
-	val tolerance = config.getDouble("config.tolerance")
+	val chunkSize = config.getInt("system.convergence.chunkSize")
+	val tolerance = config.getDouble("system.convergence.tolerance")
+	val dbURL = config.getString("system.db_url")
 	
 	val name: String = config.getString("name")
 	
 	val plants: Map[String, RootPlant] = {
 		val species = Species(
 				config.getString("species.name"),
-				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species.chromosomeLengths")).map{_.intValue()}.toIndexedSeq
+				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species.chromosome_lengths")).map{_.intValue()}.toIndexedSeq
 		)
 		
 		config.getConfigList("plants").map{ plantConfig =>
@@ -44,7 +44,7 @@ class ConfigScheme(path: Path) extends Scheme{
 					val name = locusConfig.getString("name")
 					Locus(
 						plant,
-						locusConfig.getInt("linkageGroup"),
+						locusConfig.getInt("linkage_group"),
 						locusConfig.getInt("position"),
 						locusConfig.getString("name")
 					)
@@ -56,7 +56,6 @@ class ConfigScheme(path: Path) extends Scheme{
 
 		}
 		val lociMap = loci.map(l => l.name -> l).toMap
-		lociMap.values.foreach(println)
 		val crossesBuiltSoFar = collection.mutable.ListMap[String, Cross]()
 		
 		for(crossConfig <- config.getConfigList("crosses")){ 
@@ -75,24 +74,12 @@ class ConfigScheme(path: Path) extends Scheme{
 		
 		collection.immutable.ListMap(crossesBuiltSoFar.toSeq.reverse: _*)
 	}
-	
-	
-	val outputTables: List[(Crossable, Crossable)] = {
-		val crossables = crosses ++ plants
 		
-		config.getConfigList("output.table").map{c =>
-			(
-				crossables(c.getString("subject")), 
-				crossables(c.getString("contribution"))
-			)
-		}.toList
-	}
-	
 	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
 		HeterozygousProtocol(
 				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet,
 				try{
-					Some(crossConfig.getInt("protocol.numHomozygously"))
+					Some(crossConfig.getInt("protocol.num_homozygously"))
 				}catch{
 					case e: ConfigException.Missing => None
 				}

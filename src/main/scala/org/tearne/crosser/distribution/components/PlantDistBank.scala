@@ -21,8 +21,8 @@ trait PlantDistBankComponent{
 		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
 				case cross: Cross => 
-					if(!distributionTable.contains(cross)) log.info("Cross {} not in the bank.  Building...", cross.name)
-					else log.info("Cross {} was in the bank", cross.name)
+					if(!distributionTable.contains(cross)) log.info("Cross {} not cached.  Building...", cross.name)
+					else log.info("Cross {} is already cached", cross.name)
 					distributionTable.getOrElseUpdate(cross,
 						plantDistCrosser.build(
 							crossSampler.getDistributionFor(cross.left),
