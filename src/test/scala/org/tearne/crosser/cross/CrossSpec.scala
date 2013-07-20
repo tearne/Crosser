@@ -7,7 +7,6 @@ import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.plant.Species
 import org.specs2.specification.Scope
-import org.tearne.crosser.proto.ChromosomeBank
 import org.tearne.crosser.plant.Plant
 
 @RunWith(classOf[JUnitRunner])

@@ -20,18 +20,23 @@ trait PlantDistBankComponent{
 	class PlantDistBank {
 		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
-				case cross: Cross => 
-					if(!distributionTable.contains(cross)) log.info("Cross {} not cached.  Building...", cross.name)
-					else log.info("Cross {} is already cached", cross.name)
-					distributionTable.getOrElseUpdate(cross,
-						plantDistCrosser.build(
-							crossSampler.getDistributionFor(cross.left),
-							crossSampler.getDistributionFor(cross.right),
-							cross
-						)
-					)
+				case cross: Cross => getDistribution(cross)
 				case concretePlant: ConcretePlant => concretePlant
 			}
+		}
+		
+		//TODO TestMe
+		def getDistribution(cross: Cross): PlantDistribution = {
+			if(!distributionTable.contains(cross)) log.info("Cross {} not cached.  Will be built.", cross.name)
+			else log.info("Cross {} is already cached", cross.name)
+			
+			distributionTable.getOrElseUpdate(cross,
+				plantDistCrosser.build(
+					crossSampler.getDistributionFor(cross.left),
+					crossSampler.getDistributionFor(cross.right),
+					cross
+				)
+			)
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package org.tearne.crosser.scheme
+package org.tearne.crosser.config
 
 import org.specs2.mutable._
 import org.specs2.specification.Scope
@@ -8,16 +8,18 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import java.io.File
 import java.nio.file.Files
+
 import org.tearne.crosser.cross._
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.RootPlant
+import org.tearne.crosser.output._
 
 @RunWith(classOf[JUnitRunner])
-class ConfigSchemeSpec extends Specification {
+class SchemeConfigSpec extends Specification {
 	
-	val path = Paths.get("src/test/resource/schemeTest.config")
+	val path = Paths.get("src/test/resource/test.config")
 	Files.exists(path) must beTrue
-	val scheme = new ConfigScheme(path)
+	val scheme = new SchemeConfig(path)
 	
 	val species: Species = Species("Phaseolus_Vulgaris", IndexedSeq(11,23,45,22,10,80,121))
 	val prefVar = RootPlant("Prefered_Variety", species)
@@ -62,16 +64,28 @@ class ConfigSchemeSpec extends Specification {
 			(crosses("Self") must_== self)
 		}
 		
-		"specify db url" in {
-			scheme.dbURL must_== "jdbc:etc"
+		"specify db details" in {
+			(scheme.dbURL must_== "jdbc:etc") and
+			(scheme.dbProfile must_== "scala.slick.driver.AwesomeDB") and
+			(scheme.dbDriver must_== "org.database.AwesomeDriver")
 		}
 		
-		"specify chunk size" in {
-			scheme.chunkSize must_== 100
+		"specify convergence details size" in {
+			(scheme.chunkSize must_== 100) and
+			(scheme.tolerance must_== 0.05)
 		}
 		
-		"specify distribution tolerance" in {
-			scheme.tolerance must_== 0.05
+		"list required outputs" in {
+			 val expected = List[Output](
+				ProportionDistribution(bc1, prefVar),
+				ProportionDistribution(self, prefVar),
+				SuccessProbability(f1),
+				LociComposition(self),
+				CrossComposition(f1),
+				CrossComposition(bc1),
+				CrossComposition(self)
+			)
+			scheme.outputs must_== expected
 		}
 	}
 }

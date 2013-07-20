@@ -2,7 +2,6 @@ package org.tearne.crosser.integration
 
 import org.specs2.mutable.Specification
 import java.nio.file.Paths
-import org.tearne.crosser.scheme.ConfigScheme
 import org.tearne.crosser.distribution.CrossSamplerService
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner

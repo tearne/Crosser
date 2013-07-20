@@ -11,6 +11,7 @@ import org.tearne.crosser.distribution.components.PlantDistCrosserComponent
 import org.tearne.crosser.distribution.components.PlantDistMetricComponent
 import org.tearne.crosser.distribution.components.PlantDistBankComponent
 import sampler.math.StatisticsComponent
+import org.tearne.crosser.distribution.components.PlantDistribution
 
 class CrossSamplerService(
 		rnd: Random, 
@@ -27,8 +28,13 @@ class CrossSamplerService(
 	val crossSampler = new CrossSampler(rnd)
 	val plantDistCrosser = new PlantDistCrosser(crosser, distFactory, chunkSize, tolerance)
 	
-	def getDistributionFor(crossable: Crossable): Samplable[ConcretePlant] = 
+	def getSamplableFor(crossable: Crossable): Samplable[ConcretePlant] = 
 		crossSampler.getDistributionFor(crossable)
+		
+	//TODO test me
+	def getDistributionFor(cross: Cross): PlantDistribution = {
+		plantDistBank.getDistribution(cross)
+	}
 }
 
 trait CrossSamplerComponent{

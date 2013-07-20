@@ -15,10 +15,9 @@ class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: 
 		"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
 	)
 	
-	//def numObservations(dist: EmpiricalTable[Chromosome]) = dist.counts.foldLeft(0){case (acc, (chrom, count)) => acc + count}
-	
 	//TODO better way to do this
-	val size = chromoDists(0).size//numObservations(chromoDists(0))
+	val size = chromoDists(0).size
+	
 	chromoDists.foreach(dist => if(dist.size != size) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
 
 	lazy val successProbability: Double = if(size == 0) 0 else failures.asInstanceOf[Double]/size

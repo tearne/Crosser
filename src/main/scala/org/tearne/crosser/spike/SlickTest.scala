@@ -1,4 +1,4 @@
-package org.tearne.crosser
+package org.tearne.crosser.spike
 
 import scala.slick.session.Database
 // Use H2Driver to connect to an H2 database

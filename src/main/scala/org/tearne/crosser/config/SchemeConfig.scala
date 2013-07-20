@@ -1,4 +1,4 @@
-package org.tearne.crosser.scheme
+package org.tearne.crosser.config
 
 import java.nio.file.Path
 import com.typesafe.config.ConfigFactory
@@ -9,15 +9,19 @@ import org.tearne.crosser.plant._
 import org.tearne.crosser.cross._
 import com.typesafe.config.Config
 import scala.collection.immutable.ListMap
+import org.tearne.crosser.output._
 
-class ConfigScheme(path: Path) extends Scheme{
+class SchemeConfig(path: Path){
 	import scala.collection.JavaConversions._
 	
 	private val config = ConfigFactory.parseFile(path.toFile())
 	
 	val chunkSize = config.getInt("system.convergence.chunkSize")
 	val tolerance = config.getDouble("system.convergence.tolerance")
-	val dbURL = config.getString("system.db_url")
+	
+	val dbURL = config.getString("system.db.url")
+	val dbProfile = config.getString("system.db.profile")
+	val dbDriver = config.getString("system.db.driver")
 	
 	val name: String = config.getString("name")
 	
@@ -73,6 +77,24 @@ class ConfigScheme(path: Path) extends Scheme{
 		}
 		
 		collection.immutable.ListMap(crossesBuiltSoFar.toSeq.reverse: _*)
+	}
+	
+	val outputs: List[Output] = {
+		config.getConfigList("output").map{ conf => 
+			conf.getString("type") match {
+				case "proportion_distribution" => 
+					ProportionDistribution(
+						crosses(conf.getString("cross")), 
+						plants(conf.getString("donor"))
+					)
+				case "success_probability" => 
+					SuccessProbability(crosses(conf.getString("cross")))
+				case "loci_composition" => 
+					LociComposition(crosses(conf.getString("cross")))
+				case "cross_composition" =>
+					CrossComposition(crosses(conf.getString("cross")))
+			}
+		}.toList
 	}
 		
 	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
