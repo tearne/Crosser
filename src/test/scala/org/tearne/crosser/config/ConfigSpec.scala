@@ -15,11 +15,11 @@ import org.tearne.crosser.plant.RootPlant
 import org.tearne.crosser.output._
 
 @RunWith(classOf[JUnitRunner])
-class SchemeConfigSpec extends Specification {
+class CrosserConfigSpec extends Specification {
 	
 	val path = Paths.get("src/test/resource/test.config")
 	Files.exists(path) must beTrue
-	val scheme = new SchemeConfig(path)
+	val scheme = new Config(path)
 	
 	val species: Species = Species("Phaseolus_Vulgaris", IndexedSeq(11,23,45,22,10,80,121))
 	val prefVar = RootPlant("Prefered_Variety", species)
@@ -64,11 +64,11 @@ class SchemeConfigSpec extends Specification {
 			(crosses("Self") must_== self)
 		}
 		
-		"specify db details" in {
-			(scheme.dbURL must_== "jdbc:etc") and
-			(scheme.dbProfile must_== "scala.slick.driver.AwesomeDB") and
-			(scheme.dbDriver must_== "org.database.AwesomeDriver")
-		}
+//		"specify db details" in {
+//			(scheme.dbURL must_== "jdbc:etc") and
+//			(scheme.dbProfile must_== "scala.slick.driver.AwesomeDB") and
+//			(scheme.dbDriver must_== "org.database.AwesomeDriver")
+//		}
 		
 		"specify convergence details size" in {
 			(scheme.chunkSize must_== 100) and
@@ -79,7 +79,7 @@ class SchemeConfigSpec extends Specification {
 			 val expected = List[Output](
 				ProportionDistribution(bc1, prefVar),
 				ProportionDistribution(self, prefVar),
-				SuccessProbability(f1),
+				SuccessProbability(Seq(f1, bc1, self)),
 				LociComposition(self),
 				CrossComposition(f1),
 				CrossComposition(bc1),

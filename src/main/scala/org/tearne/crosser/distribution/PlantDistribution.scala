@@ -1,16 +1,12 @@
-package org.tearne.crosser.distribution.components
-
-import org.tearne.crosser.plant.Chromosome
+package org.tearne.crosser.distribution
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
-import sampler.math.Random
 import sampler.data.Samplable
-import sampler.data.EmpiricalTable
 import sampler.data.Empirical._
 
-class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
+class PlantDistribution(val chromoDists: IndexedSeq[ChromosomeDistribution], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
 	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException(
 		"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
 	)
@@ -34,7 +30,16 @@ class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: 
 		new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
 	}
 	
-	def sample: ConcretePlant = {
+	//TODO This doesn't work.  It just iterates along the diagonal
+	// of the n-dimensional chromosome space
+//	def iterator = new Iterator[Plant]{
+//		val chromoDistIterators = chromoDists.map(_.samples.iterator)
+//		
+//		def next = Plant(name, chromoDistIterators.map(_.next), species)
+//		def hasNext = chromoDistIterators.forall(_.hasNext)
+//	}
+	
+	def sample: Plant = {
 		val chromosomes = chromoDists.map(_.sample)
 		new Plant(name, chromosomes.toIndexedSeq, species)
 	}
@@ -42,6 +47,11 @@ class PlantDistribution(val chromoDists: Seq[ChromosomeDistribution], val name: 
 object PlantDistribution{
 	def apply(cross: Cross): PlantDistribution = 
 		new PlantDistribution(cross.species.cMLengths.map(l => ChromosomeDistribution.empty), cross.name, cross.species, 0)
+}
+
+class PlantDistributionFactory{
+	def build(cross: Cross): PlantDistribution = 
+		PlantDistribution(cross)
 }
 
 class PlantDistributionException(message: String, cause: Throwable) extends RuntimeException(message, cause) {

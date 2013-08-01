@@ -1,23 +1,21 @@
-package org.tearne.crosser.distribution.components
+package org.tearne.crosser.distribution
 
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
-import org.tearne.crosser.plant.Chromosome
+import org.junit.runner.RunWith
+import org.junit.runner.RunWith
+import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.plant.Species
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Cross
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class PlantDistFactorySpec extends Specification with Mockito{
+class PlantDistributionFactorySpec extends Specification with Mockito{
 	val threeFailures = 3
 	val name = "myCross"
 	
 	"PlantDistFactory" should {
 		"create new plant distributions" in {
-			val instance = new PlantDistFactory()
+			val instance = new PlantDistributionFactory()
 			val species = Species("name", IndexedSeq(1,1,1))
 			val cross = mock[Cross]
 			cross.name returns name

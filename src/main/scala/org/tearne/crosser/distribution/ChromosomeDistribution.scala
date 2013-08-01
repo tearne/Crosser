@@ -1,12 +1,11 @@
-package org.tearne.crosser.distribution.components
+package org.tearne.crosser.distribution
 
 import org.tearne.crosser.plant.Chromosome
-import sampler.data.EmpiricalSeq
-import sampler.data.Empirical._
-import scala.collection.GenTraversableOnce
 import sampler.math.Random
+import sampler.data.EmpiricalSeq
+import scala.collection.GenTraversableOnce
 
-case class ChromosomeDistribution(val samples: IndexedSeq[Chromosome])(implicit r: Random) extends EmpiricalSeq[Chromosome](samples)(r){
+case class ChromosomeDistribution(val samples: IndexedSeq[Chromosome]) extends EmpiricalSeq[Chromosome](samples){
 	val size = samples.size
 	
 	//TODO do this scala collections style. EmpiricalSeqLike?

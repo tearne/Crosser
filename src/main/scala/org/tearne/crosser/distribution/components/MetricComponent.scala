@@ -2,13 +2,17 @@ package org.tearne.crosser.distribution.components
 
 import sampler.math.StatisticsComponent
 import org.slf4j.LoggerFactory
+import org.tearne.crosser.distribution.PlantDistribution
 
-trait PlantDistMetricComponent {
+/**
+ * Measures distances between plant distributions
+ */
+trait MetricComponent {
 	val statistics: StatisticsComponent
 		
-	val plantDistMetric = new PlantDistMetric()
+	val metric: Metric
 	
-	class PlantDistMetric{
+	class Metric{
 		val log = LoggerFactory.getLogger(getClass.getName)
 		def apply(pd1: PlantDistribution, pd2: PlantDistribution): Double = {
 			log.trace("{}", pd1.size)

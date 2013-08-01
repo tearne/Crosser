@@ -1,4 +1,4 @@
-package org.tearne.crosser.distribution.components
+package org.tearne.crosser.distribution
 
 import org.specs2.mutable.Specification
 import org.junit.runner.RunWith

@@ -7,13 +7,18 @@ import org.tearne.crosser.cross.Cross
 import sampler.math.Random
 import sampler.data.Samplable
 import org.slf4j.LoggerFactory
+import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantDistributionFactory
 
-trait PlantDistCrosserComponent{
-	this: PlantDistMetricComponent =>
+/**
+ * Builds plant distributions from parent distributions
+ */
+trait DistributionCrosserComponent{
+	this: MetricComponent =>
 		
-	val plantDistCrosser: PlantDistCrosser
+	val distributionCrosser: DistributionCrosser
 	
-	class PlantDistCrosser(crosser: Crosser, distFactory: PlantDistFactory, chunkSize: Int, tolerance: Double) {
+	class DistributionCrosser(crosser: Crosser, distFactory: PlantDistributionFactory, chunkSize: Int, tolerance: Double) {
 		val log = LoggerFactory.getLogger(getClass.getName)
 		
 		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantDistribution = {
@@ -31,7 +36,7 @@ trait PlantDistCrosserComponent{
 				
 				val newDist = oldDist ++(passed, numNewFailures)
 				
-				val diff = plantDistMetric(oldDist, newDist)
+				val diff = metric(oldDist, newDist)
 				
 				log.trace("Chunk complete on {}, diff = {}", cross.name, diff)
 				log.trace("{} passed, {} failures satisfying protocol {}", passed.size.toString, numNewFailures.toString, cross.protocol.toString())
@@ -42,7 +47,6 @@ trait PlantDistCrosserComponent{
 			
 			log.info("Building {}...", cross.name)
 			val result = addSamples(distFactory.build(cross))
-			log.info("{} ...done", cross.name)
 			result
 		}
 	}
@@ -50,7 +54,3 @@ trait PlantDistCrosserComponent{
 
 
 
-class PlantDistFactory{
-	def build(cross: Cross): PlantDistribution = 
-		PlantDistribution(cross)
-}

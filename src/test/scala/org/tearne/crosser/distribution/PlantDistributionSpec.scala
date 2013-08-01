@@ -1,7 +1,6 @@
-package org.tearne.crosser.distribution.components
+package org.tearne.crosser.distribution
 
 import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 import org.tearne.crosser.plant.Chromosome
@@ -13,7 +12,6 @@ import sampler.math.Random
 import sampler.data.Samplable
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
-import sampler.data.EmpiricalTable
 
 @RunWith(classOf[JUnitRunner])
 class PlantDistributionSpec extends Specification with Mockito{
@@ -22,11 +20,12 @@ class PlantDistributionSpec extends Specification with Mockito{
 	implicit val r: Random = null
 	
 	"PlantDistribution" should {
+		"be iterable" in todo
 		"be samplable" in{
 			mock[PlantDistribution] must beAnInstanceOf[Samplable[ConcretePlant]]
 		}
 		"throw exception if species inconsistent with distributions" in{
-			val chromoDists = Seq(mock[ChromosomeDistribution], mock[ChromosomeDistribution])//Two chromosomes
+			val chromoDists = Vector(mock[ChromosomeDistribution], mock[ChromosomeDistribution])//Two chromosomes
 			
 			new PlantDistribution(chromoDists, "myPlant", threeCSpecies, 0) must throwA[PlantDistributionException]
 		}
@@ -34,7 +33,7 @@ class PlantDistributionSpec extends Specification with Mockito{
 		"determine non-zero success probability given inputs" in {
 			val dist = mock[ChromosomeDistribution]
 			dist.size returns 100
-			val chromoDists = Seq(dist, dist, dist)
+			val chromoDists = IndexedSeq(dist, dist, dist)
 			
 			val instance = new PlantDistribution(chromoDists, null, threeCSpecies, 10)
 			instance.successProbability mustEqual 0.1
@@ -42,7 +41,7 @@ class PlantDistributionSpec extends Specification with Mockito{
 		"determine zero success probability given inputs" in {
 			val dist = mock[ChromosomeDistribution]
 			dist.size returns 0
-			val chromoDists = Seq(dist, dist, dist)
+			val chromoDists = IndexedSeq(dist, dist, dist)
 			
 			val instance = new PlantDistribution(chromoDists, null, threeCSpecies, 0)
 			instance.successProbability mustEqual 0
@@ -53,7 +52,7 @@ class PlantDistributionSpec extends Specification with Mockito{
 			val d1 = new ChromosomeDistribution(IndexedSeq(c0_1))
 			val d2 = new ChromosomeDistribution(IndexedSeq(c0_2))
 			val d3 = new ChromosomeDistribution(IndexedSeq(c0_3))
-			val instance = new PlantDistribution(Seq(d1,d2,d3), name, threeCSpecies, 10)
+			val instance = new PlantDistribution(IndexedSeq(d1,d2,d3), name, threeCSpecies, 10)
 			
 			val c1_1 = mock[Chromosome]; val c1_2 = mock[Chromosome]; val c1_3 = mock[Chromosome]
 			val p1 = mock[ConcretePlant]; p1.chromosomes returns IndexedSeq(c1_1, c1_2, c1_3)
@@ -78,7 +77,7 @@ class PlantDistributionSpec extends Specification with Mockito{
 			val d1 = mock[ChromosomeDistribution]
 			val d2 = mock[ChromosomeDistribution]
 			val d3 = mock[ChromosomeDistribution]
-			val instance = new PlantDistribution(Seq(d1, d2, d3), name, threeCSpecies, 2)
+			val instance = new PlantDistribution(IndexedSeq(d1, d2, d3), name, threeCSpecies, 2)
 			
 			val sampledC1 = mock[Chromosome]; sampledC1.size returns 4; d1.sample returns sampledC1
 			val sampledC2 = mock[Chromosome]; sampledC2.size returns 5; d2.sample returns sampledC2

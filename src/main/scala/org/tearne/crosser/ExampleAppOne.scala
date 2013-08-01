@@ -20,7 +20,7 @@
 //import java.io.FileWriter
 //import java.nio.charset.Charset
 //import org.tearne.crosser.cross.Crossable
-//import org.tearne.crosser.config.SchemeConfig
+//import org.tearne.crosser.config.Config
 //
 //object ExampleAppOne{
 //	
@@ -28,28 +28,36 @@
 //		val path = Paths.get("examples/eg1.config").toAbsolutePath
 //		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 //		
-//		new Application(new SchemeConfig(path))
+//		new Application(new Config(path))
 //	}
 //	
-//	class Application(scheme: SchemeConfig) extends CrosserServiceFactory with StatisticsComponent{
-//		val tolerance = scheme.tolerance
-//		val chunkSize = scheme.chunkSize
+//	class Application(config: Config){
+//		implicit val random: Random = Random
+//		val tolerance = config.tolerance
+//		val chunkSize = config.chunkSize
 //
-//		def buildDistribution(plant: Crossable, donor: Crossable) = (plant, donor) match {
-//			case (cross: Cross, donor: RootPlant) => {
-//				println(s"Cross $cross, Donor $donor")
-//				val crossDistribution = crossSamplerService.getDistributionFor(cross)
-//				new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => {
-//					println("loop size = "+seq.size)
-//					maxDistance(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
-//					seq.size == 1e8
-//				})
-//				.map(_.alleleCount(donor).proportion).seq
-//			}
-//			case _ => throw new UnsupportedOperationException()
+//		val service = CrosserServiceFactory(tolerance, chunkSize, 0.01)
+//
+//		def getComposition(cross: Cross, donor: RootPlant) = {
+//			val it = service.getDistribution(cross).iterator
+//			it.map(_.alleleCount(donor).proportion).seq
 //		}
 //		
-//		val crossables = scheme.plants ++ scheme.crosses
+////		def buildDistribution(plant: Crossable, donor: Crossable) = (plant, donor) match {
+////			case (cross: Cross, donor: RootPlant) => {
+////				println(s"Cross $cross, Donor $donor")
+////				val crossDistribution = service.getDistribution(cross)
+////				new ParallelSampleBuilder(chunkSize)(crossDistribution)(seq => {
+////					println("loop size = "+seq.size)
+////					service.metric(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
+////					seq.size == 1e8
+////				})
+////				.map(_.alleleCount(donor).proportion).seq
+////			}
+////			case _ => throw new UnsupportedOperationException()
+////		}
+//		
+////		val crossables = scheme.plants ++ scheme.crosses
 //		val requiredOutputs = List[(String, String)](
 //				("Cross1_Het","PreferredVariety"),
 //				("Cross2_Het","PreferredVariety"),
@@ -58,11 +66,11 @@
 //				("Cross5_Het","PreferredVariety"),
 //				("Cross6_Hom","PreferredVariety")
 //		).map{case (subject, contribution) => 
-//			(crossables(subject), crossables(contribution))
+//			(config.crosses(subject), config.plants(contribution))
 //		}.toList
 //			
 //		val distributions = requiredOutputs.map{case (plant, donor) => 
-//			buildDistribution(plant, donor).toEmpiricalSeq
+//			getComposition(plant, donor).toSeq.toEmpiricalSeq
 //		}
 //		
 //		val plants = requiredOutputs.map(_._1.name)
@@ -70,7 +78,7 @@
 //		val titles = (plants zip contributionsFrom).map{case (p,d) => p + ":" + d}
 //		
 //		def getQuantiles(q: Double) = distributions.map{dist => 
-//			quantile(dist, Probability(q))
+//			StatisticsComponent.quantile(dist, Probability(q))
 //		}
 //		val columns = Seq(
 //			new Column(titles, "Contribution"),

@@ -7,24 +7,21 @@ import sampler.math.Probability
 import org.tearne.crosser.plant.Gameter
 import org.tearne.crosser.plant.ChromosomeCrosser
 import org.tearne.crosser.cross.Crosser
-import org.tearne.crosser.distribution.components.PlantDistFactory
-import org.tearne.crosser.distribution.CrossSamplerService
+import org.tearne.crosser.distribution.components._
+import sampler.math.StatisticsComponent
+import org.tearne.crosser.distribution.PlantDistributionFactory
+import org.tearne.crosser.distribution.CrosserService
 
-trait CrosserServiceFactory{
-	val recombinationProb: Double = 0.01 //TODO in future support alternative recombination models
-	val chunkSize: Int
-	val tolerance: Double
-	
-	implicit val rnd = Random
-	
-	lazy val crossSamplerService = {
+object CrosserServiceFactory {
+	def apply(tolerance: Double, chunkSize: Int, recombinationProb: Double = 0.01)(implicit rnd: Random) = {
 		val plantFactory = new PlantFactory()
 		val chromosomeFactory = new ChromosomeFactory()
 		val gameter = new Gameter(rnd, Probability(recombinationProb))
 		val chromosomeCrosser = new ChromosomeCrosser(chromosomeFactory, gameter)
 		val crosser = new Crosser(plantFactory, chromosomeCrosser)
-		val plantDistFactory = new PlantDistFactory()
+		val plantDistFactory = new PlantDistributionFactory()
 		
-		new CrossSamplerService(rnd, crosser, plantDistFactory, chunkSize, tolerance)
+		new CrosserService(rnd, crosser, plantDistFactory, chunkSize, tolerance)
 	}
+	
 }

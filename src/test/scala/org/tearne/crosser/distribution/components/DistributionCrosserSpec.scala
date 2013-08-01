@@ -15,15 +15,16 @@ import sampler.data.Samplable
 import org.tearne.crosser.plant.ConcretePlant
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
-import org.tearne.crosser.distribution.CrossSamplerComponent
+import org.tearne.crosser.distribution._
 import sampler.math.StatisticsComponent
+import org.tearne.crosser.distribution.components._
 
 @RunWith(classOf[JUnitRunner])
-class PlantDistCrosserSpec extends Specification with Mockito{
+class DistributionCrosserSpec extends Specification with Mockito{
 	val name = "myCross"
 	
 	"PlantDistCrosser" should {
-		"build distribution using samples from CrossSampler" in new MockCrossSamplerService{
+		"build distribution using samples obtained via CrossSamplable" in new MockCrossSamplerService{
 			val result = instance.build(leftParentDist, rightParentDist, cross)
 			result mustEqual dist3
 		}
@@ -31,15 +32,15 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 	}
 	
 	trait MockCrossSamplerService extends Scope
-			with CrossSamplerComponent 
-			with PlantDistBankComponent 
-			with PlantDistCrosserComponent
-			with PlantDistMetricComponent{
+			with CrossSamplableComponent 
+			with CacheComponent 
+			with DistributionCrosserComponent
+			with MetricComponent {
 		
-		val statistics = mock[StatisticsComponent]
-		val crossSampler = mock[CrossSampler]
-		override val plantDistBank = mock[PlantDistBank]
-		override val plantDistMetric = mock[PlantDistMetric]
+		val statistics = null//mock[StatisticsComponent]
+		val crossSamplable = null//mock[CrossSamplable]
+		val cache = null//mock[Cache]
+		val metric = mock[Metric]
 		
 		val leftParentDist = mock[Samplable[ConcretePlant]]
 		val rightParentDist = mock[Samplable[ConcretePlant]]
@@ -106,7 +107,7 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 		protocol.isSatisfiedBy(sampleCross5) returns false
 		protocol.isSatisfiedBy(sampleCross6) returns false
 		
-		val distFactory = mock[PlantDistFactory]
+		val distFactory = mock[PlantDistributionFactory]
 		val dist0 = mock[PlantDistribution]
 		val dist1 = mock[PlantDistribution]
 		val dist2 = mock[PlantDistribution]
@@ -117,13 +118,13 @@ class PlantDistCrosserSpec extends Specification with Mockito{
 		dist1 ++(Seq(sampleCross3, sampleCross4), 0) returns dist2
 		dist2 ++(Nil, 2) returns dist3
 		
-		plantDistMetric(dist0, dist1) returns 1.0
-		plantDistMetric(dist1, dist2) returns 0.6
-		plantDistMetric(dist2, dist3) returns 0.1
-		plantDistMetric.apply(org.mockito.Matchers.eq(dist3), any[PlantDistribution]) throws new RuntimeException("This shouldn't happen")
+		metric(dist0, dist1) returns 1.0
+		metric(dist1, dist2) returns 0.6
+		metric(dist2, dist3) returns 0.1
+		metric.apply(org.mockito.Matchers.eq(dist3), any[PlantDistribution]) throws new RuntimeException("This shouldn't happen")
 		
-		val plantDistCrosser = new PlantDistCrosser(crosser, distFactory, chunkSize, tolerance)
+		val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, tolerance)
 		
-		val instance = plantDistCrosser
+		val instance = distributionCrosser
 	}
 }

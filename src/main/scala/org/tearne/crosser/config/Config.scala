@@ -7,11 +7,11 @@ import scala.collection.mutable.Buffer
 import com.typesafe.config.ConfigException
 import org.tearne.crosser.plant._
 import org.tearne.crosser.cross._
-import com.typesafe.config.Config
+import com.typesafe.config.{Config => TypesafeConfig}
 import scala.collection.immutable.ListMap
 import org.tearne.crosser.output._
 
-class SchemeConfig(path: Path){
+class Config(path: Path){
 	import scala.collection.JavaConversions._
 	
 	private val config = ConfigFactory.parseFile(path.toFile())
@@ -19,9 +19,9 @@ class SchemeConfig(path: Path){
 	val chunkSize = config.getInt("system.convergence.chunkSize")
 	val tolerance = config.getDouble("system.convergence.tolerance")
 	
-	val dbURL = config.getString("system.db.url")
-	val dbProfile = config.getString("system.db.profile")
-	val dbDriver = config.getString("system.db.driver")
+//	val dbURL = config.getString("system.db.url")
+//	val dbProfile = config.getString("system.db.profile")
+//	val dbDriver = config.getString("system.db.driver")
 	
 	val name: String = config.getString("name")
 	
@@ -88,7 +88,7 @@ class SchemeConfig(path: Path){
 						plants(conf.getString("donor"))
 					)
 				case "success_probability" => 
-					SuccessProbability(crosses(conf.getString("cross")))
+					SuccessProbability(conf.getStringList("crosses").map(c => crosses(c)))
 				case "loci_composition" => 
 					LociComposition(crosses(conf.getString("cross")))
 				case "cross_composition" =>
@@ -97,7 +97,7 @@ class SchemeConfig(path: Path){
 		}.toList
 	}
 		
-	private def makeHetProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HeterozygousProtocol = {
+	private def makeHetProtocol(crossConfig: TypesafeConfig, lociMap: Map[String, Locus]): HeterozygousProtocol = {
 		HeterozygousProtocol(
 				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet,
 				try{
@@ -108,7 +108,7 @@ class SchemeConfig(path: Path){
 		)
 	}
 	
-	private def makeHomProtocol(crossConfig: Config, lociMap: Map[String, Locus]): HomozygousProtocol = {
+	private def makeHomProtocol(crossConfig: TypesafeConfig, lociMap: Map[String, Locus]): HomozygousProtocol = {
 		HomozygousProtocol(
 				crossConfig.getStringList("protocol.loci").map(name => lociMap(name)).toSet
 		)
