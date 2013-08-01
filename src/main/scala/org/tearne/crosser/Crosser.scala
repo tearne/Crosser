@@ -17,10 +17,11 @@ import sampler.math.Random
 import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
-import org.tearne.crosser.config.Config
 import org.tearne.crosser.output.DistributionBuilder
 import org.tearne.crosser.output.Writer
 import org.slf4j.LoggerFactory
+import org.tearne.crosser.config.HumanConfig
+import org.tearne.crosser.config.Config
 
 object Crosser{
 	val log = LoggerFactory.getLogger(getClass())
@@ -34,7 +35,7 @@ object Crosser{
 		val path = Paths.get(args(0)).toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
-		new Application(new Config(path))
+		new Application(new HumanConfig(path))
 	}
 	
 	class Application(config: Config){
@@ -49,7 +50,7 @@ object Crosser{
 		val distBuilder = new DistributionBuilder(StatisticsComponent, tolerance, chunkSize)
 		val outputsRequested = config.outputs
 		outputsRequested.map(out => 
-			writer(wd.resolve(out.name + ".csv"), out.buildData(service, distBuilder): _*)
+			writer(wd.resolve(out.fileName + ".csv"), out.buildData(service, distBuilder): _*)
 		)
 	}
 }

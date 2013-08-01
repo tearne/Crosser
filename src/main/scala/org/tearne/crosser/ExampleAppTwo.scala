@@ -17,9 +17,10 @@ import sampler.math.Random
 import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
-import org.tearne.crosser.config.Config
 import org.tearne.crosser.output.DistributionBuilder
 import org.tearne.crosser.output.Writer
+import org.tearne.crosser.config.HumanConfig
+import org.tearne.crosser.config.Config
 
 object ExampleAppTwo{
 	
@@ -27,7 +28,7 @@ object ExampleAppTwo{
 		val path = Paths.get("examples").resolve("Tanzania2013.config").toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
-		new Application(new Config(path))
+		new Application(new HumanConfig(path))
 	}
 	
 	class Application(config: Config){

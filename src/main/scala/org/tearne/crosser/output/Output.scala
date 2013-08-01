@@ -7,11 +7,13 @@ import sampler.data.Types.Column
 
 trait Output{
 	val name: String
+	val fileName: String
 	def buildData(service: CrosserService, distBuilder: DistributionBuilder): Seq[Column[_]]
 }
 
 case class ProportionDistribution(cross: Cross, donor: RootPlant) extends Output{
 	val name = s"${donor.name}_in_${cross.name}"
+	val fileName = name+".density"
 	def buildData(service: CrosserService, distBuilder: DistributionBuilder): Seq[Column[_]] = {
 		val samplable = service.getSamplable(cross).map(_.alleleCount(donor).proportion)
 		val values = distBuilder(samplable)
@@ -20,6 +22,7 @@ case class ProportionDistribution(cross: Cross, donor: RootPlant) extends Output
 }
 case class SuccessProbability(crosses: Seq[Cross]) extends Output{
 	val name = "todo"
+	val fileName = "todo"
 	def buildData(service: CrosserService, distBuilder: DistributionBuilder): Seq[Column[_]] = {
 		assert(false)
 		null
@@ -27,6 +30,7 @@ case class SuccessProbability(crosses: Seq[Cross]) extends Output{
 }
 case class LociComposition(cross: Cross) extends Output{
 	val name = "todo"
+	val fileName = "todo"
 	def buildData(service: CrosserService, distBuilder: DistributionBuilder): Seq[Column[_]] = {
 		assert(false)
 		null
@@ -34,6 +38,7 @@ case class LociComposition(cross: Cross) extends Output{
 }
 case class CrossComposition(cross: Cross) extends Output {
 	val name = "todo"
+	val fileName = "todo"
 	def buildData(service: CrosserService, distBuilder: DistributionBuilder): Seq[Column[_]] = {
 		assert(false)
 		null
