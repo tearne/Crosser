@@ -9,8 +9,6 @@ import sampler.data.Samplable
 import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Cross
 
-
-
 class CrosserService(
 		rnd: Random, 
 		crosser: Crosser, 
@@ -29,5 +27,7 @@ class CrosserService(
 	val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, tolerance)
 	val metric = new Metric
 	
+	//TODO should test this?
 	def getSamplable(crossable: Crossable): Samplable[ConcretePlant] = crossSamplable.get(crossable)
+	def getSuccessProbability(cross: Cross): Double = cache.get(cross).successProbability
 }

@@ -28,7 +28,7 @@ class PlantDistributionFactorySpec extends Specification with Mockito{
 				ChromosomeDistribution.empty,
 				ChromosomeDistribution.empty
 			)) and
-			(result.failures mustEqual 0) and
+			(result.numFailures mustEqual 0) and
 			(result.name mustEqual name)
 		}
 	}

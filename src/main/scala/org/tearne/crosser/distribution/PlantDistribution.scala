@@ -6,28 +6,31 @@ import org.tearne.crosser.plant.Species
 import sampler.data.Samplable
 import sampler.data.Empirical._
 
-class PlantDistribution(val chromoDists: IndexedSeq[ChromosomeDistribution], val name: String, species: Species, val failures: Int) extends Samplable[ConcretePlant]{
+class PlantDistribution(val chromoDists: IndexedSeq[ChromosomeDistribution], val name: String, species: Species, val numFailures: Int) extends Samplable[ConcretePlant]{
 	if(chromoDists.size != species.cMLengths.size) throw new PlantDistributionException(
 		"Number of chromosome distributions (%d) incompatible with specified species (%d)".format(chromoDists.size, species.cMLengths.size)
 	)
 	
 	//TODO better way to do this
-	val size = chromoDists(0).size
+	val numSuccess = chromoDists(0).size 
+	val numSamples = numSuccess + numFailures
 	
-	chromoDists.foreach(dist => if(dist.size != size) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
+	chromoDists.foreach(dist => if(dist.size != numSuccess) throw new PlantDistributionException("Chromosome distributions do not all contain the same number of observations"))
 
-	lazy val successProbability: Double = if(size == 0) 0 else failures.asInstanceOf[Double]/size
-	def ++(plants: Seq[ConcretePlant], failures: Int): PlantDistribution = {
-		val newDistributions = if(plants.size == 0)	 chromoDists
+	lazy val successProbability: Double = if(numSamples == 0) 0 else {
+		1.0 - numFailures.asInstanceOf[Double]/numSamples
+	}
+	def ++(successes: Seq[ConcretePlant], failures: Int): PlantDistribution = {
+		val newDistributions = if(successes.size == 0) chromoDists
 		else {
-			val chromosomesByIndex = plants.map(_.chromosomes).transpose
+			val chromosomesByIndex = successes.map(_.chromosomes).transpose
 			val newDists = (chromosomesByIndex zip chromoDists).map{case (chroms, dist) =>
 				dist ++ chroms
 			} 
 			newDists
 		}
 			
-		new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.failures+failures)
+		new PlantDistribution(newDistributions.toIndexedSeq, name, species, this.numFailures+failures)
 	}
 	
 	//TODO This doesn't work.  It just iterates along the diagonal

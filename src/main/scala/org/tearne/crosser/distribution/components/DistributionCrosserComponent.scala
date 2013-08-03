@@ -38,8 +38,7 @@ trait DistributionCrosserComponent{
 				
 				val diff = metric(oldDist, newDist)
 				
-				log.trace("Chunk complete on {}, diff = {}", cross.name, diff)
-				log.trace("{} passed, {} failures satisfying protocol {}", passed.size.toString, numNewFailures.toString, cross.protocol.toString())
+				log.trace("So far: {} passed, {} failed", newDist.numSuccess, newDist.numFailures)
 				
 				if(diff < tolerance) newDist
 				else addSamples(newDist)

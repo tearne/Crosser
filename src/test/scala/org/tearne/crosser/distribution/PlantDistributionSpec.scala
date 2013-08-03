@@ -20,7 +20,6 @@ class PlantDistributionSpec extends Specification with Mockito{
 	implicit val r: Random = null
 	
 	"PlantDistribution" should {
-		"be iterable" in todo
 		"be samplable" in{
 			mock[PlantDistribution] must beAnInstanceOf[Samplable[ConcretePlant]]
 		}
@@ -32,11 +31,11 @@ class PlantDistributionSpec extends Specification with Mockito{
 		"throw exception if inconsistent number of observations across chromosomes" in todo
 		"determine non-zero success probability given inputs" in {
 			val dist = mock[ChromosomeDistribution]
-			dist.size returns 100
+			dist.size returns 90
 			val chromoDists = IndexedSeq(dist, dist, dist)
 			
 			val instance = new PlantDistribution(chromoDists, null, threeCSpecies, 10)
-			instance.successProbability mustEqual 0.1
+			instance.successProbability mustEqual 0.9
 		}
 		"determine zero success probability given inputs" in {
 			val dist = mock[ChromosomeDistribution]
@@ -72,7 +71,15 @@ class PlantDistributionSpec extends Specification with Mockito{
 			(resultD3.samples must containAllOf(Seq(c0_3, c1_3, c2_3, c3_3)))
 		}
 		"accept ++ with Nil new samples" in todo
-		"know how many samples it contains" in todo
+		"know how many samples it contains, including failures" in {
+			val c = mock[Chromosome]
+			val d1 = new ChromosomeDistribution(IndexedSeq(c,c,c,c))
+			val d2 = new ChromosomeDistribution(IndexedSeq(c,c,c,c))
+			val d3 = new ChromosomeDistribution(IndexedSeq(c,c,c,c))
+			val instance = new PlantDistribution(IndexedSeq(d1,d2,d3), name, threeCSpecies, 10)
+			
+			instance.numSamples === 14
+		}
 		"generate individual plants" in {
 			val d1 = mock[ChromosomeDistribution]
 			val d2 = mock[ChromosomeDistribution]
