@@ -66,14 +66,6 @@ case class MeanCrossComposition(crosses: Seq[Cross], donors: Seq[RootPlant]) ext
 		val cross = Column(cols(0).asInstanceOf[Seq[String]], "Cross")
 		val donor = Column(cols(1).asInstanceOf[Seq[String]], "Donor")
 		val proportion =  Column(cols(2).asInstanceOf[Seq[Double]], "MeanProportion")
-//		
-//		val means = rootPlants.map{rp => 
-//			StatisticsComponent.mean(
-//				distBuilder(service.getSamplable(cross).map(_.alleleCount(rp).proportion)).toEmpiricalSeq
-//			)
-//		}
-//		val names = Column(rootPlants.map(_.name), "RootPlant")
-//		val contrib = Column(means,"MeanContribution")
 		Seq(cross, donor, proportion)
 	}
 }
