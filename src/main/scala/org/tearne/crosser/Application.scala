@@ -17,40 +17,39 @@ import sampler.math.Random
 import org.tearne.crosser.cross.Crossable
 import java.io.FileWriter
 import java.nio.charset.Charset
-import org.tearne.crosser.output.DistributionBuilder
 import org.tearne.crosser.output.Writer
 import org.slf4j.LoggerFactory
 import org.tearne.crosser.config.HumanConfig
 import org.tearne.crosser.config.Config
 
-object Crosser{
+object Application{
 	val log = LoggerFactory.getLogger(getClass())
 	
 	def main(args: Array[String]) {
 		log.info("""
- _______  ______  _____  _______ _______ _______  ______
- |       |_____/ |     | |______ |______ |______ |_____/
- |_____  |    \_ |_____| ______| ______| |______ |    \_                                                       			
+            _______  ______  _____  _______ _______ _______  ______
+            |       |_____/ |     | |______ |______ |______ |_____/
+ org.tearne.|_____  |    \_ |_____| ______| ______| |______ |    \_                                                       			
 """)
 		val path = Paths.get(args(0)).toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
-		new Application(new HumanConfig(path))
-	}
-	
-	class Application(config: Config){
-		implicit val random: Random = Random
-		val tolerance = config.tolerance
-		val chunkSize = config.chunkSize
+		val conf = new HumanConfig(path)
 
-		val service = CrosserServiceFactory(tolerance, chunkSize, 0.01)
+		trait RootComponentImpl extends RootComponent {
+			val chunkSize = conf.chunkSize
+			val tolerance = conf.tolerance
+			val random = Random
+			log.trace("init Chunk size "+chunkSize)
+		}
+		
+		val services = new RootComponentImpl with ServicesImpl
 		
 		val wd = Paths.get("")
 		val writer = new Writer
-		val distBuilder = new DistributionBuilder(StatisticsComponent, tolerance, chunkSize)
-		val outputsRequested = config.outputs
+		val outputsRequested = conf.outputs
 		outputsRequested.map(out => 
-			writer(wd.resolve(out.fileName + ".csv"), out.buildData(service, distBuilder): _*)
+			writer(wd.resolve(out.fileName + ".csv"), out.buildData(services): _*)
 		)
 	}
 }

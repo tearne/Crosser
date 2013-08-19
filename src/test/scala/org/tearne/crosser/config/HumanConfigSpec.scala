@@ -31,7 +31,11 @@ class HumanConfigSpec extends Specification {
 	val donor2 = RootPlant("Donor2", species)
 	val locus2 = Locus(donor2, 1, 10, "D2C1")
 	
-	val rootPlants = Map
+	val rootPlants = Map(
+		"Prefered_Variety" -> prefVar,
+		"Donor1" -> donor1,
+		"Donor2" -> donor2
+	)
 	
 	val f1 = Cross(
 		donor1,
@@ -60,11 +64,12 @@ class HumanConfigSpec extends Specification {
 		}
 		
 		"have root plants" in {
-			val rootPlants = scheme.plants
-			(rootPlants.size must_== 3) and
-			(rootPlants("Prefered_Variety") must_== prefVar) and
-			(rootPlants("Donor1") must_== donor1) and
-			(rootPlants("Donor2") must_== donor2)
+//			val rootPlants = scheme.plants
+			rootPlants must_== scheme.plants
+//			(rootPlants.size must_== 3) and
+//			(rootPlants("Prefered_Variety") must_== prefVar) and
+//			(rootPlants("Donor1") must_== donor1) and
+//			(rootPlants("Donor2") must_== donor2)
 		}
 		
 		"have correct crosses" in {
@@ -90,7 +95,7 @@ class HumanConfigSpec extends Specification {
 				ProportionDistribution(bc1, prefVar),
 				ProportionDistribution(self, prefVar),
 				SuccessProbability(Seq(f1, bc1, self)),
-				LociComposition(self),
+				LociComposition(self, rootPlants.values.toSeq),
 				MeanCrossComposition(Seq(f1, bc1, self), Seq(prefVar, donor1, donor2))
 			)
 			scheme.outputs must_== expected

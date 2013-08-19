@@ -1,5 +1,7 @@
 import sbt._
 import Keys._
+import sbtassembly.Plugin._
+import AssemblyKeys._
 import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 
 object SamplerBuild extends Build{
@@ -10,8 +12,16 @@ object SamplerBuild extends Build{
 	lazy val root = Project(
 		id = "Crosser",
 		base = file("."),
-		settings = buildSettings
+		settings = buildSettings ++ assySettings
 	) 
+	
+	val assySettings = assemblySettings ++ Seq(
+		test in assembly := {},
+		mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
+			case "application.conf" => MergeStrategy.discard
+			case x => old(x)
+		}}
+	)
 	
 	lazy val buildSettings = Defaults.defaultSettings ++ Seq(
 		organization := buildOrganization,

@@ -90,7 +90,7 @@ class HumanConfig(path: Path) extends Config{
 				case "success_probability" => 
 					SuccessProbability(conf.getStringList("crosses").map(c => crosses(c)))
 				case "loci_composition" => 
-					LociComposition(crosses(conf.getString("cross")))
+					LociComposition(crosses(conf.getString("cross")), plants.values.toSeq)
 				case "mean_cross_composition" =>
 					MeanCrossComposition(conf.getStringList("crosses").map{c => crosses(c)}, plants.values.toSeq)
 			}
