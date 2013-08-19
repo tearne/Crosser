@@ -1,6 +1,8 @@
 require(ggplot2)
 require(reshape)
 
+pdf("plots.pdf", width=4.13, height=2.91) #A7 landscape paper
+
 files <- list.files(pattern = "density.csv")
 data = melt(lapply(files, read.csv))
 ggplot(data, aes(x=value)) + geom_density(aes(colour=variable)) + scale_x_continuous(limits=c(0,1))
@@ -20,4 +22,4 @@ ggplot(data, aes(x=Cross, colour=Donor, fill=Donor, y=MeanProportion)) +
 	geom_bar(stat="identity", linetype='blank') +
 	scale_y_continuous(name="Mean Proportions")
 
-    
+dev.off()    
