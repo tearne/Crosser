@@ -1,26 +1,14 @@
-package org.tearne.crosser
-
-import sampler.math.StatisticsComponent
+package org.tearne
 import java.nio.file.{Paths,Files}
 import java.io.FileNotFoundException
-import sampler.data.ParallelSampleBuilder
-import org.tearne.crosser.util.AlleleCount
-import sampler.io.CSVTableWriter
 import sampler.data.Types._
-import sampler.r.ScriptRunner
-import org.tearne.crosser.cross.Cross
-import org.tearne.crosser.plant.RootPlant
-import scala.collection.immutable.ListMap
 import sampler.data.Empirical._
-import sampler.math.Probability
 import sampler.math.Random
-import org.tearne.crosser.cross.Crossable
-import java.io.FileWriter
-import java.nio.charset.Charset
 import org.tearne.crosser.output.Writer
 import org.slf4j.LoggerFactory
 import org.tearne.crosser.config.HumanConfig
-import org.tearne.crosser.config.Config
+import org.tearne.crosser.RootComponent
+import org.tearne.crosser.ServicesImpl
 
 object Application{
 	val log = LoggerFactory.getLogger(getClass())

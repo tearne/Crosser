@@ -1,1 +1,1 @@
-java -cp /opt/crosser/*.jar org.tearne.crosser.Application $1
+java -cp crosser/crosser-*.jar org.tearne.Crosser $1
