@@ -26,7 +26,6 @@ trait CrossingService
 		with StatisticsComponent
 		with RandomComponent {
 	
-	//TODO should now be able to test this
 	def getSamplable(crossable: Crossable): Samplable[ConcretePlant] = crossSamplable.get(crossable)
 	def getSuccessProbability(cross: Cross): Double = cache.get(cross).successProbability
 	def getPlantDistribution(cross: Cross): PlantEmpirical = cache.get(cross)
