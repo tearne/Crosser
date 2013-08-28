@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.tearne.crosser.config.HumanConfig
 import org.tearne.crosser.RootComponent
 import org.tearne.crosser.ServicesImpl
+import org.tearne.crosser.config.ConfigFactory
 
 object Crosser{
 	val log = LoggerFactory.getLogger(getClass())
@@ -22,7 +23,7 @@ object Crosser{
 		val path = Paths.get(args(0)).toAbsolutePath
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
-		val conf = new HumanConfig(path)
+		val conf = ConfigFactory.fromPath(path)
 
 		trait RootComponentImpl extends RootComponent {
 			val chunkSize = conf.chunkSize

@@ -16,14 +16,14 @@ import org.tearne.crosser.plant.Species
 
 import com.typesafe.config.{Config => TypesafeConfig}
 import com.typesafe.config.ConfigException
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 
 trait JsonConfig extends Config {
 	val path: Path
 	
 	import scala.collection.JavaConversions._
 	
-	val config = ConfigFactory.parseFile(path.toFile())
+	val config = TypesafeConfigFactory.parseFile(path.toFile())
 	
 	val chunkSize = config.getInt("system.convergence_chunk_size")
 	val tolerance = config.getDouble("system.convergence_tolerance")

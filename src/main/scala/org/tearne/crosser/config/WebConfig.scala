@@ -10,14 +10,14 @@ import org.tearne.crosser.output.Output
 import org.tearne.crosser.output.ProportionDistribution
 import org.tearne.crosser.output.SuccessProbability
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 
 class WebConfig(val path: Path) extends JsonConfig{
 	import scala.collection.JavaConversions._
 	
 	val outputs: List[Output] = {
 		config.getConfigList("output").map{ conf => {
-			val innerDataConfig = ConfigFactory.parseString(conf.getString("data"))
+			val innerDataConfig = TypesafeConfigFactory.parseString(conf.getString("data"))
 			val outputType = conf.getString("type")
 			outputType match {
 				case "proportion_distribution" => 
