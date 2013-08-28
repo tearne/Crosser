@@ -10,7 +10,7 @@ import org.tearne.crosser.config.HumanConfig
 import org.tearne.crosser.RootComponent
 import org.tearne.crosser.ServicesImpl
 
-object Application{
+object Crosser{
 	val log = LoggerFactory.getLogger(getClass())
 	
 	def main(args: Array[String]) {

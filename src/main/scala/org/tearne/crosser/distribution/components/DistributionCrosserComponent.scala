@@ -7,8 +7,8 @@ import org.tearne.crosser.cross.Cross
 import sampler.math.Random
 import sampler.data.Samplable
 import org.slf4j.LoggerFactory
-import org.tearne.crosser.distribution.PlantDistribution
-import org.tearne.crosser.distribution.PlantDistributionFactory
+import org.tearne.crosser.distribution.PlantEmpiricalFactory
+import org.tearne.crosser.distribution.PlantEmpirical
 
 /**
  * Builds plant distributions from parent distributions
@@ -18,15 +18,15 @@ trait DistributionCrosserComponent{
 		
 	val distributionCrosser: DistributionCrosser
 	
-	class DistributionCrosser(crosser: Crosser, distFactory: PlantDistributionFactory, chunkSize: Int, tolerance: Double) {
+	class DistributionCrosser(crosser: Crosser, distFactory: PlantEmpiricalFactory, chunkSize: Int, tolerance: Double) {
 		val log = LoggerFactory.getLogger(getClass.getName)
 		
-		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantDistribution = {
+		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantEmpirical = {
 			def buildOffspring() = 
 				crosser(leftParentDist.sample, rightParentDist.sample, cross)
 			
 			@tailrec
-			def addSamples(dist: PlantDistribution): PlantDistribution = {
+			def addSamples(dist: PlantEmpirical): PlantEmpirical = {
 				val oldDist = dist
 				val offspringWithFailures = (1 to chunkSize).par.map(i => buildOffspring).seq.groupBy(o => cross.protocol.isSatisfiedBy(o))
 				

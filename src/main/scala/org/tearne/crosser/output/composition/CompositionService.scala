@@ -1,7 +1,7 @@
 package org.tearne.crosser.output.composition
 
 import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantEmpirical
 
 trait CompositionServiceImpl extends CompositionService{
 	val tidCompositionBuilder = new TidCompositionBuilder
@@ -14,6 +14,6 @@ trait CompositionService
 		with ChromosomeCompositionBuilderComponent 
 		with PlantCompositionBuilderComponent {
 	
-	def buildComposition(plantDist: PlantDistribution): PlantComposition 
+	def buildComposition(plantDist: PlantEmpirical): PlantComposition 
 		= plantCompositionBuilder(plantDist)
 }

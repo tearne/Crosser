@@ -6,7 +6,7 @@ import org.tearne.crosser.plant.Gameter
 import org.tearne.crosser.plant.ChromosomeCrosser
 import sampler.math.Probability
 import org.tearne.crosser.cross.Crosser
-import org.tearne.crosser.distribution.PlantDistributionFactory
+import org.tearne.crosser.distribution.PlantEmpiricalFactory
 import sampler.math.Random
 import org.tearne.crosser.config.Config
 import org.tearne.crosser.output.Writer

@@ -6,25 +6,31 @@ import org.specs2.specification.Scope
 import org.junit.runner.RunWith
 import sampler.math.Random
 import org.tearne.crosser.distribution.components._
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantEmpirical
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.ConcretePlant
+import sampler.data.Samplable
+import org.tearne.crosser.plant.Plant
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplableSpec extends Specification with Mockito{
 	val name = "crossName"
 	
 	"CrossSamplerSpec" should {
-		"return cross samplables from the cache" in new Instance{
+		"return cross samplables based on distributions in the cache" in new Instance{
+			//val random = mock[Random]
 			val cross = mock[Cross]
-			val plantDistribution = mock[PlantDistribution]
-			cache.get(cross) returns plantDistribution
+			val plantSamplable = mock[Samplable[Plant]]
+			val plantEmpirical = mock[PlantEmpirical]
 			
-			instance.get(cross) mustEqual plantDistribution
+			cache.get(cross) returns plantEmpirical
+			plantEmpirical.toSamplable(random) returns plantSamplable
+			
+			instance.get(cross) mustEqual plantSamplable
 		}
 		
-		"return identity samplalbe for concrete plants" in new Instance{
+		"return identity samplable for concrete plants" in new Instance{
 			val concretePlant = mock[ConcretePlant]
 			instance.get(concretePlant).until(_.size == 1000).sample.exists(_ != concretePlant) must_== false
 		}
@@ -36,11 +42,11 @@ class CrossSamplableSpec extends Specification with Mockito{
 			with CacheComponent 
 			with DistributionCrosserComponent
 			with MetricComponent{
-		val rnd = mock[Random]
+		val random = mock[Random]
 		
 		val statistics = null
 		val metric = null
-		val crossSamplable = mock[CrossSamplable]
+		val crossSamplable = new CrossSamplable(random)
 		
 		val distributionCrosser = null
 		val cache = mock[Cache]

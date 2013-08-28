@@ -7,6 +7,7 @@ import org.tearne.crosser.plant.Tid
 import org.mockito.Mockito._
 import org.tearne.crosser.plant.Chromosome
 import org.tearne.crosser.distribution.ChromosomeDistribution
+import org.tearne.crosser.distribution.ChromosomeEmpirical
 
 class ChromosomeCompositionBuilderTest 
 		extends AssertionsForJUnit 
@@ -39,7 +40,7 @@ class ChromosomeCompositionBuilderTest
 		val chromSample2 = Chromosome(left2, right2)
 		val chromSample3 = Chromosome(left3, right3)
 		
-		val chromDist = ChromosomeDistribution(IndexedSeq(chromSample1, chromSample2, chromSample3))
+		val chromDist = ChromosomeEmpirical(IndexedSeq(chromSample1, chromSample2, chromSample3))
 		
 		val result = instance.apply(chromDist)
 

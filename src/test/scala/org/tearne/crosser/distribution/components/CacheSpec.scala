@@ -13,29 +13,31 @@ import org.specs2.runner.JUnitRunner
 import sampler.math.StatisticsComponent
 import org.tearne.crosser.distribution._
 import org.tearne.crosser.distribution.components._
+import sampler.data.Samplable
+import org.tearne.crosser.plant.Plant
 
 @RunWith(classOf[JUnitRunner])
-class PlantDistBankSpec extends Specification with Mockito{
+class CacheSpec extends Specification with Mockito{
 	val name = "myCross"
 	
-	"PlantDistBank" should {
-		"build distributions from parent dists obtained from self via the cross sampler" in new Instance {
+	"Cache" should {
+		"build distributions from parent plant samplables from the cross sampler" in new Instance {
 			val cross = mock[Cross]
 			val leftParent = mock[Crossable]
 			val rightParent = mock[Crossable]
 			cross.left returns leftParent
 			cross.right returns rightParent
 			
-			val leftParentDistribution = mock[PlantDistribution]
-			val rightParentDistribution = mock[PlantDistribution]
-			val crossDistribution = mock[PlantDistribution]
+			val leftParentSamplable = mock[Samplable[Plant]]
+			val rightParentSamplable = mock[Samplable[Plant]]
+			val offspringDistribution = mock[PlantEmpirical]
 	
-			crossSamplable.get(leftParent) returns leftParentDistribution
-			crossSamplable.get(rightParent) returns rightParentDistribution
+			crossSamplable.get(leftParent) returns leftParentSamplable
+			crossSamplable.get(rightParent) returns rightParentSamplable
 			
-			distributionCrosser.build(leftParentDistribution, rightParentDistribution, cross) returns crossDistribution
+			distributionCrosser.build(leftParentSamplable, rightParentSamplable, cross) returns offspringDistribution
 			
-			instance.get(cross) mustEqual crossDistribution
+			instance.get(cross) mustEqual offspringDistribution
 		}
 //		"return the (samplable) concrete plant when asked for distribution of a concrete plant" in new Instance {
 //			val concretePlant = mock[ConcretePlant]
@@ -48,15 +50,15 @@ class PlantDistBankSpec extends Specification with Mockito{
 			cross.left returns leftParent
 			cross.right returns rightParent
 			
-			val leftParentDistribution = mock[PlantDistribution]
-			val rightParentDistribution = mock[PlantDistribution]
-			val crossDistribution = mock[PlantDistribution]
+			val leftParentSamplable = mock[Samplable[Plant]]
+			val rightParentSamplable = mock[Samplable[Plant]]
+			val crossDistribution = mock[PlantEmpirical]
 	
-			crossSamplable.get(leftParent) returns leftParentDistribution
-			crossSamplable.get(rightParent) returns rightParentDistribution
+			crossSamplable.get(leftParent) returns leftParentSamplable
+			crossSamplable.get(rightParent) returns rightParentSamplable
 			
 			//TODO pimping so it looks like... leftPDist x rightPDist
-			distributionCrosser.build(leftParentDistribution, rightParentDistribution, cross) returns crossDistribution
+			distributionCrosser.build(leftParentSamplable, rightParentSamplable, cross) returns crossDistribution
 			
 			(instance.get(cross) mustEqual crossDistribution) and
 			(instance.get(cross) mustEqual crossDistribution) and

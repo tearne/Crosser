@@ -11,7 +11,7 @@ import org.tearne.crosser.plant.ConcretePlant
  */
 trait CrossSamplableComponent{
 	//Cake pattern allows immutable mutual dependency 
-	// between CrossSampler and PlantDistBank
+	// between CrossSampler and CacheComponent
 	this: CacheComponent =>
 	
 	val crossSamplable: CrossSamplable 
@@ -19,7 +19,7 @@ trait CrossSamplableComponent{
 	class CrossSamplable(rnd: Random) {
 		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
-				case cross: Cross => cache.get(cross)
+				case cross: Cross => cache.get(cross).toSamplable(rnd)
 				case concrete: ConcretePlant => Samplable.diracDelta(concrete) 
 			}
 		}

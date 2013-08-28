@@ -29,7 +29,7 @@ trait CrossingService
 	//TODO should now be able to test this
 	def getSamplable(crossable: Crossable): Samplable[ConcretePlant] = crossSamplable.get(crossable)
 	def getSuccessProbability(cross: Cross): Double = cache.get(cross).successProbability
-	def getPlantDistribution(cross: Cross): PlantDistribution = cache.get(cross)
+	def getPlantDistribution(cross: Cross): PlantEmpirical = cache.get(cross)
 }
 		
 trait CrossingServiceImpl 
@@ -48,6 +48,6 @@ trait CrossingServiceImpl
 	
 	val cache = new Cache()
 	
-	val plantDistFactory = new PlantDistributionFactory()
+	val plantDistFactory = new PlantEmpiricalFactory()
 	val distributionCrosser = new DistributionCrosser(crosser, plantDistFactory, chunkSize, tolerance)
 }

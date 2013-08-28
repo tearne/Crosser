@@ -9,13 +9,13 @@ import org.tearne.crosser.plant.Species
 import org.tearne.crosser.cross.Cross
 
 @RunWith(classOf[JUnitRunner])
-class PlantDistributionFactorySpec extends Specification with Mockito{
+class PlantEmpiricalFactorySpec extends Specification with Mockito{
 	val threeFailures = 3
 	val name = "myCross"
 	
-	"PlantDistFactory" should {
+	"PlantEmpiricalFactory" should {
 		"create new plant distributions" in {
-			val instance = new PlantDistributionFactory()
+			val instance = new PlantEmpiricalFactory()
 			val species = Species("name", IndexedSeq(1,1,1))
 			val cross = mock[Cross]
 			cross.name returns name
@@ -23,7 +23,7 @@ class PlantDistributionFactorySpec extends Specification with Mockito{
 			
 			//TODO improve equality checks with Discrete
 			val result = instance.build(cross)
-			(result.chromoDists mustEqual Seq(
+			(result.chromoDistSeq mustEqual Seq(
 				ChromosomeDistribution.empty,
 				ChromosomeDistribution.empty,
 				ChromosomeDistribution.empty

@@ -5,7 +5,7 @@ import org.tearne.crosser.plant.ConcretePlant
 import org.tearne.crosser.cross.Crossable
 import sampler.data.Samplable
 import org.slf4j.LoggerFactory
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantEmpirical
 
 /**
  * Caches plant distributions
@@ -20,19 +20,23 @@ trait CacheComponent{
 	val cache: Cache
 	
 	class Cache {
-		//TODO TestMe
-		val distributionTable = collection.mutable.Map[Cross, PlantDistribution]()
-		def get(cross: Cross): PlantDistribution = {
-			if(!distributionTable.contains(cross)) log.trace("Cross {} not cached.  Will be built.", cross.name)
-			else log.trace("Cross {} is already cached", cross.name)
+		val log = LoggerFactory.getLogger(this.getClass())
+		val distributionTable = collection.mutable.Map[Cross, PlantEmpirical]()
+		
+		def get(cross: Cross): PlantEmpirical = { 
+			if(!distributionTable.contains(cross))
+				log.trace("Cross {} not cached.  Will be built.", cross.name)
+			else 
+				log.trace("Cross {} is already cached", cross.name)
 			
-			distributionTable.getOrElseUpdate(cross,
+			def build(cross: Cross): PlantEmpirical = 
 				distributionCrosser.build(
 					crossSamplable.get(cross.left),
 					crossSamplable.get(cross.right),
 					cross
 				)
-			)
+				
+			distributionTable.getOrElseUpdate(cross, build(cross))
 		}
 	}
 }

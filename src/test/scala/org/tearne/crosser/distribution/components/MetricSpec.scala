@@ -11,7 +11,8 @@ import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import sampler.math.StatisticsComponent
 import org.tearne.crosser.distribution.ChromosomeDistribution
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.ChromosomeEmpirical
+import org.tearne.crosser.distribution.PlantEmpirical
 
 @RunWith(classOf[JUnitRunner])
 class MetricSpec extends Specification with Mockito{
@@ -26,13 +27,13 @@ class MetricSpec extends Specification with Mockito{
 			val d3a, d3b = makeMockChromosomeDistribution
 			
 			def makeMockChromosomeDistribution = {
-				val t = mock[ChromosomeDistribution]
+				val t = mock[ChromosomeEmpirical]
 				t.size returns 10 
 				t
 			}
 			
-			val plantDistA = new PlantDistribution(Vector(d1a, d2a, d3a), name, threeChromSpecies, 10)
-			val plantDistB = new PlantDistribution(Vector(d1b, d2b, d3b), name, threeChromSpecies, 10)
+			val plantDistA = new PlantEmpirical(Vector(d1a, d2a, d3a), name, threeChromSpecies, 10)
+			val plantDistB = new PlantEmpirical(Vector(d1b, d2b, d3b), name, threeChromSpecies, 10)
 			
 			statistics.maxDistance(d1a, d1b) returns 1
 			statistics.maxDistance(d2a, d2b) returns 2
@@ -43,7 +44,7 @@ class MetricSpec extends Specification with Mockito{
 	}
 	
 	trait Instance extends Scope with MetricComponent with StatisticsComponent{
-		val statistics = StatisticsComponent
+		val statistics = mock[StatisticsComponent]
 		val metric = new Metric
 		val instance = metric
 	}

@@ -4,9 +4,10 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.mock.MockitoSugar
 import org.junit.Test
 import org.mockito.Mockito._
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantEmpirical
 import org.tearne.crosser.distribution.ChromosomeDistribution
 import org.tearne.crosser.plant.Chromosome
+import org.tearne.crosser.distribution.ChromosomeEmpirical
 
 class PlantContributionBuilderTest 
 		extends AssertionsForJUnit 
@@ -22,12 +23,12 @@ class PlantContributionBuilderTest
 	
 
 	@Test def buildFromPlantDistribution  = {
-		val pDist = mock[PlantDistribution]
-		val c1Dist = mock[ChromosomeDistribution]
-		val c2Dist = mock[ChromosomeDistribution]
-		val c3Dist = mock[ChromosomeDistribution]
+		val pDist = mock[PlantEmpirical]
+		val c1Dist = mock[ChromosomeEmpirical]
+		val c2Dist = mock[ChromosomeEmpirical]
+		val c3Dist = mock[ChromosomeEmpirical]
 		val cDists = IndexedSeq(c1Dist, c2Dist, c3Dist)
-		when(pDist.chromoDists).thenReturn(cDists)
+		when(pDist.chromoDistSeq).thenReturn(cDists)
 		
 		val chromosome1Composition = mock[ChromosomeComposition]
 		val chromosome2Composition = mock[ChromosomeComposition]

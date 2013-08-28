@@ -1,6 +1,6 @@
 package org.tearne.crosser.output.composition
 
-import org.tearne.crosser.distribution.PlantDistribution
+import org.tearne.crosser.distribution.PlantEmpirical
 
 case class PlantComposition(chromosomeCompositions: IndexedSeq[ChromosomeComposition])
 
@@ -10,9 +10,9 @@ trait PlantCompositionBuilderComponent {
 	val plantCompositionBuilder: PlantCompositionBuilder
 		
 	class PlantCompositionBuilder {
-		def apply(plantDist: PlantDistribution): PlantComposition = {
+		def apply(plantDist: PlantEmpirical): PlantComposition = {
 			PlantComposition(
-				plantDist.chromoDists.map{cDist => chromosomeCompositionBuilder(cDist)}
+				plantDist.chromoDistSeq.map{cDist => chromosomeCompositionBuilder(cDist)}
 			)
 		}
 	}

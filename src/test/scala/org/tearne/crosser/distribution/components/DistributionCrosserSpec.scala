@@ -107,11 +107,11 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		protocol.isSatisfiedBy(sampleCross5) returns false
 		protocol.isSatisfiedBy(sampleCross6) returns false
 		
-		val distFactory = mock[PlantDistributionFactory]
-		val dist0 = mock[PlantDistribution]
-		val dist1 = mock[PlantDistribution]
-		val dist2 = mock[PlantDistribution]
-		val dist3 = mock[PlantDistribution]
+		val distFactory = mock[PlantEmpiricalFactory]
+		val dist0 = mock[PlantEmpirical]
+		val dist1 = mock[PlantEmpirical]
+		val dist2 = mock[PlantEmpirical]
+		val dist3 = mock[PlantEmpirical]
 		
 		distFactory.build(cross) returns dist0
 		dist0 ++(Seq(sampleCross2), 1) returns dist1
@@ -121,7 +121,7 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		metric(dist0, dist1) returns 1.0
 		metric(dist1, dist2) returns 0.6
 		metric(dist2, dist3) returns 0.1
-		metric.apply(org.mockito.Matchers.eq(dist3), any[PlantDistribution]) throws new RuntimeException("This shouldn't happen")
+		metric.apply(org.mockito.Matchers.eq(dist3), any[PlantEmpirical]) throws new RuntimeException("This shouldn't happen")
 		
 		val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, tolerance)
 		
