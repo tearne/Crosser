@@ -34,11 +34,12 @@ object Crosser{
 		
 		val services = new RootComponentImpl with ServicesImpl
 		
-		val wd = Paths.get("")
+		val outDir = Paths.get("").resolve("output")
+		if(!Files.exists(outDir)) Files.createDirectories(outDir)
 		val writer = new Writer
 		val outputsRequested = conf.outputs
 		outputsRequested.map(out => 
-			writer(wd.resolve(out.fileName + ".csv"), out.buildData(services): _*)
+			writer(outDir.resolve(out.fileName + ".csv"), out.buildData(services): _*)
 		)
 	}
 }

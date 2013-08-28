@@ -6,13 +6,6 @@
 	    </encoder>
 	</appender>
 	     
-	<appender name="SAMPLER" class="ch.qos.logback.core.FileAppender">
-	    <File>log/Sampler.log</File>
-		<encoder>
-			<pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
-		</encoder>
-	</appender>
-	
 	<appender name="CROSSER" class="ch.qos.logback.core.FileAppender">
 	    <File>log/Crosser.log</File>
 		<encoder>
@@ -26,11 +19,6 @@
 			<pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
 		</encoder>
 	</appender>
-	
-	<logger name="sampler" level="NULL" additivity="false">
-		<appender-ref ref="SAMPLER" />
-		<appender-ref ref="STDOUT" />
-	</logger>
 	
 	<logger name="org.tearne.crosser" level="NULL" additivity="false">
 		<appender-ref ref="CROSSER" />
