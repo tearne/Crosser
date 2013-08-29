@@ -37,9 +37,9 @@ case class SuccessProbability(crosses: Seq[Cross]) extends Output{
 		Seq(names, probs)
 	}
 }
-case class LociComposition(cross: Cross, donors: Seq[RootPlant]) extends Output{
-	val name = "todo"
-	val fileName = "todo"
+case class LociComposition(cross: Cross, donors: Seq[RootPlant]) extends Output {
+	val name = cross.name
+	val fileName = name+".composition"
 	def buildData(services: Services): Seq[Column[_]] = {
 		import services._
 		val comp = compositionService.buildComposition(crossingService.getPlantDistribution(cross))
@@ -47,18 +47,17 @@ case class LociComposition(cross: Cross, donors: Seq[RootPlant]) extends Output{
 		val cmLengths = donors(0).species.cMLengths
 		val rows: IndexedSeq[Seq[AnyVal]] = for{
 			(chromComp, cId) <- comp.chromosomeCompositions.zipWithIndex
-			(tidComp, tId) <- List(chromComp.left, chromComp.right).zipWithIndex
-			donor <- donors
+			(tidComp, sideId) <- List(chromComp.left, chromComp.right).zipWithIndex
 			cmId <- 0 until cmLengths(cId)
 		} yield {
-			val tidId = cId * 2 + tId
+			val tidId = cId * 2 + sideId
 			val contrib = donors.map{donor => tidComp.proportions(cmId).getOrElse(donor, -.0)}
 			tidId +: cmId +: contrib 
 		}
 		
 		val cols = rows.transpose
 		val tidId = Column(cols(0).asInstanceOf[Seq[Int]], "tidId")
-		val cmId = Column(cols(1).asInstanceOf[Seq[Int]], "Donor")
+		val cmId = Column(cols(1).asInstanceOf[Seq[Int]], "cMId")
 		val proportions =  cols.takeRight(donors.size).asInstanceOf[IndexedSeq[IndexedSeq[Double]]].zip(donors).map{case (col, donor) => 
 			Column(col, donor.name)
 		}
