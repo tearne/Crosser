@@ -1,5 +1,6 @@
 require(ggplot2)
 require(reshape)
+source("gridTest.r")
 
 pdf("plots.pdf", width=4.13, height=2.91) #A7 landscape paper
 
@@ -22,8 +23,7 @@ ggplot(data, aes(x=Cross, colour=Donor, fill=Donor, y=MeanProportion)) +
 	geom_bar(stat="identity", linetype='blank') +
 	scale_y_continuous(name="Mean Proportions")
 
-source("gridTest.r")
-fileName = "output/BC2F1S4.composition.csv"
+fileName = "BC2F1S4.composition.csv"
 draw(fileName)
 
 dev.off()    
