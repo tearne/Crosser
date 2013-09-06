@@ -35,19 +35,21 @@ trait Config {
 	
 	val outputs: List[Output]
 	
-	val plants: Map[String, RootPlant] = {
+	val plants: ListMap[String, RootPlant] = {
 		val species = Species(
 				config.getString("species.name"),
 				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species.chromosome_lengths")).map{_.intValue()}.toIndexedSeq
 		)
 		
-		config.getConfigList("plants").map{ plantConfig =>
+		val plants = config.getConfigList("plants").map{ plantConfig =>
 			val name = plantConfig.getString("name")
 			name -> new RootPlant(
 				name,
 				species
 			)
-		}.toMap	
+		}
+
+		ListMap(plants :_*)
 	}
 	
 	val crosses: ListMap[String, Cross] = {

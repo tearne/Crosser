@@ -2,6 +2,9 @@ library(grid)
 
 
 draw <- function(fileName){
+	#colours = brewer.pal(9,"Set1")
+	colours = 1:9
+	
 	getData <- function(tidId, plantId){
 		dataColIds = (3:ncol(raw))
 		tidData = raw[raw$tidId == tidId,dataColIds]
@@ -26,7 +29,7 @@ draw <- function(fileName){
 			justify = c("right", "centre")
 		}
 		pushViewport(viewport(width = unit(0.9, "npc"), height = unit(1, "npc"), x = unit(0.5, "npc"), y = unit(0.5, "npc"), just = "centre", yscale = c(0,250)))
-		grid.rect(x = xPositions, y = unit(data$cMId, "native"), height = unit(1,"native"), width = data$width, just = justify, gp = gpar(fill = plantId, lwd = 0))
+		grid.rect(x = xPositions, y = unit(data$cMId, "native"), height = unit(1,"native"), width = data$width, just = justify, gp = gpar(fill = colours[plantId], lwd = 0))
 		popViewport()
 	}
 	
@@ -42,7 +45,7 @@ draw <- function(fileName){
 		pushViewport(viewport(layout = grid.layout(nLabels,1)))
 		for(i in 1:nLabels){
 			pushViewport(viewport(layout.pos.row = i))
-			grid.rect(width = boxSize, height = boxSize, just = "bottom", gp = gpar(fill = i))
+			grid.rect(width = boxSize, height = boxSize, just = "bottom", gp = gpar(fill = colours[i]))
 			grid.text(plantNames[i], y = unit(0.5,"npc") - unit(1, "lines"), gp=gpar(fontsize=7))
 			popViewport()
 		}
