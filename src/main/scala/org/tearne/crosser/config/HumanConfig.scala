@@ -10,7 +10,7 @@ import org.tearne.crosser.output.Output
 import org.tearne.crosser.output.ProportionDistribution
 import org.tearne.crosser.output.SuccessProbability
 
-class HumanConfig(val path: Path) extends JsonConfig{
+class HumanConfig(val path: Path) extends Config{
 	import scala.collection.JavaConversions._
 	
 	val outputs: List[Output] = {

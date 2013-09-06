@@ -86,7 +86,8 @@ class WebConfigSpec extends Specification {
 		
 		"specify convergence details size" in {
 			(scheme.chunkSize must_== 100) and
-			(scheme.tolerance must_== 0.05)
+			(scheme.tolerance must_== 0.05) and
+			(scheme.fewestPlants must_== 100)
 		}
 		
 		"list required outputs" in {

@@ -43,7 +43,7 @@ draw <- function(fileName){
 		for(i in 1:nLabels){
 			pushViewport(viewport(layout.pos.row = i))
 			grid.rect(width = boxSize, height = boxSize, just = "bottom", gp = gpar(fill = i))
-			grid.text(plantNames[i], y = unit(0.5,"npc") - unit(1, "lines"))
+			grid.text(plantNames[i], y = unit(0.5,"npc") - unit(1, "lines"), gp=gpar(fontsize=7))
 			popViewport()
 		}
 		popViewport()
@@ -54,13 +54,16 @@ draw <- function(fileName){
 	numPlants = ncol(raw) - 2
 
 	grid.newpage()
-	pushViewport(viewport(layout = grid.layout(1,maxTidIndex+1)))
-	mapply(drawTid, 0 : maxTidIndex)
 	
-	grid.newpage()
-	plantNames = colnames(raw[,(3:ncol(raw))])
-	legend(plantNames)
+	pushViewport(viewport(x = 1, y = 1, width = unit(0.5, "npc"), height = unit(0.05, "npc"), just = c("right","top")))
+	grid.text(fileName)
 	popViewport()
 	
+	pushViewport(viewport(layout = grid.layout(1,maxTidIndex+3)))
+	mapply(drawTid, 0 : maxTidIndex)
+	
+	pushViewport(viewport(layout.pos.col = (maxTidIndex+2):(maxTidIndex+3), layout.pos.row = 1))
+	plantNames = colnames(raw[,(3:ncol(raw))])
+	legend(plantNames)
 	popViewport()
 }

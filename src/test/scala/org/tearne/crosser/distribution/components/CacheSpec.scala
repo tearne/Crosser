@@ -70,7 +70,6 @@ class CacheSpec extends Specification with Mockito{
 			with CrossSamplableComponent 
 			with CacheComponent 
 			with DistributionCrosserComponent
-			with MetricComponent
 			with StatisticsComponent {
 		val statistics = null//mock[StatisticsComponent]
 		val metric = null//mock[Metric]

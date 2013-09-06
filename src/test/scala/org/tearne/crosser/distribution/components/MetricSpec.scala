@@ -43,9 +43,8 @@ class MetricSpec extends Specification with Mockito{
 		}
 	}
 	
-	trait Instance extends Scope with MetricComponent with StatisticsComponent{
+	trait Instance extends Scope{
 		val statistics = mock[StatisticsComponent]
-		val metric = new Metric
-		val instance = metric
+		val instance = new Metric(statistics)
 	}
 }

@@ -27,6 +27,7 @@ trait RootComponent {
 	val random: Random
 	val chunkSize: Int
 	val tolerance: Double
+	val fewestPlants: Int
 }
 
 trait ServicesImpl extends Services { 
@@ -36,6 +37,7 @@ trait ServicesImpl extends Services {
 		val random = self.random
 		val chunkSize = self.chunkSize
 		val tolerance = self.tolerance
+		val fewestPlants = self.fewestPlants
 	} with CrossingServiceImpl
 	
 	val statisticsDistributionService = new {

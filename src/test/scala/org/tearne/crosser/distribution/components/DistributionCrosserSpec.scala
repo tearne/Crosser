@@ -29,18 +29,20 @@ class DistributionCrosserSpec extends Specification with Mockito{
 			result mustEqual dist3
 		}
 		"not crash if no good offsping on first chunk" in todo
+		"keep sampling until fewest plants criteria met" in {
+			
+		}
 	}
 	
 	trait MockCrossSamplerService extends Scope
 			with CrossSamplableComponent 
 			with CacheComponent 
-			with DistributionCrosserComponent
-			with MetricComponent {
+			with DistributionCrosserComponent {
 		
 		val statistics = null//mock[StatisticsComponent]
 		val crossSamplable = null//mock[CrossSamplable]
 		val cache = null//mock[Cache]
-		val metric = mock[Metric]
+		val convergenceCriterion = mock[ConvergenceCriterion]
 		
 		val leftParentDist = mock[Samplable[ConcretePlant]]
 		val rightParentDist = mock[Samplable[ConcretePlant]]
@@ -54,7 +56,6 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		
 		val rnd = mock[Random]
 		val chunkSize = 2
-		val tolerance = 0.2
 		
 		val sampleLeft1 = mock[Plant]
 		val sampleLeft2 = mock[Plant]
@@ -118,12 +119,12 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		dist1 ++(Seq(sampleCross3, sampleCross4), 0) returns dist2
 		dist2 ++(Nil, 2) returns dist3
 		
-		metric(dist0, dist1) returns 1.0
-		metric(dist1, dist2) returns 0.6
-		metric(dist2, dist3) returns 0.1
-		metric.apply(org.mockito.Matchers.eq(dist3), any[PlantEmpirical]) throws new RuntimeException("This shouldn't happen")
+		convergenceCriterion.hasConverged(dist0, dist1) returns false
+		convergenceCriterion.hasConverged(dist1, dist2) returns false
+		convergenceCriterion.hasConverged(dist2, dist3) returns true
+		convergenceCriterion.hasConverged(org.mockito.Matchers.eq(dist3), any[PlantEmpirical]) throws new RuntimeException("This shouldn't happen")
 		
-		val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, tolerance)
+		val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, convergenceCriterion)
 		
 		val instance = distributionCrosser
 	}

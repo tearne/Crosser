@@ -14,11 +14,9 @@ import org.tearne.crosser.distribution.PlantEmpirical
  * Builds plant distributions from parent distributions
  */
 trait DistributionCrosserComponent{
-	this: MetricComponent =>
-		
 	val distributionCrosser: DistributionCrosser
 	
-	class DistributionCrosser(crosser: Crosser, distFactory: PlantEmpiricalFactory, chunkSize: Int, tolerance: Double) {
+	class DistributionCrosser(crosser: Crosser, distFactory: PlantEmpiricalFactory, chunkSize: Int, criterion: ConvergenceCriterion) {
 		val log = LoggerFactory.getLogger(getClass.getName)
 		
 		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantEmpirical = {
@@ -36,11 +34,9 @@ trait DistributionCrosserComponent{
 				
 				val newDist = oldDist ++(passed, numNewFailures)
 				
-				val diff = metric(oldDist, newDist)
-				
 				log.trace("So far: {} passed, {} failed", newDist.numSuccess, newDist.numFailures)
 				
-				if(diff < tolerance) newDist
+				if(criterion.hasConverged(oldDist, newDist)) newDist
 				else addSamples(newDist)
 			}
 			

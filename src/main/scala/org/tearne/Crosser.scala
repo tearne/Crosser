@@ -28,6 +28,7 @@ object Crosser{
 		trait RootComponentImpl extends RootComponent {
 			val chunkSize = conf.chunkSize
 			val tolerance = conf.tolerance
+			val fewestPlants = conf.fewestPlants
 			val random = Random
 			log.trace("init Chunk size "+chunkSize)
 		}

@@ -32,12 +32,12 @@ object HeterozygousProtocol{
 case class HomozygousProtocol(val requiredLoci: Set[Locus])  extends Protocol{
 	def isSatisfiedBy(plant: ConcretePlant): Boolean = {
 		val requirements = requiredLoci.toSeq.map(locus => {
-				plant.chromosomes(locus.linkGroupIndex).satisfies(locus)
-			})
-			
-			if(requirements.contains(LocusPresence.AtLeastHeterozygously)) throw new ProtocolException("Non short circuit question should not return short circuit answer")
-			
-			requirements.map(_ == LocusPresence.Homozygously).find(!_).isEmpty
+			plant.chromosomes(locus.linkGroupIndex).satisfies(locus)
+		})
+		
+		if(requirements.contains(LocusPresence.AtLeastHeterozygously)) throw new ProtocolException("Non short circuit question should not return short circuit answer")
+		
+		requirements.map(_ == LocusPresence.Homozygously).find(!_).isEmpty
 	}
 }
 

@@ -40,8 +40,7 @@ class CrossSamplableSpec extends Specification with Mockito{
 	trait Instance extends Scope 
 			with CrossSamplableComponent 
 			with CacheComponent 
-			with DistributionCrosserComponent
-			with MetricComponent{
+			with DistributionCrosserComponent {
 		val random = mock[Random]
 		
 		val statistics = null

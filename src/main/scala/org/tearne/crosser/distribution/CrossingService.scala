@@ -22,8 +22,7 @@ trait CrossingService
 		extends CrossSamplableComponent
 		with CacheComponent
 		with DistributionCrosserComponent
-		with MetricComponent
-		with StatisticsComponent
+//		with StatisticsComponent
 		with RandomComponent {
 	
 	def getSamplable(crossable: Crossable): Samplable[ConcretePlant] = crossSamplable.get(crossable)
@@ -32,10 +31,10 @@ trait CrossingService
 }
 		
 trait CrossingServiceImpl 
-		extends CrossingService 
-		with MetricComponentImpl{
+		extends CrossingService {
 	val chunkSize: Int
 	val tolerance: Double
+	val fewestPlants: Int
 	
 	val crossSamplable = new CrossSamplable(random)
 
@@ -48,5 +47,6 @@ trait CrossingServiceImpl
 	val cache = new Cache()
 	
 	val plantDistFactory = new PlantEmpiricalFactory()
-	val distributionCrosser = new DistributionCrosser(crosser, plantDistFactory, chunkSize, tolerance)
+	val convCriterion = new ConvergenceCriterion(new Metric(StatisticsComponent), tolerance, fewestPlants)
+	val distributionCrosser = new DistributionCrosser(crosser, plantDistFactory, chunkSize, convCriterion)
 }

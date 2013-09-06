@@ -12,7 +12,7 @@ import org.tearne.crosser.output.SuccessProbability
 
 import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 
-class WebConfig(val path: Path) extends JsonConfig{
+class WebConfig(val path: Path) extends Config{
 	import scala.collection.JavaConversions._
 	
 	val outputs: List[Output] = {
