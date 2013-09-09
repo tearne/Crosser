@@ -6,7 +6,7 @@ import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 
 object SamplerBuild extends Build{
 	val buildOrganization 	= "org.tearne"
-	val buildVersion 	= "0.2.2"
+	val buildVersion 	= "0.2.3"
 	val buildScalaVersion	= "2.10.1"
 		
 	lazy val root = Project(
