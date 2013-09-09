@@ -1,6 +1,5 @@
 require(ggplot2)
 require(reshape)
-source("gridTest.r")
 
 pdf("plots.pdf", width=8.27, height=5.83) #A7 landscape paper
 

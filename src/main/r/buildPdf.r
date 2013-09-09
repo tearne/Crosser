@@ -1,7 +1,10 @@
+#! /usr/bin/Rscript
+
+path <- commandArgs(TRUE)[1]
+
 library(grid)
 
 draw <- function(fileName){
-	#colours = brewer.pal(9,"Set1")
 	colours = 1:9
 	
 	getData <- function(tidId, plantId){
@@ -69,3 +72,42 @@ draw <- function(fileName){
 	legend(plantNames)
 	popViewport()
 }
+
+require(ggplot2)
+require(reshape)
+
+pdf("plots.pdf", width=8.27, height=5.83) #A7 landscape paper
+
+fileNames <- list.files(path = path, pattern = "density.csv")
+fileNames <- lapply(fileNames, function(x) paste(path, x, sep = "/"))
+data = melt(lapply(fileNames, read.csv))
+ggplot(data, aes(x=value)) + 
+	geom_density(aes(colour=variable)) + 
+	scale_x_continuous(limits=c(0,1)) +
+	labs(title="Distribution of Contribution")
+
+fileName = "ProbSuccess.csv"
+fileName = paste(path, fileName, sep = "/")
+data = melt(read.csv(fileName))
+levelsOrdering = read.csv(fileName, as.is=T)$CrossName
+data$CrossName = factor(data$CrossName, levels = levelsOrdering)
+ggplot(data, aes(x=CrossName, y=value)) + 
+	geom_bar(stat = "identity") +
+	labs(title="Probability of Selection Success")
+
+fileName = "MeanCrossComposition.csv"
+fileName = paste(path, fileName, sep = "/")
+data = read.csv(fileName)
+raw = read.csv(fileName, as.is=T)
+data$Cross = factor(data$Cross, levels = unique(raw$Cross))
+data$Donor = factor(data$Donor, levels = unique(raw$Donor))
+ggplot(data, aes(x=Cross, colour=Donor, fill=Donor, y=MeanProportion)) +
+	geom_bar(stat="identity", linetype='blank') +
+	scale_y_continuous(name="Mean Proportions") +
+	labs(title="Mean Cross Composition")
+
+fileNames = list.files(path = path, pattern = "composition.csv")
+fileNames <- lapply(fileNames, function(x) paste(path, x, sep = "/"))
+lapply(fileNames, draw)
+
+dev.off()
