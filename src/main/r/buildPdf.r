@@ -1,8 +1,10 @@
 #! /usr/bin/Rscript
 
-path <- commandArgs(TRUE)[1]
+workingDir <- commandArgs(TRUE)[1]
 
-library(grid)
+require(grid)
+require(ggplot2)
+require(reshape)
 
 draw <- function(fileName){
 	colours = 1:9
@@ -73,13 +75,10 @@ draw <- function(fileName){
 	popViewport()
 }
 
-require(ggplot2)
-require(reshape)
+pdf(paste(workingDir, "plots.pdf", sep="/"), width=8.27, height=5.83) #A7 landscape paper
 
-pdf("plots.pdf", width=8.27, height=5.83) #A7 landscape paper
-
-fileNames <- list.files(path = path, pattern = "density.csv")
-fileNames <- lapply(fileNames, function(x) paste(path, x, sep = "/"))
+fileNames <- list.files(path = workingDir, pattern = "density.csv")
+fileNames <- lapply(fileNames, function(x) paste(workingDir, x, sep = "/"))
 data = melt(lapply(fileNames, read.csv))
 ggplot(data, aes(x=value)) + 
 	geom_density(aes(colour=variable)) + 
@@ -87,7 +86,7 @@ ggplot(data, aes(x=value)) +
 	labs(title="Distribution of Contribution")
 
 fileName = "ProbSuccess.csv"
-fileName = paste(path, fileName, sep = "/")
+fileName = paste(workingDir, fileName, sep = "/")
 data = melt(read.csv(fileName))
 levelsOrdering = read.csv(fileName, as.is=T)$CrossName
 data$CrossName = factor(data$CrossName, levels = levelsOrdering)
@@ -96,7 +95,7 @@ ggplot(data, aes(x=CrossName, y=value)) +
 	labs(title="Probability of Selection Success")
 
 fileName = "MeanCrossComposition.csv"
-fileName = paste(path, fileName, sep = "/")
+fileName = paste(workingDir, fileName, sep = "/")
 data = read.csv(fileName)
 raw = read.csv(fileName, as.is=T)
 data$Cross = factor(data$Cross, levels = unique(raw$Cross))
@@ -106,8 +105,8 @@ ggplot(data, aes(x=Cross, colour=Donor, fill=Donor, y=MeanProportion)) +
 	scale_y_continuous(name="Mean Proportions") +
 	labs(title="Mean Cross Composition")
 
-fileNames = list.files(path = path, pattern = "composition.csv")
-fileNames <- lapply(fileNames, function(x) paste(path, x, sep = "/"))
-lapply(fileNames, draw)
+fileNames = list.files(path = workingDir, pattern = "composition.csv")
+fileNames <- lapply(fileNames, function(x) paste(workingDir, x, sep = "/"))
+invisible(lapply(fileNames, draw))
 
 dev.off()
