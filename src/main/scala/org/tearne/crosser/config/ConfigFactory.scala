@@ -9,7 +9,7 @@ object ConfigFactory {
 	
 	def fromPath(path: Path): Config = {
 		Try{
-			log.info("Trying to human-format config")
+			log.info("Trying to read human-format config")
 			new HumanConfig(path)
 		}.getOrElse{
 			log.info("Trying to read web-format config")

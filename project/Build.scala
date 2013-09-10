@@ -6,7 +6,7 @@ import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 
 object SamplerBuild extends Build{
 	val buildOrganization 	= "org.tearne"
-	val buildVersion 	= "0.2.3"
+	val buildVersion 	= "0.2.4"
 	val buildScalaVersion	= "2.10.2"
 		
 	lazy val root = Project(
@@ -19,6 +19,8 @@ object SamplerBuild extends Build{
 		test in assembly := {},
 		mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) => {
 			case "application.conf" => MergeStrategy.discard
+			case "reference.conf" => MergeStrategy.discard
+			case "logback.xml" => MergeStrategy.discard
 			case x => old(x)
 		}}
 	)

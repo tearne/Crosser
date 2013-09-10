@@ -21,6 +21,8 @@ object Crosser{
  org.tearne.|_____  |    \_ |_____| ______| ______| |______ |    \_                                                       			
 """)
 		val path = Paths.get(args(0)).toAbsolutePath
+		val workingDir = path.getParent
+		log.info(s"Running ${path.getFileName} in directory $workingDir")
 		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
 		
 		val conf = ConfigFactory.fromPath(path)
@@ -35,7 +37,7 @@ object Crosser{
 		
 		val services = new RootComponentImpl with ServicesImpl
 		
-		val outDir = Paths.get("").resolve("output")
+		val outDir = workingDir
 		if(!Files.exists(outDir)) Files.createDirectories(outDir)
 		val writer = new Writer
 		val outputsRequested = conf.outputs
