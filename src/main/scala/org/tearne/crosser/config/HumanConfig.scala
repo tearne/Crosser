@@ -9,12 +9,13 @@ import org.tearne.crosser.output.MeanCrossComposition
 import org.tearne.crosser.output.Output
 import org.tearne.crosser.output.ProportionDistribution
 import org.tearne.crosser.output.SuccessProbability
+import com.typesafe.config.{Config => TypesafeConfig}
 
-class HumanConfig(val path: Path) extends Config{
+class HumanConfig(val typesafeConfig: TypesafeConfig) extends Config{
 	import scala.collection.JavaConversions._
 	
 	val outputs: List[Output] = {
-		config.getConfigList("output").map{ conf => 
+		typesafeConfig.getConfigList("outputs").map{ conf => 
 			conf.getString("type") match {
 				case "proportion_distribution" => 
 					ProportionDistribution(

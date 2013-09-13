@@ -13,12 +13,13 @@ import org.tearne.crosser.cross._
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.RootPlant
 import org.tearne.crosser.output._
+import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 
 @RunWith(classOf[JUnitRunner])
 class WebConfigSpec extends Specification {
 	val path = Paths.get("src/test/resource/testWeb.config")
 	Files.exists(path) must beTrue
-	val scheme: Config = new WebConfig(path)
+	val scheme: Config = new WebConfig(TypesafeConfigFactory.parseFile(path.toFile()))
 	
 	val species: Species = Species("Phaseolus_Vulgaris", IndexedSeq(11,23,45,22,10,80,121))
 	val prefVar = RootPlant("Prefered_Variety", species)

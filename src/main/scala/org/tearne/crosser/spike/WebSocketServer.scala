@@ -13,7 +13,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.tearne.crosser.net
+package org.tearne.crosser.spike
 
 import org.jboss.netty.bootstrap.ServerBootstrap
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
@@ -35,6 +35,8 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import akka.actor.Actor
 import akka.actor.ActorRef
+import akka.actor.actorRef2Scala
+import org.jboss.netty.buffer._
 
 object WebSocketServer extends App{
 	// Configure server

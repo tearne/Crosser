@@ -20,7 +20,7 @@ trait CrossSamplableComponent{
 		def get(crossable: Crossable): Samplable[ConcretePlant] = {
 			crossable match {
 				case cross: Cross => cache.get(cross).toSamplable(rnd)
-				case concrete: ConcretePlant => Samplable.diracDelta(concrete) 
+				case concrete: ConcretePlant => Samplable.continually(concrete) 
 			}
 		}
 	}

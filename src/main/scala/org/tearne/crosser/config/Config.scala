@@ -13,35 +13,28 @@ import org.tearne.crosser.plant.RootPlant
 import org.tearne.crosser.plant.Species
 import com.typesafe.config.{Config => TypesafeConfig}
 import com.typesafe.config.ConfigException
-import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 import org.tearne.crosser.output.Output
 
 trait Config {
-	val path: Path
-	
 	import scala.collection.JavaConversions._
 	
-	val config = TypesafeConfigFactory.parseFile(path.toFile())
+	val typesafeConfig: TypesafeConfig
 	
-	val chunkSize = config.getInt("system.convergence_chunk_size")
-	val tolerance = config.getDouble("system.convergence_tolerance")
-	val fewestPlants = config.getInt("system.convergence_fewest_plants")
+	val chunkSize = typesafeConfig.getInt("system.convergence_chunk_size")
+	val tolerance = typesafeConfig.getDouble("system.convergence_tolerance")
+	val fewestPlants = typesafeConfig.getInt("system.convergence_fewest_plants")
 
-	val name: String = config.getString("name")
-	
-//	val dbURL = config.getString("system.db.url")
-//	val dbProfile = config.getString("system.db.profile")
-//	val dbDriver = config.getString("system.db.driver")
+	val name: String = typesafeConfig.getString("name")
 	
 	val outputs: List[Output]
 	
 	val plants: ListMap[String, RootPlant] = {
 		val species = Species(
-				config.getString("species.name"),
-				scala.collection.JavaConversions.asScalaBuffer(config.getIntList("species.chromosome_lengths")).map{_.intValue()}.toIndexedSeq
+				typesafeConfig.getString("species.name"),
+				scala.collection.JavaConversions.asScalaBuffer(typesafeConfig.getIntList("species.chromosome_lengths")).map{_.intValue()}.toIndexedSeq
 		)
 		
-		val plants = config.getConfigList("plants").map{ plantConfig =>
+		val plants = typesafeConfig.getConfigList("plants").map{ plantConfig =>
 			val name = plantConfig.getString("name")
 			name -> new RootPlant(
 				name,
@@ -53,7 +46,7 @@ trait Config {
 	}
 	
 	val crosses: ListMap[String, Cross] = {
-		val loci: Buffer[Locus] = config.getConfigList("plants").flatMap{ plantConfig =>
+		val loci: Buffer[Locus] = typesafeConfig.getConfigList("plants").flatMap{ plantConfig =>
 			val plant = plants(plantConfig.getString("name"))
 			try{
 				val lociFromPlant = plantConfig.getConfigList("loci").map{ locusConfig =>
@@ -74,7 +67,7 @@ trait Config {
 		val lociMap = loci.map(l => l.name -> l).toMap
 		val crossesBuiltSoFar = collection.mutable.ListMap[String, Cross]()
 		
-		for(crossConfig <- config.getConfigList("crosses")){ 
+		for(crossConfig <- typesafeConfig.getConfigList("crosses")){ 
 			val everythingSoFar = crossesBuiltSoFar ++ plants
 			val name = crossConfig.getString("name")
 			val left = everythingSoFar(crossConfig.getString("left"))

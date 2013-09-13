@@ -138,15 +138,15 @@ class PlantEmpiricalSpec extends AssertionsForJUnit with MockitoSugar{
 		implicit val random = mock[Random]
 		val ce1 = mock[ChromosomeEmpirical] 
 		val c1 = mockChromosome(4)
-		val cs1 = Samplable.diracDelta(c1) 
+		val cs1 = Samplable.continually(c1) 
 		
 		val ce2 = mock[ChromosomeEmpirical]; 
 		val c2 = mockChromosome(5)
-		val cs2 = Samplable.diracDelta(c2)
+		val cs2 = Samplable.continually(c2)
 		
 		val ce3 = mock[ChromosomeEmpirical]; 
 		val c3 = mockChromosome(6)
-		val cs3 = Samplable.diracDelta(c3)
+		val cs3 = Samplable.continually(c3)
 		
 		when(ce1.toSamplable(random)).thenReturn(cs1)
 		when(ce2.toSamplable(random)).thenReturn(cs2)
