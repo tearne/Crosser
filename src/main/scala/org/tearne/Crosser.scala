@@ -12,41 +12,55 @@ import org.tearne.crosser.ServicesImpl
 import org.tearne.crosser.config.ConfigFactory
 import org.tearne.crosser.config.Config
 import java.nio.file.Path
+import joptsimple.OptionParser
 
 object Crosser{
 	val log = LoggerFactory.getLogger(getClass())
-	
-	def printUsage(){
-		println(
-"""
-Bad args.  Usage:
-	-f, --file	Load config from disk
-	-u, --url	Load config from URL
-"""
-		)
-	}
-	
+
 	def main(args: Array[String]) {
-		def fromFile(s: String) = {s == "-f" || s == "--file"}
-		def fromUrl(s: String) = {s == "-u" || s == "--url"}
-		args.toList match{
-			case List(switch, location) if fromFile(switch) =>
-				val path = Paths.get(location)
-				val workingDir = path.getParent()
-				if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
-				log.info(s"Config: ${path.getFileName}")
-				log.info(s"Working dir: $workingDir")
-				run(ConfigFactory.fromPath(path), path.getParent())
-			case List(switch, location) if fromUrl(switch) =>
-				val config = ConfigFactory.fromURL(location)
-				val workingDir = Paths.get(config.name)
-				if(!Files.exists(workingDir)) Files.createDirectory(workingDir)
-				log.info(s"Config: $location")
-				log.info(s"Working dir: ${workingDir.toAbsolutePath()}")
-				run(config, workingDir)
-			case _ => 
-				printUsage
-		}	
+		val op = new OptionParser()
+		import collection.JavaConversions._
+		
+		val fileOpt = op.acceptsAll(List("f", "file"), "Config from File").withRequiredArg().ofType(classOf[String]).describedAs("file")
+		val urlOpt = op.acceptsAll(List("u", "url"), "Config from URL").withRequiredArg().ofType(classOf[String]).describedAs("url")
+		val dirOpt = op.accepts("o", "Output directory").withRequiredArg().ofType(classOf[String]).describedAs("dir")
+		
+		val options = op.parse(args: _*)
+
+		def optionsError(msg: String){
+			op.printHelpOn(System.out)
+			throw new UnsupportedOperationException(msg)
+		}
+		
+		if(options.has("f") && options.has("u")) optionsError("Cannot accept both file and url options")
+		
+		val outPath: Path = 
+			if(options.has("o")) {
+				val dir = Paths.get("").resolve(dirOpt.value(options)) 
+				if(!Files.exists(dir))
+					Files.createDirectory(dir)
+				else if(!Files.isDirectory(dir)) optionsError(s"$dir exists and is not a directory")
+				dir
+			}
+			else Paths.get("").toAbsolutePath()
+		
+		val config: Config = 
+			if(options.has("u")){
+				val url = urlOpt.value(options)
+				log.info("Config from URL {}", url)
+				ConfigFactory.fromURL(url)
+			} else if(options.has("f")){
+				val file = Paths.get(fileOpt.value(options))
+				if(!Files.exists(file)) optionsError(s"Config file '$file' does not exist")
+				log.info("Config from file {}", file)
+				ConfigFactory.fromPath(file)
+			} else{
+				op.printHelpOn(System.out)
+				throw new UnsupportedOperationException("Input file or url option required")
+			}
+		
+		log.info("Output Dir = {}", outPath)
+		run(config, outPath)
 	}
 	
 	def run(conf: Config, workingDir: Path){
@@ -55,11 +69,6 @@ Bad args.  Usage:
             |       |_____/ |     | |______ |______ |______ |_____/
  org.tearne.|_____  |    \_ |_____| ______| ______| |______ |    \_                                                       			
 """)
-//		val path = Paths.get(args(0)).toAbsolutePath
-//		val workingDir = path.getParent
-//		if(!Files.exists(path)) throw new FileNotFoundException(path.toString())
-		
-//		val conf = ConfigFactory.fromPath(path)
 
 		trait RootComponentImpl extends RootComponent {
 			val chunkSize = conf.chunkSize

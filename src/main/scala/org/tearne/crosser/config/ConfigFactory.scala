@@ -26,10 +26,10 @@ object ConfigFactory {
 	
 	def fromTypesafeConfig(tConf: TypesafeConfig) = {
 		Try{
-			log.info("Try parsing human format config")
+			log.debug("Try parsing human format config")
 			new HumanConfig(tConf)
 		}.getOrElse{
-			log.info("Try parsing web format config")
+			log.debug("Try parsing web format config")
 			new WebConfig(tConf)
 		}
 	}

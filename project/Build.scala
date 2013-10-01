@@ -6,7 +6,7 @@ import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 
 object SamplerBuild extends Build{
 	val buildOrganization 	= "org.tearne"
-	val buildVersion 	= "0.2.5"
+	val buildVersion 	= "0.2.6"
 	val buildScalaVersion	= "2.10.2"
 		
 	lazy val root = Project(
@@ -48,6 +48,7 @@ object SamplerBuild extends Build{
 			"com.typesafe" % "config" % "0.4.1",
 			"com.typesafe.akka" %% "akka-actor" % "2.2.1",
 			"org.apache.commons" % "commons-math3" % "3.0",
+			"net.sf.jopt-simple" % "jopt-simple" % "4.5",
 			"ch.qos.logback" % "logback-classic" % "1.0.12",
 			"ahvla" % "sampler-core_2.10" % "0.0.17"
 		)
