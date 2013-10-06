@@ -19,64 +19,72 @@ import ch.qos.logback.classic.util.ContextInitializer
 
 object Crosser{
 	
-	def main(args: Array[String]) {
-		System.setProperty("LOG_DIR", "logs")
-		val log = LoggerFactory.getLogger(getClass())
-		log.info("Application started")
-		
-		import collection.JavaConversions._
-		
-		val op = new OptionParser()
-		val fileOpt = op.acceptsAll(List("f", "file"), "Config from File").withRequiredArg().ofType(classOf[String]).describedAs("file")
-		val urlOpt = op.acceptsAll(List("u", "url"), "Config from URL").withRequiredArg().ofType(classOf[String]).describedAs("url")
-		val dirOpt = op.acceptsAll(List("o", "output"), "Output directory").withRequiredArg().ofType(classOf[String]).describedAs("dir")
-		
-		val options = op.parse(args: _*)
-
-		def optionsError(msg: String){
-			op.printHelpOn(System.out)
-			throw new UnsupportedOperationException(msg)
-		}
-		
-		def changeLoggingDir(dir: Path){
-			log.info("Switching logging to {}", dir.toAbsolutePath())
-			val loggerContext: LoggerContext = LoggerFactory.getILoggerFactory().asInstanceOf[LoggerContext]
-			val logConfigFile = new ContextInitializer(loggerContext).findURLOfDefaultConfigurationFile(false)
+	def main(args: Array[String]) { 
+		try{
+			System.setProperty("LOG_DIR", "logs")
+			val log = LoggerFactory.getLogger(getClass())
+			log.info("Application started")
+			
+			import collection.JavaConversions._
+			
+			val op = new OptionParser()
+			val fileOpt = op.acceptsAll(List("f", "file"), "Config from File").withRequiredArg().ofType(classOf[String]).describedAs("file")
+			val urlOpt = op.acceptsAll(List("u", "url"), "Config from URL").withRequiredArg().ofType(classOf[String]).describedAs("url")
+			val dirOpt = op.acceptsAll(List("o", "output"), "Output directory").withRequiredArg().ofType(classOf[String]).describedAs("dir")
+			
+			val options = op.parse(args: _*)
 	
-			val jc = new JoranConfigurator()
-			jc.setContext(loggerContext)
-			loggerContext.reset()
-			loggerContext.putProperty("LOG_DIR", dir.toString())
-			jc.doConfigure(logConfigFile)
-		}
-		
-		if(options.has("f") && options.has("u")) optionsError("Cannot accept both file and url options")
-		
-		val outPath: Path = 
-			if(options.has("o")) {
-				val dir = Paths.get("").resolve(dirOpt.value(options)) 
-				if(!Files.exists(dir))
-					Files.createDirectory(dir)
-				else if(!Files.isDirectory(dir)) optionsError(s"$dir exists and is not a directory")
-				changeLoggingDir(dir)
-				dir
-			}
-			else Paths.get("").toAbsolutePath()
-		
-		val config: Config = 
-			if(options.has("u")){
-				val url = urlOpt.value(options)
-				ConfigFactory.fromURL(url)
-			} else if(options.has("f")){
-				val file = Paths.get(fileOpt.value(options))
-				if(!Files.exists(file)) optionsError(s"Config file '$file' does not exist")
-				ConfigFactory.fromPath(file)
-			} else{
+			def optionsError(msg: String){
 				op.printHelpOn(System.out)
-				throw new UnsupportedOperationException("Input file or url option required")
+				throw new UnsupportedOperationException(msg)
 			}
+			
+			def changeLoggingDir(dir: Path){
+				log.info("Switching logging to {}", dir.toAbsolutePath())
+				val loggerContext: LoggerContext = LoggerFactory.getILoggerFactory().asInstanceOf[LoggerContext]
+				val logConfigFile = new ContextInitializer(loggerContext).findURLOfDefaultConfigurationFile(false)
 		
-		run(config, outPath)
+				val jc = new JoranConfigurator()
+				jc.setContext(loggerContext)
+				loggerContext.reset()
+				loggerContext.putProperty("LOG_DIR", dir.toString())
+				jc.doConfigure(logConfigFile)
+			}
+			
+			if(options.has("f") && options.has("u")) optionsError("Cannot accept both file and url options")
+			
+			val outPath: Path = 
+				if(options.has("o")) {
+					val dir = Paths.get("").resolve(dirOpt.value(options)) 
+					if(!Files.exists(dir))
+						Files.createDirectory(dir)
+					else if(!Files.isDirectory(dir)) optionsError(s"$dir exists and is not a directory")
+					changeLoggingDir(dir)
+					dir
+				}
+				else Paths.get("").toAbsolutePath()
+			
+			val config: Config = 
+				if(options.has("u")){
+					val url = urlOpt.value(options)
+					ConfigFactory.fromURL(url)
+				} else if(options.has("f")){
+					val file = Paths.get(fileOpt.value(options))
+					if(!Files.exists(file)) optionsError(s"Config file '$file' does not exist")
+					ConfigFactory.fromPath(file)
+				} else{
+					op.printHelpOn(System.out)
+					throw new UnsupportedOperationException("Input file or url option required")
+				}
+			
+			run(config, outPath)
+		} catch {
+			case e: Exception => {
+				LoggerFactory.getLogger(getClass()).error("Fatal Exception", e)
+				System.exit(1)
+			}
+		}
+		System.exit(0)
 	}
 	
 	def run(conf: Config, workingDir: Path){
