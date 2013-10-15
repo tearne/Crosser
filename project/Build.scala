@@ -50,7 +50,8 @@ object SamplerBuild extends Build{
 			"org.apache.commons" % "commons-math3" % "3.0",
 			"net.sf.jopt-simple" % "jopt-simple" % "4.5",
 			"ch.qos.logback" % "logback-classic" % "1.0.13",
-			"ahvla" % "sampler-core_2.10" % "0.0.17"
+			"ahvla" % "sampler-core_2.10" % "0.0.17",
+			"org.scalaz" %% "scalaz-core" % "7.0.4"
 		)
 	)
 }

@@ -16,7 +16,7 @@ import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 import org.scalatest.junit.AssertionsForJUnit
 import org.junit.Test
 
-class HumanConfigSpec extends AssertionsForJUnit {
+class HumanConfigTest extends AssertionsForJUnit {
 	trait Setup{
 		val path = Paths.get("src/test/resource/testHuman.config")
 		val scheme: Config = new HumanConfig(TypesafeConfigFactory.parseFile(path.toFile()))

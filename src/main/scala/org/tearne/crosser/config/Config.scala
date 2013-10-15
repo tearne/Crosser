@@ -17,6 +17,8 @@ import com.typesafe.config.ConfigException
 import org.tearne.crosser.output.Output
 import org.tearne.crosser.cross.Protocol
 import scala.annotation.tailrec
+import scalaz._
+import Scalaz._
 
 trait Config {
 	import scala.collection.JavaConversions._
@@ -66,7 +68,6 @@ trait Config {
 			} catch {
 				case e: ConfigException.Missing => Nil
 			}
-
 		}
 		val lociMap = loci.map(l => l.name -> l).toMap
 		
@@ -77,7 +78,6 @@ trait Config {
 				Cross(left, right, protocol, name)
 			}
 		}
-		val crossesBuiltSoFar = collection.mutable.ListMap[String, Cross]()
 		
 		val unlinkedCrosses = ListMap({
 			val t = for(crossConfig <- typesafeConfig.getConfigList("crosses")) yield { 
@@ -98,45 +98,46 @@ trait Config {
 				)
 			}
 			t.toSeq
-		}: _*)//.toMap
+		}: _*)
 		
-		//Created linked crosses from unlinked by resolving parents
-		val t = unlinkedCrosses.keys.foldLeft(ListMap.empty[String, Cross]){case (acc, crossName) =>
-			def linkCross(acc0: ListMap[String, Cross], name: String): (ListMap[String, Cross], Cross) = {
-				if(acc0.contains(name)) (acc0, acc0(name))
-				else{
-					val unlinkedCross = unlinkedCrosses(name)
-					val leftName = unlinkedCross.leftName
-					val rightName = unlinkedCross.rightName
-					
-					val (acc1, leftParent) = 
-						if(plants.contains(leftName)) {
-							(acc0, plants(leftName))
-						}
-						else if(acc.contains(leftName)){
-							(acc0, acc0(leftName))
-						}
-						else linkCross(acc0, leftName)
-						
-					val (acc2, rightParent) = 
-						if(plants.contains(rightName)) {
-							(acc1, plants(rightName))
-						}
-						else if(acc1.contains(rightName)) {
-							(acc1, acc1(rightName))
-						}
-						else linkCross(acc1, rightName)
-						
-					val cross = unlinkedCross.addLinks(leftParent, rightParent)
-					val acc3 = acc2 + (name -> cross)
-					(acc3, cross)
-				}
+		type CrossMap = ListMap[String, Cross]
+		def linkCross(name: String): State[CrossMap, Cross] = {
+			def makeCross(name: String): State[CrossMap, Cross] = {
+				val unlinkedCross = unlinkedCrosses(name)
+				val leftName = unlinkedCross.leftName
+				val rightName = unlinkedCross.rightName
+				
+				for{
+					cMap <- get[CrossMap]
+					leftParent <- getParent(leftName)
+					rightParent <- getParent(rightName)
+					cross = unlinkedCross.addLinks(leftParent, rightParent)
+					_ <- modify[CrossMap](s => s+(name -> cross))
+				} yield cross
 			}
 			
-			linkCross(acc, crossName)._1
+			def getParent(name: String): State[CrossMap, Crossable] = {
+					get[CrossMap].flatMap{crossMap =>
+					if(plants.contains(name)) state(plants(name))
+					else if(crossMap.contains(name)) state(crossMap(name))
+					else linkCross(name)
+					}
+			}
+
+			for{
+				oCross <- gets[CrossMap, Option[Cross]](_.get(name))
+				cross <- oCross
+					.map(state[CrossMap, Cross])
+					.getOrElse(makeCross(name))
+			} yield cross
 		}
 		
-		t
+		//Created linked crosses from unlinked by resolving parents
+		val crossMap = unlinkedCrosses.keys.foldLeft(state[CrossMap, Any]()){case (acc, crossName) =>
+			acc.flatMap{_ => linkCross(crossName)}
+		}.exec(ListMap.empty[String, Cross])
+
+		crossMap
 	}
 		
 	private def makeHetProtocol(crossConfig: TypesafeConfig, lociMap: Map[String, Locus]): HeterozygousProtocol = {
