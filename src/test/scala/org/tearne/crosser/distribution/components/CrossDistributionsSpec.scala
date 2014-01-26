@@ -12,20 +12,21 @@ import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.ConcretePlant
 import sampler.data.Samplable
 import org.tearne.crosser.plant.Plant
+import sampler.data.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class CrossSamplableSpec extends Specification with Mockito{
 	val name = "crossName"
 	
-	"CrossSamplerSpec" should {
+	"CrossDistributions" should {
 		"return cross samplables based on distributions in the cache" in new Instance{
 			//val random = mock[Random]
 			val cross = mock[Cross]
-			val plantSamplable = mock[Samplable[Plant]]
+			val plantSamplable = mock[Distribution[Plant]]
 			val plantEmpirical = mock[PlantEmpirical]
 			
 			cache.get(cross) returns plantEmpirical
-			plantEmpirical.toSamplable(random) returns plantSamplable
+			plantEmpirical.toDistribution(random) returns plantSamplable
 			
 			instance.get(cross) mustEqual plantSamplable
 		}
@@ -38,18 +39,18 @@ class CrossSamplableSpec extends Specification with Mockito{
 	
 	//TODO this looks a bit mad
 	trait Instance extends Scope 
-			with CrossSamplableComponent 
+			with CrossDistributionsComponent 
 			with CacheComponent 
 			with DistributionCrosserComponent {
 		val random = mock[Random]
 		
 		val statistics = null
 		val metric = null
-		val crossSamplable = new CrossSamplable(random)
+		val crossDistributions = new CrossDistributions(random)
 		
 		val distributionCrosser = null
 		val cache = mock[Cache]
 		
-		val instance = crossSamplable
+		val instance = crossDistributions
 	}
 }

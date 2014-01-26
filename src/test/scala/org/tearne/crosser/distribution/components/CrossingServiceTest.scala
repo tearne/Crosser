@@ -9,17 +9,17 @@ import sampler.data.Samplable
 import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Cross
-import sampler.math.Probability
 import org.tearne.crosser.distribution.PlantEmpirical
+import sampler.data.Distribution
 
 class CrossingServiceTest extends AssertionsForJUnit with MockitoSugar {
 	@Test def getSamplableFromCrossable {
 		val instance = getCrossingService
-		val samplable = mock[Samplable[Plant]]
+		val samplable = mock[Distribution[Plant]]
 		val crossable = mock[Crossable]
 		
-		when(instance.crossSamplable.get(crossable)).thenReturn(samplable)
-		assert(instance.getSamplable(crossable) === samplable)
+		when(instance.crossDistributions.get(crossable)).thenReturn(samplable)
+		assert(instance.getDistribution(crossable) === samplable)
 	}
 	
 	@Test def getSuccessProbabilityFromCross {
@@ -45,7 +45,7 @@ class CrossingServiceTest extends AssertionsForJUnit with MockitoSugar {
 	}
 	
 	def getCrossingService = new CrossingService {
-		val crossSamplable = mock[CrossSamplable]
+		val crossDistributions = mock[CrossDistributions]
 		val statistics = null
 		val cache = mock[Cache]
 		val distributionCrosser = null

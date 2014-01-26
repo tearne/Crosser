@@ -1,14 +1,16 @@
 package org.tearne.crosser.distribution.components
 
-import org.tearne.crosser.cross.Crosser
 import scala.annotation.tailrec
-import org.tearne.crosser.plant.ConcretePlant
-import org.tearne.crosser.cross.Cross
-import sampler.math.Random
-import sampler.data.Samplable
+
 import org.slf4j.LoggerFactory
-import org.tearne.crosser.distribution.PlantEmpiricalFactory
+import org.tearne.crosser.cross.Cross
+import org.tearne.crosser.cross.Crosser
 import org.tearne.crosser.distribution.PlantEmpirical
+import org.tearne.crosser.distribution.PlantEmpiricalFactory
+import org.tearne.crosser.plant.ConcretePlant
+
+import sampler.data.Distribution
+import sampler.data.Samplable
 
 /**
  * Builds plant distributions from parent distributions
@@ -19,7 +21,7 @@ trait DistributionCrosserComponent{
 	class DistributionCrosser(crosser: Crosser, distFactory: PlantEmpiricalFactory, chunkSize: Int, criterion: ConvergenceCriterion) {
 		val log = LoggerFactory.getLogger(getClass.getName)
 		
-		def build(leftParentDist: Samplable[ConcretePlant], rightParentDist: Samplable[ConcretePlant], cross: Cross): PlantEmpirical = {
+		def build(leftParentDist: Distribution[ConcretePlant], rightParentDist: Distribution[ConcretePlant], cross: Cross): PlantEmpirical = {
 			def buildOffspring() = 
 				crosser(leftParentDist.sample, rightParentDist.sample, cross)
 			

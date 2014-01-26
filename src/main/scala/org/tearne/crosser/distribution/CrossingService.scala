@@ -11,21 +11,22 @@ import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.PlantFactory
 import org.tearne.crosser.plant.ChromosomeFactory
 import org.tearne.crosser.plant.Gameter
-import sampler.math.Probability
 import org.tearne.crosser.plant.ChromosomeCrosser
+import sampler.data.Distribution
+import sampler.math.Statistics
+import org.tearne.crosser.distribution.components.CrossDistributionsComponent
 
 trait RandomComponent{
 	val random: Random
 }
 
 trait CrossingService
-		extends CrossSamplableComponent
+		extends CrossDistributionsComponent
 		with CacheComponent
 		with DistributionCrosserComponent
-//		with StatisticsComponent
 		with RandomComponent {
 	
-	def getSamplable(crossable: Crossable): Samplable[ConcretePlant] = crossSamplable.get(crossable)
+	def getDistribution(crossable: Crossable): Distribution[ConcretePlant] = crossDistributions.get(crossable)
 	def getSuccessProbability(cross: Cross): Double = cache.get(cross).successProbability
 	def getPlantDistribution(cross: Cross): PlantEmpirical = cache.get(cross)
 }
@@ -36,17 +37,17 @@ trait CrossingServiceImpl
 	val tolerance: Double
 	val fewestPlants: Int
 	
-	val crossSamplable = new CrossSamplable(random)
+	val crossDistributions = new CrossDistributions(random)
 
 	val plantFactory = new PlantFactory()
 	val chromosomeFactory = new ChromosomeFactory()
-	val gameter = new Gameter(random, Probability(0.01))
+	val gameter = new Gameter(random, 0.01)
 	val chromosomeCrosser = new ChromosomeCrosser(chromosomeFactory, gameter)
 	val crosser = new Crosser(plantFactory, chromosomeCrosser)
 	
 	val cache = new Cache()
 	
 	val plantDistFactory = new PlantEmpiricalFactory()
-	val convCriterion = new ConvergenceCriterion(new Metric(StatisticsComponent), tolerance, fewestPlants)
+	val convCriterion = new ConvergenceCriterion(new Metric(Statistics), tolerance, fewestPlants)
 	val distributionCrosser = new DistributionCrosser(crosser, plantDistFactory, chunkSize, convCriterion)
 }

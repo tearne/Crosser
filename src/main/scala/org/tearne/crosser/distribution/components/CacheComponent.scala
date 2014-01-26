@@ -13,7 +13,7 @@ import org.tearne.crosser.distribution.PlantEmpirical
 trait CacheComponent{
 	//Cake pattern allows immutable mutual dependency 
 	// between CrossSampler and PlantDistBank
-	this: CrossSamplableComponent with DistributionCrosserComponent =>
+	this: CrossDistributionsComponent with DistributionCrosserComponent =>
 		
 	val log = LoggerFactory.getLogger(getClass().getName())	
 		
@@ -31,8 +31,8 @@ trait CacheComponent{
 			
 			def build(cross: Cross): PlantEmpirical = 
 				distributionCrosser.build(
-					crossSamplable.get(cross.left),
-					crossSamplable.get(cross.right),
+					crossDistributions.get(cross.left),
+					crossDistributions.get(cross.right),
 					cross
 				)
 				

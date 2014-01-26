@@ -1,15 +1,14 @@
 package org.tearne.crosser.output
 
 import java.nio.file.Path
-import sampler.data.Types.Column
-import sampler.io.CSVTableWriter
 import org.slf4j.LoggerFactory
+import sampler.io.CSV
 
 class Writer{
 	val log = LoggerFactory.getLogger(getClass())
 	
-	def apply(path: Path, columns: Column[_]*){
+	def write(path: Path, lines: Seq[Seq[Any]]){
 		log.info("Wrote " + path.getFileName())
-		new CSVTableWriter(path, true).apply(columns: _*)
+		CSV.writeLines(path, lines)
 	}
 }

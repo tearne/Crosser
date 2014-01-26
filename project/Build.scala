@@ -44,13 +44,11 @@ object SamplerBuild extends Build{
 			"org.mockito" % "mockito-all" % "1.9.0" %"test->default",
 			"org.scalatest" % "scalatest_2.10" % "2.0" % "test",
 			"org.scalamock" %% "scalamock-scalatest-support" % "3.0.1" % "test",
-			"com.typesafe.akka" %% "akka-slf4j" % "2.2.1",
 			"com.typesafe" % "config" % "0.4.1",
-			"com.typesafe.akka" %% "akka-actor" % "2.2.1",
 			"org.apache.commons" % "commons-math3" % "3.2",
 			"net.sf.jopt-simple" % "jopt-simple" % "4.5",
 			"ch.qos.logback" % "logback-classic" % "1.0.13",
-			"ahvla" % "sampler-core_2.10" % "0.0.17",
+			"org.tearne" % "sampler-core_2.10" % "0.0.22",
 			"org.scalaz" %% "scalaz-core" % "7.0.4"
 		)
 	)

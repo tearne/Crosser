@@ -7,6 +7,7 @@ import org.tearne.crosser.cross.Crossable
 import org.specs2.mock.Mockito
 import org.tearne.crosser.util.AlleleCount
 import sampler.data.Samplable
+import sampler.data.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class PlantSpec extends Specification with Mockito{
@@ -37,7 +38,7 @@ class PlantSpec extends Specification with Mockito{
 			instance must beAnInstanceOf[Crossable]
 		}
 		"be samplable" in{
-			instance must beAnInstanceOf[Samplable[ConcretePlant]]
+			instance must beAnInstanceOf[Distribution[ConcretePlant]]
 		}
 		"return itself when sampled" in {
 			instance.sample mustEqual instance

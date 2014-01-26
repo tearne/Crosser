@@ -1,11 +1,12 @@
 package org.tearne.crosser.plant
 
-import org.specs2.mutable.Specification
 import org.junit.runner.RunWith
+import org.specs2.mock.Mockito
+import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Crossable
-import org.specs2.mock.Mockito
-import sampler.data.Samplable
+
+import sampler.data.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class RootPlantSpec extends Specification with Mockito{
@@ -21,7 +22,7 @@ class RootPlantSpec extends Specification with Mockito{
 			instance must beAnInstanceOf[Crossable]
 		}
 		"be samplable" in{
-			instance must beAnInstanceOf[Samplable[ConcretePlant]]
+			instance must beAnInstanceOf[Distribution[ConcretePlant]]
 		}
 		"return itself when sampled" in {
 			instance.sample mustEqual instance

@@ -4,9 +4,10 @@ import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.plant.Species
 import sampler.data.Samplable
-import sampler.data.Empirical._
 import sampler.data.Empirical
 import sampler.math.Random
+import sampler.data.Distribution
+import sampler.Implicits._
 
 class PlantEmpirical(val chromoDistSeq: IndexedSeq[ChromosomeEmpirical], val name: String, species: Species, val numFailures: Int) {
 	if(chromoDistSeq.size != species.cMLengths.size) throw new PlantEmpiricalException(
@@ -35,10 +36,10 @@ class PlantEmpirical(val chromoDistSeq: IndexedSeq[ChromosomeEmpirical], val nam
 		new PlantEmpirical(newDistributions.toIndexedSeq, name, species, this.numFailures+failures)
 	}
 	
-	def toSamplable(implicit r: Random): Samplable[Plant] = new Samplable[Plant]{
-		val chromoSamplalbes = chromoDistSeq.map{_.toSamplable}
+	def toDistribution(implicit r: Random): Distribution[Plant] = new Distribution[Plant]{
+		val chromoDistributions = chromoDistSeq.map{_.toDistribution}
 		def sample: Plant = {
-			val chromosomes = chromoSamplalbes.map(_.sample)
+			val chromosomes = chromoDistributions.map(_.sample)
 			new Plant(name, chromosomes.toIndexedSeq, species)
 		}
 	}

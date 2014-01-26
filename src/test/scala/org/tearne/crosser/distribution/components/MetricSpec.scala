@@ -1,18 +1,14 @@
 package org.tearne.crosser.distribution.components
 
-import org.specs2.mutable.Specification
+import org.junit.runner.RunWith
 import org.specs2.mock.Mockito
+import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
-import org.tearne.crosser.plant.Chromosome
-import org.tearne.crosser.plant.Species
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import sampler.math.StatisticsComponent
-import org.tearne.crosser.distribution.ChromosomeDistribution
 import org.tearne.crosser.distribution.ChromosomeEmpirical
 import org.tearne.crosser.distribution.PlantEmpirical
+import org.tearne.crosser.plant.Species
+import sampler.math.Statistics
+import org.specs2.runner.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class MetricSpec extends Specification with Mockito{
@@ -44,7 +40,7 @@ class MetricSpec extends Specification with Mockito{
 	}
 	
 	trait Instance extends Scope{
-		val statistics = mock[StatisticsComponent]
+		val statistics = mock[Statistics]
 		val instance = new Metric(statistics)
 	}
 }

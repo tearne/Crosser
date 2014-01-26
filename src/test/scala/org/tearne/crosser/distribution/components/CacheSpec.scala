@@ -15,6 +15,7 @@ import org.tearne.crosser.distribution._
 import org.tearne.crosser.distribution.components._
 import sampler.data.Samplable
 import org.tearne.crosser.plant.Plant
+import sampler.data.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class CacheSpec extends Specification with Mockito{
@@ -28,12 +29,12 @@ class CacheSpec extends Specification with Mockito{
 			cross.left returns leftParent
 			cross.right returns rightParent
 			
-			val leftParentSamplable = mock[Samplable[Plant]]
-			val rightParentSamplable = mock[Samplable[Plant]]
+			val leftParentSamplable = mock[Distribution[Plant]]
+			val rightParentSamplable = mock[Distribution[Plant]]
 			val offspringDistribution = mock[PlantEmpirical]
 	
-			crossSamplable.get(leftParent) returns leftParentSamplable
-			crossSamplable.get(rightParent) returns rightParentSamplable
+			crossDistributions.get(leftParent) returns leftParentSamplable
+			crossDistributions.get(rightParent) returns rightParentSamplable
 			
 			distributionCrosser.build(leftParentSamplable, rightParentSamplable, cross) returns offspringDistribution
 			
@@ -50,12 +51,12 @@ class CacheSpec extends Specification with Mockito{
 			cross.left returns leftParent
 			cross.right returns rightParent
 			
-			val leftParentSamplable = mock[Samplable[Plant]]
-			val rightParentSamplable = mock[Samplable[Plant]]
+			val leftParentSamplable = mock[Distribution[Plant]]
+			val rightParentSamplable = mock[Distribution[Plant]]
 			val crossDistribution = mock[PlantEmpirical]
 	
-			crossSamplable.get(leftParent) returns leftParentSamplable
-			crossSamplable.get(rightParent) returns rightParentSamplable
+			crossDistributions.get(leftParent) returns leftParentSamplable
+			crossDistributions.get(rightParent) returns rightParentSamplable
 			
 			//TODO pimping so it looks like... leftPDist x rightPDist
 			distributionCrosser.build(leftParentSamplable, rightParentSamplable, cross) returns crossDistribution
@@ -67,14 +68,14 @@ class CacheSpec extends Specification with Mockito{
 		}
 	}
 	trait Instance extends Scope  
-			with CrossSamplableComponent 
+			with CrossDistributionsComponent 
 			with CacheComponent 
 			with DistributionCrosserComponent
 			with StatisticsComponent {
 		val statistics = null//mock[StatisticsComponent]
 		val metric = null//mock[Metric]
 		val distributionCrosser = mock[DistributionCrosser]
-		val crossSamplable = mock[CrossSamplable]
+		val crossDistributions = mock[CrossDistributions]
 		val cache = new Cache
 		
 		val instance = cache

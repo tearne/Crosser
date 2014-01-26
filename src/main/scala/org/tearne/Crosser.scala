@@ -1,13 +1,10 @@
 package org.tearne
 import java.nio.file.{Paths,Files}
 import java.io.FileNotFoundException
-import sampler.data.Types._
-import sampler.data.Empirical._
 import sampler.math.Random
 import org.tearne.crosser.output.Writer
 import org.slf4j.LoggerFactory
 import org.tearne.crosser.config.HumanConfig
-import org.tearne.crosser.RootComponent
 import org.tearne.crosser.ServicesImpl
 import org.tearne.crosser.config.ConfigFactory
 import org.tearne.crosser.config.Config
@@ -16,6 +13,9 @@ import joptsimple.OptionParser
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.classic.util.ContextInitializer
+import org.tearne.crosser.SystemConfig
+import sampler.math.StatisticsComponent
+import sampler.math.Statistics
 
 object Crosser{
 	
@@ -98,7 +98,7 @@ object Crosser{
 		log.info("Output Dir: {}", workingDir)
 		log.info("Config name: {}", conf.name)
 
-		trait RootComponentImpl extends RootComponent {
+		trait SystemConfigImpl extends SystemConfig {
 			val chunkSize = conf.chunkSize
 			val tolerance = conf.tolerance
 			val fewestPlants = conf.fewestPlants
@@ -106,14 +106,20 @@ object Crosser{
 			log.trace("init Chunk size "+chunkSize)
 		}
 		
-		val services = new RootComponentImpl with ServicesImpl
+		val services = new SystemConfigImpl with ServicesImpl {
+			val statistics = Statistics
+			val statisticsService = new StatisticsService(
+				 conf.chunkSize,
+				 conf.tolerance
+			)
+		}
 		
 		val outDir = workingDir
 		if(!Files.exists(outDir)) Files.createDirectories(outDir)
 		val writer = new Writer
 		val outputsRequested = conf.outputs
 		outputsRequested.map(out => 
-			writer(outDir.resolve(out.fileName + ".csv"), out.buildData(services): _*)
+			writer.write(outDir.resolve(out.fileName + ".csv"), out.buildCSVLines(services))
 		)
 	}
 }

@@ -2,10 +2,10 @@ package org.tearne.crosser.plant
 
 import org.tearne.crosser.cross.Crossable
 import org.tearne.crosser.util.AlleleCount
-import sampler.math.Random
-import sampler.data.Samplable
 
-sealed trait ConcretePlant extends Crossable with Samplable[ConcretePlant]{
+import sampler.data.Distribution
+
+sealed trait ConcretePlant extends Crossable with Distribution[ConcretePlant]{
 	val chromosomes: IndexedSeq[Chromosome]
 	def alleleCount(donor: RootPlant): AlleleCount = chromosomes.foldLeft(AlleleCount(0,0)){(acc, item) => acc + item.alleleCount(donor)}
 }

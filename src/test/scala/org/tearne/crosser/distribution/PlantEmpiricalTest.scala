@@ -12,6 +12,7 @@ import org.scalatest.mock.MockitoSugar
 import org.junit.Test
 import org.mockito.Mockito._
 import sampler.data.Empirical
+import sampler.data.Distribution
 
 class PlantEmpiricalSpec extends AssertionsForJUnit with MockitoSugar{
 	val name = "plantName"
@@ -27,34 +28,34 @@ class PlantEmpiricalSpec extends AssertionsForJUnit with MockitoSugar{
 		implicit val random = mock[Random]
 
 		val chrom1Dist = mock[ChromosomeEmpirical] 
-		val samp1: Samplable[Chromosome] = mock[Samplable[Chromosome]]
-		when(chrom1Dist.toSamplable).thenReturn(samp1)
+		val dist1: Distribution[Chromosome] = mock[Distribution[Chromosome]]
+		when(chrom1Dist.toDistribution).thenReturn(dist1)
 
 		val chrom2Dist = mock[ChromosomeEmpirical] 
-		val samp2 = mock[Samplable[Chromosome]]
-		when(chrom2Dist.toSamplable).thenReturn(samp2)
+		val dist2 = mock[Distribution[Chromosome]]
+		when(chrom2Dist.toDistribution).thenReturn(dist2)
 		
 		val chrom3Dist = mock[ChromosomeEmpirical] 
-		val samp3 = mock[Samplable[Chromosome]]
-		when(chrom3Dist.toSamplable).thenReturn(samp3)
+		val dist3 = mock[Distribution[Chromosome]]
+		when(chrom3Dist.toDistribution).thenReturn(dist3)
 		
 		val chrom1samp1 = mockChromosome(4)
 		val chrom1samp2 = mockChromosome(4)
-		when(samp1.sample).thenReturn(chrom1samp1, chrom1samp2)
+		when(dist1.sample).thenReturn(chrom1samp1, chrom1samp2)
 		
 		val chrom2samp1 = mockChromosome(5)
 		val chrom2samp2 = mockChromosome(5)
-		when(samp2.sample).thenReturn(chrom2samp1, chrom2samp2)
+		when(dist2.sample).thenReturn(chrom2samp1, chrom2samp2)
 		
 		val chrom3samp1 = mockChromosome(6)
 		val chrom3samp2 = mockChromosome(6)
-		when(samp3.sample).thenReturn(chrom3samp1, chrom3samp2)
+		when(dist3.sample).thenReturn(chrom3samp1, chrom3samp2)
 
 		val instance = new PlantEmpirical(IndexedSeq(chrom1Dist, chrom2Dist, chrom3Dist), name, threeCSpecies, 2)
-		val samplable: Samplable[Plant] = instance.toSamplable
+		val distribution: Distribution[Plant] = instance.toDistribution
 		
-		assert(samplable.sample === Plant(name, IndexedSeq(chrom1samp1, chrom2samp1, chrom3samp1), threeCSpecies))
-		assert(samplable.sample === Plant(name, IndexedSeq(chrom1samp2, chrom2samp2, chrom3samp2), threeCSpecies))
+		assert(distribution.sample === Plant(name, IndexedSeq(chrom1samp1, chrom2samp1, chrom3samp1), threeCSpecies))
+		assert(distribution.sample === Plant(name, IndexedSeq(chrom1samp2, chrom2samp2, chrom3samp2), threeCSpecies))
 	}
 	
 	@Test def exceptionIfSpeciesInconsistentWithNumChromosomes{
@@ -138,22 +139,22 @@ class PlantEmpiricalSpec extends AssertionsForJUnit with MockitoSugar{
 		implicit val random = mock[Random]
 		val ce1 = mock[ChromosomeEmpirical] 
 		val c1 = mockChromosome(4)
-		val cs1 = Samplable.continually(c1) 
+		val cs1 = Distribution.continually(c1) 
 		
 		val ce2 = mock[ChromosomeEmpirical]; 
 		val c2 = mockChromosome(5)
-		val cs2 = Samplable.continually(c2)
+		val cs2 = Distribution.continually(c2)
 		
 		val ce3 = mock[ChromosomeEmpirical]; 
 		val c3 = mockChromosome(6)
-		val cs3 = Samplable.continually(c3)
+		val cs3 = Distribution.continually(c3)
 		
-		when(ce1.toSamplable(random)).thenReturn(cs1)
-		when(ce2.toSamplable(random)).thenReturn(cs2)
-		when(ce3.toSamplable(random)).thenReturn(cs3)
+		when(ce1.toDistribution(random)).thenReturn(cs1)
+		when(ce2.toDistribution(random)).thenReturn(cs2)
+		when(ce3.toDistribution(random)).thenReturn(cs3)
 		
 		val instance = new PlantEmpirical(IndexedSeq(ce1, ce2, ce3), name, threeCSpecies, 2)
-		val samplable = instance.toSamplable
+		val samplable = instance.toDistribution
 		
 		assert(samplable.sample === Plant(
 			name,

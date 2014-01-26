@@ -18,13 +18,14 @@ import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.distribution._
 import sampler.math.StatisticsComponent
 import org.tearne.crosser.distribution.components._
+import sampler.data.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class DistributionCrosserSpec extends Specification with Mockito{
 	val name = "myCross"
 	
 	"PlantDistCrosser" should {
-		"build distribution using samples obtained via CrossSamplable" in new MockCrossSamplerService{
+		"build distribution using samples obtained via CrossSamplable" in new MockCrossDistributionsService {
 			val result = instance.build(leftParentDist, rightParentDist, cross)
 			result mustEqual dist3
 		}
@@ -34,18 +35,18 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		}
 	}
 	
-	trait MockCrossSamplerService extends Scope
-			with CrossSamplableComponent 
+	trait MockCrossDistributionsService extends Scope
+			with CrossDistributionsComponent 
 			with CacheComponent 
 			with DistributionCrosserComponent {
 		
 		val statistics = null//mock[StatisticsComponent]
-		val crossSamplable = null//mock[CrossSamplable]
+		val crossDistributions = null//mock[CrossSamplable]
 		val cache = null//mock[Cache]
 		val convergenceCriterion = mock[ConvergenceCriterion]
 		
-		val leftParentDist = mock[Samplable[ConcretePlant]]
-		val rightParentDist = mock[Samplable[ConcretePlant]]
+		val leftParentDist = mock[Distribution[ConcretePlant]]
+		val rightParentDist = mock[Distribution[ConcretePlant]]
 		val cross = mock[Cross]
 		
 		val species = mock[Species]
