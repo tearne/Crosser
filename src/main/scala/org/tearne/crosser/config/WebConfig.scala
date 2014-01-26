@@ -8,7 +8,7 @@ import org.tearne.crosser.output.LociComposition
 import org.tearne.crosser.output.MeanCrossComposition
 import org.tearne.crosser.output.Output
 import org.tearne.crosser.output.ProportionDistribution
-import org.tearne.crosser.output.SuccessProbability
+import org.tearne.crosser.output.SuccessTable
 import com.typesafe.config.{Config => TypesafeConfig}
 import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
 
@@ -25,8 +25,14 @@ class WebConfig(val typesafeConfig: TypesafeConfig) extends Config{
 						crosses(innerDataConfig.getString("cross")), 
 						plants(innerDataConfig.getString("donor"))
 					)
-				case "success_probability" => 
-					SuccessProbability(innerDataConfig.getStringList("crosses").map(c => crosses(c)))
+				case "success_table" => 
+					SuccessTable(innerDataConfig.getConfigList("require").map{ subConf =>
+						Tuple3(
+								crosses(subConf.getString("cross")),
+								subConf.getInt("quantity"),
+								subConf.getDouble("confidence")
+						)
+					})
 				case "loci_composition" => 
 					LociComposition(crosses(innerDataConfig.getString("cross")), plants.values.toSeq)
 				case "mean_cross_composition" =>

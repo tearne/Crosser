@@ -6,8 +6,8 @@ import com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys
 
 object SamplerBuild extends Build{
 	val buildOrganization 	= "org.tearne"
-	val buildVersion 	= "0.2.8"
-	val buildScalaVersion	= "2.10.2"
+	val buildVersion 	= "0.2.9-1"
+	val buildScalaVersion	= "2.10.3"
 		
 	lazy val root = Project(
 		id = "Crosser",
@@ -30,7 +30,7 @@ object SamplerBuild extends Build{
 		version		 := buildVersion,
 		scalaVersion := buildScalaVersion,
 
-		retrieveManaged	:= false,
+		retrieveManaged	:= true,
 		
 		resolvers ++= Seq(
 			"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
@@ -42,12 +42,12 @@ object SamplerBuild extends Build{
 			"junit" % "junit" % "4.8" % "test->default",
 			"org.specs2" %% "specs2" % "1.14" % "test",
 			"org.mockito" % "mockito-all" % "1.9.0" %"test->default",
-			"org.scalatest" % "scalatest_2.10" % "2.0.M5b" % "test",
+			"org.scalatest" % "scalatest_2.10" % "2.0" % "test",
 			"org.scalamock" %% "scalamock-scalatest-support" % "3.0.1" % "test",
 			"com.typesafe.akka" %% "akka-slf4j" % "2.2.1",
 			"com.typesafe" % "config" % "0.4.1",
 			"com.typesafe.akka" %% "akka-actor" % "2.2.1",
-			"org.apache.commons" % "commons-math3" % "3.0",
+			"org.apache.commons" % "commons-math3" % "3.2",
 			"net.sf.jopt-simple" % "jopt-simple" % "4.5",
 			"ch.qos.logback" % "logback-classic" % "1.0.13",
 			"ahvla" % "sampler-core_2.10" % "0.0.17",

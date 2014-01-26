@@ -64,12 +64,7 @@ class WebConfigSpec extends Specification {
 		}
 		
 		"have root plants" in {
-//			val rootPlants = scheme.plants
 			rootPlants must_== scheme.plants
-//			(rootPlants.size must_== 3) and
-//			(rootPlants("Prefered_Variety") must_== prefVar) and
-//			(rootPlants("Donor1") must_== donor1) and
-//			(rootPlants("Donor2") must_== donor2)
 		}
 		
 		"have correct crosses" in {
@@ -78,12 +73,6 @@ class WebConfigSpec extends Specification {
 			(crosses("BC1") must_== bc1) and
 			(crosses("Self") must_== self)
 		}
-		
-//		"specify db details" in {
-//			(scheme.dbURL must_== "jdbc:etc") and
-//			(scheme.dbProfile must_== "scala.slick.driver.AwesomeDB") and
-//			(scheme.dbDriver must_== "org.database.AwesomeDriver")
-//		}
 		
 		"specify convergence details size" in {
 			(scheme.chunkSize must_== 100) and
@@ -95,7 +84,11 @@ class WebConfigSpec extends Specification {
 			 val expected = List[Output](
 				ProportionDistribution(bc1, prefVar),
 				ProportionDistribution(self, prefVar),
-				SuccessProbability(Seq(f1, bc1, self)),
+				SuccessTable(Seq(
+						(f1, 20, 0.9), 
+						(bc1, 30, 0.95), 
+						(self, 40, 0.98)
+				)),
 				LociComposition(self, rootPlants.values.toSeq),
 				MeanCrossComposition(Seq(f1, bc1, self), Seq(prefVar, donor1, donor2))
 			)

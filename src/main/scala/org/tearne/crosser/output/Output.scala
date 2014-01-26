@@ -23,18 +23,34 @@ case class ProportionDistribution(cross: Cross, donor: RootPlant) extends Output
 		Seq(new Column(values, name))
 	}
 }
-case class SuccessProbability(crosses: Seq[Cross]) extends Output{
-	val name = "ProbSuccess"
+case class SuccessTable(requirements : Seq[Tuple3[Cross, Int, Double]]) extends Output{
+	val name = "SuccessTable"
 	val fileName = name
 	def buildData(services: Services): Seq[Column[_]] = {
-		val names = Column(crosses.map(_.name), "CrossName")
+		val names = Column(requirements.map(_._1.name), "CrossName")
 		val probs = Column(
-			crosses.map{cross => 
-				services.crossingService.getSuccessProbability(cross)
+			requirements.map{row => 
+				services.crossingService.getSuccessProbability(row._1)
 			},
 			"SuccessProbability"
 		)
-		Seq(names, probs)
+		val numRequired = Column(
+			requirements.map(_._2),
+			"NumRequired"
+		)
+		val confLevel = Column(
+			requirements.map(_._3),
+			"ConfidenceLevel"
+		)
+		val numOffspringForConfidence = Column(
+			requirements.map{case (cross, numSuccess, conf) =>
+				val successProb = services.crossingService.getSuccessProbability(cross)
+				//TODO sort out component/service
+				services.statisticsDistributionService.statDistBuilder.numPlantsForConfidence(conf, successProb, numSuccess)
+			},
+			"NumForConfidence"
+		)
+		Seq(names, probs, numRequired, confLevel, numOffspringForConfidence)
 	}
 }
 case class LociComposition(cross: Cross, donors: Seq[RootPlant]) extends Output {

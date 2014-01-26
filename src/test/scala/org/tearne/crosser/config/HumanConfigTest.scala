@@ -70,6 +70,7 @@ class HumanConfigTest extends AssertionsForJUnit {
 	@Test def correctCrosses { new Setup {
 		val crosses: Map[String, Cross] = scheme.crosses
 		assert(crosses.size === 3)
+		assert(crosses("F1") === f1)
 		assert(crosses("BC1") === bc1)
 		assert(crosses("Self") === self)
 	}}
@@ -84,7 +85,11 @@ class HumanConfigTest extends AssertionsForJUnit {
 		 val expected = List[Output](
 			ProportionDistribution(bc1, prefVar),
 			ProportionDistribution(self, prefVar),
-			SuccessProbability(Seq(f1, bc1, self)),
+			SuccessTable(Seq(
+					(f1, 20, 0.9), 
+					(bc1, 30, 0.95), 
+					(self, 40, 0.98)
+			)),
 			LociComposition(self, rootPlants.values.toSeq),
 			MeanCrossComposition(Seq(f1, bc1, self), Seq(prefVar, donor1, donor2))
 		)

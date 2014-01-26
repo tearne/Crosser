@@ -7,6 +7,7 @@ import org.tearne.crosser.plant.ConcretePlant
 import sampler.data.ParallelSampleBuilder
 import sampler.math.StatisticsComponent
 import sampler.data.Empirical._
+import org.apache.commons.math3.distribution.BinomialDistribution
 
 trait StatisticDistributionService {
 	this: StatisticsComponent => 
@@ -26,6 +27,14 @@ trait StatisticDistributionService {
 			})
 			.seq
 		}
+		
+		def numPlantsForConfidence(confidenceReq: Double, selectionProb: Double, numPlantsReq: Int): Int = {
+			var binom = new BinomialDistribution(numPlantsReq-1, selectionProb)
+			while(binom.cumulativeProbability(numPlantsReq-1) > 1-confidenceReq){
+				binom = new BinomialDistribution(binom.getNumberOfTrials()+1, selectionProb)
+			}
+			binom.getNumberOfTrials()
+		  }
 	}
 }
 
