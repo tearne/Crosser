@@ -31,35 +31,12 @@ case class SuccessTable(requirements : Seq[Tuple3[Cross, Int, Double]]) extends 
 		val successProb = requirements.map{row => 
 			services.crossingService.getSuccessProbability(row._1)
 		}
-//			Column(
-//			requirements.map{row => 
-//				services.crossingService.getSuccessProbability(row._1)
-//			},
-//			"SuccessProbability"
-//		)
 		val numRequired = requirements.map(_._2)
-//			Column(
-//			requirements.map(_._2),
-//			"NumRequired"
-//		)
 		val confLevel = requirements.map(_._3)
-//			Column(
-//			requirements.map(_._3),
-//			"ConfidenceLevel"
-//		)
 		val numOffspringForConfidence = requirements.map{ case (cross, numSuccess, conf) =>
 			val successProb = services.crossingService.getSuccessProbability(cross)
-			//TODO sort out component/service
 			services.statisticsService.numPlantsForConfidence(conf, successProb, numSuccess)
 		}
-//		Column(
-//			requirements.map{case (cross, numSuccess, conf) =>
-//				val successProb = services.crossingService.getSuccessProbability(cross)
-//				//TODO sort out component/service
-//				services.statisticsService.numPlantsForConfidence(conf, successProb, numSuccess)
-//			},
-//			"NumForConfidence"
-//		)
 		
 		val columns = Seq(
 			"CrossName" +: crossNames,
@@ -69,7 +46,6 @@ case class SuccessTable(requirements : Seq[Tuple3[Cross, Int, Double]]) extends 
 			"NumForConfidence" +: numOffspringForConfidence
 		)
 		
-//		Seq(names, probs, numRequired, confLevel, numOffspringForConfidence)
 		columns.transpose
 	}
 }
@@ -91,21 +67,12 @@ case class LociComposition(cross: Cross, donors: Seq[RootPlant]) extends Output 
 			tidId +: cmId +: contribs 
 		}
 		
-//		val cols = rows.transpose
-//		val tidId = Column(cols(0).asInstanceOf[Seq[Int]], "tidId")
-//		val cmId = Column(cols(1).asInstanceOf[Seq[Int]], "cMId")
-//		val proportions =  cols.takeRight(donors.size).asInstanceOf[IndexedSeq[IndexedSeq[Double]]].zip(donors).map{case (col, donor) => 
-//			Column(col, donor.name)
-//		}
-		
 		val header = Seq("tidId", "cMId") ++: donors.map(_.name)
 		
 		header +: rows
-//		
-//		Seq(tidId, cmId) ++: proportions
 	}
 }
-//TODO test
+
 case class MeanCrossComposition(crosses: Seq[Cross], donors: Seq[RootPlant]) extends Output {
 	val name = "MeanCrossComposition"
 	val fileName = name
@@ -123,12 +90,6 @@ case class MeanCrossComposition(crosses: Seq[Cross], donors: Seq[RootPlant]) ext
 					)
 				)
 			)
-		
-//		val cols = rows.transpose
-//		val cross = Column(cols(0).asInstanceOf[Seq[String]], "Cross")
-//		val donor = Column(cols(1).asInstanceOf[Seq[String]], "Donor")
-//		val proportion =  Column(cols(2).asInstanceOf[Seq[Double]], "MeanProportion")
-//		Seq(cross, donor, proportion)
 		
 		val header = Seq("Cross", "Donor", "MeanProportion")
 		
