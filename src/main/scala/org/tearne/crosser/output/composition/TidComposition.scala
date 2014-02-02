@@ -4,7 +4,7 @@ import org.tearne.crosser.plant.RootPlant
 import org.tearne.crosser.plant.Tid
 
 case class TidComposition(val counts: IndexedSeq[Map[RootPlant, Int]]) {
-	lazy val proportions = counts.map{ cmMap => 
+	lazy val proportions: IndexedSeq[Map[RootPlant, Double]] = counts.map{ cmMap => 
 		val total  = cmMap.values.sum.toDouble
 		cmMap.mapValues{count => count / total}
 	}

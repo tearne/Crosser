@@ -17,8 +17,8 @@ trait StatisticsServiceComponent {
 	val statisticsService: StatisticsService
 	
 	class StatisticsService(chunkSize: Int, tolerance: Double) {
-		def gatherSamples[T](samplable: Distribution[T]): Seq[T] = {
-			new ParallelSampler(chunkSize)(samplable)(seq => {
+		def gatherSamples[T](distribution: Distribution[T]): Seq[T] = {
+			new ParallelSampler(chunkSize)(distribution)(seq => {
 				statistics.maxDistance(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
 					seq.size == 1e8
 			})
