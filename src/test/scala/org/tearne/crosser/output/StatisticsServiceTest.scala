@@ -16,12 +16,12 @@ class StatisticsServiceTest extends FreeSpec with MockitoSugar {
 			val chunkSize = 3
 			val tolerance = 0.1
 			
-			val instanceComponent = new StatisticsServiceComponent	
+			val instanceComponent = new CrossStatisticsComponent	
 					with StatisticsComponent {
 				val statistics = mock[Statistics]
-				val statisticsService = new StatisticsService(chunkSize, tolerance)
+				val crossStatistics = new CrossStatistics(chunkSize, tolerance)
 			}
-			val instance = instanceComponent.statisticsService
+			val instance = instanceComponent.crossStatistics
 			
 			val dist = new Distribution[Int]{
 				val it = (1 to 50).iterator
@@ -42,12 +42,12 @@ class StatisticsServiceTest extends FreeSpec with MockitoSugar {
 			val tolerance: Double = 0
 			val chunkSize: Int = 0
 	
-			val instanceComponent = new StatisticsServiceComponent	
+			val instanceComponent = new CrossStatisticsComponent	
 					with StatisticsComponent {
 				val statistics = null//Statistics
-				val statisticsService = new StatisticsService(chunkSize, tolerance)
+				val crossStatistics = new CrossStatistics(chunkSize, tolerance)
 			}
-			val instance = instanceComponent.statisticsService
+			val instance = instanceComponent.crossStatistics
 			
 			assertResult(275){
 				instance.numPlantsForConfidence(confidence, selectionProb, numRequired)

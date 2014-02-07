@@ -1,29 +1,27 @@
 package org.tearne.crosser.util
 
 import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import org.specs2.mutable.Specification
+import org.scalatest.FreeSpec
 
-@RunWith(classOf[JUnitRunner])
-class AlleleCountSpec extends Specification{
-	"AlleleCount" should {
+class AlleleCountSpec extends FreeSpec{
+	"AlleleCount should"  - {
 		"contain both success and total counts" in {
 			val instance = AlleleCount(3,4)
-			(instance.success mustEqual 3) and
-			(instance.total mustEqual 4)
+			assertResult(3)(instance.success)
+			assertResult(4)(instance.total)
 		}
 		"be addable" in {
 			val instance1 = AlleleCount(3,4)
 			val instance2 = AlleleCount(7,96)
 			val instanceSum = instance1 + instance2
 			
-			(instanceSum.success mustEqual 10) and
-			(instanceSum.total mustEqual 100)
+			assertResult(10)(instanceSum.success)
+			assertResult(100)(instanceSum.total)
 		}
 		"calculate proportion" in {
 			val instance = AlleleCount(3,4)
 			
-			instance.proportion mustEqual 3.0/4.0
+			assertResult(3.0/4.0)(instance.proportion)
 		}
 		"have value based hashcode and equals" in {
 			val instance1a = AlleleCount(3,4)
@@ -31,12 +29,12 @@ class AlleleCountSpec extends Specification{
 			val instance2 = AlleleCount(3,5)
 			val instance3 = AlleleCount(2,4)
 			
-			(instance1a mustEqual instance1b) and 
-			(instance1a.hashCode mustEqual instance1b.hashCode) and
-			(instance1a mustNotEqual instance2) and
-			(instance1a.hashCode mustNotEqual instance2.hashCode) and
-			(instance1a mustNotEqual instance3) and
-			(instance1a.hashCode mustNotEqual instance3.hashCode)
+			assertResult(instance1b)(instance1a) 
+			assertResult(instance1b.hashCode)(instance1a.hashCode)
+			assertResult(false)(instance1a == instance2)
+			assertResult(false)(instance1a.hashCode == instance2.hashCode)
+			assertResult(false)(instance1a == instance3)
+			assertResult(false)(instance1a.hashCode == instance3.hashCode)
 		}
 	}
 }

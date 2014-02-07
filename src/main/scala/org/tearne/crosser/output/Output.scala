@@ -19,7 +19,7 @@ case class ProportionDistribution(cross: Cross, donor: RootPlant) extends Output
 	val fileName = name + ".density"
 	def buildCSVLines(services: Services): Seq[Seq[Any]] = {
 		val dist = services.crossingService.getDistribution(cross).map(_.alleleCount(donor).proportion)
-		val proportions = services.statisticsService.gatherSamples(dist)
+		val proportions = services.crossStatistics.gatherSamples(dist)
 		(name +: proportions).map(Seq(_))
 	}
 }
@@ -35,7 +35,7 @@ case class SuccessTable(requirements : Seq[Tuple3[Cross, Int, Double]]) extends 
 		val confLevel = requirements.map(_._3)
 		val numOffspringForConfidence = requirements.map{ case (cross, numSuccess, conf) =>
 			val successProb = services.crossingService.getSuccessProbability(cross)
-			services.statisticsService.numPlantsForConfidence(conf, successProb, numSuccess)
+			services.crossStatistics.numPlantsForConfidence(conf, successProb, numSuccess)
 		}
 		
 		val columns = Seq(
@@ -85,8 +85,8 @@ case class MeanCrossComposition(crosses: Seq[Cross], donors: Seq[RootPlant]) ext
 				IndexedSeq(
 					cross.name, 
 					donor.name, 
-					services.statistics.mean(
-						statisticsService.gatherSamples(crossingService.getDistribution(cross).map(_.alleleCount(donor).proportion)).toEmpiricalSeq
+					statistics.mean(
+						crossStatistics.gatherSamples(crossingService.getDistribution(cross).map(_.alleleCount(donor).proportion)).toEmpiricalSeq
 					)
 				)
 			)

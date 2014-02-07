@@ -20,6 +20,10 @@ trait RandomComponent{
 	val random: Random
 }
 
+trait CrossingComponent {
+	val crossingService: CrossingService
+}
+
 trait CrossingService
 		extends CrossDistributionsComponent
 		with CacheComponent

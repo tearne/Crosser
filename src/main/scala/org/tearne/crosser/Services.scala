@@ -15,10 +15,13 @@ import org.tearne.crosser.output._
 import org.tearne.crosser.distribution._
 import org.tearne.crosser.output.composition._
 import org.slf4j.LoggerFactory
+import sampler.math.Statistics
 
-trait Services extends StatisticsServiceComponent with StatisticsComponent{
-	val crossingService: CrossingService
-	val compositionService: CompositionService
+trait Services 
+		extends CrossStatisticsComponent 
+		with CrossingComponent
+		with CompositionComponent 
+		with StatisticsComponent {
 }
 
 trait SystemConfig {
@@ -30,11 +33,18 @@ trait SystemConfig {
 
 trait ServicesImpl 
 	extends Services 
-	with StatisticsServiceComponent
+	with CrossStatisticsComponent
+	with CrossingComponent
+	with CompositionServiceComponentImpl
 	with StatisticsComponent { 
 	
 	self: SystemConfig =>
 		
+	val crossStatistics = new CrossStatistics(
+		self.chunkSize,
+		self.tolerance
+	)
+
 	val crossingService = new {
 		val random = self.random
 		val chunkSize = self.chunkSize
@@ -42,11 +52,6 @@ trait ServicesImpl
 		val fewestPlants = self.fewestPlants
 	} with CrossingServiceImpl
 	
-	val statService = new StatisticsService(
-		self.chunkSize,
-		self.tolerance
-	)
-	
-	val compositionService = new CompositionServiceImpl{}
+	val statistics = Statistics
 }
 

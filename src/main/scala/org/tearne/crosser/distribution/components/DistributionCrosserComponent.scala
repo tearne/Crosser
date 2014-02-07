@@ -33,7 +33,6 @@ trait DistributionCrosserComponent{
 				val numNewFailures =  offspringWithFailures.get(false).map(_.size).getOrElse(0)
 				
 				val passed = offspringWithFailures.getOrElse(true, Nil)
-				
 				val newDist = oldDist ++(passed, numNewFailures)
 				
 				log.trace("So far: {} passed, {} failed", newDist.numSuccess, newDist.numFailures)

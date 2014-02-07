@@ -10,13 +10,14 @@ import org.tearne.crosser.SystemConfig
 import sampler.data.Distribution
 import sampler.data.ParallelSampler
 import sampler.Implicits._
+import sampler.math.Statistics
 
-trait StatisticsServiceComponent {
+trait CrossStatisticsComponent {
 	this: StatisticsComponent => 
 	
-	val statisticsService: StatisticsService
+	val crossStatistics: CrossStatistics
 	
-	class StatisticsService(chunkSize: Int, tolerance: Double) {
+	class CrossStatistics(chunkSize: Int, tolerance: Double) {
 		def gatherSamples[T](distribution: Distribution[T]): Seq[T] = {
 			new ParallelSampler(chunkSize)(distribution)(seq => {
 				statistics.maxDistance(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||

@@ -1,44 +1,38 @@
 package org.tearne.crosser.distribution.components
 
-import org.specs2.mutable.Specification
-import org.specs2.mock.Mockito
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalatest.FreeSpec
+import org.scalatest.mock.MockitoSugar
 import org.tearne.crosser.cross.Cross
-import org.specs2.specification.Scope
-import org.tearne.crosser.plant.Plant
 import org.tearne.crosser.cross.Crosser
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Protocol
-import org.tearne.crosser.plant.Species
-import sampler.math.Random
-import sampler.data.Samplable
+import org.tearne.crosser.distribution.PlantEmpirical
+import org.tearne.crosser.distribution.PlantEmpiricalFactory
 import org.tearne.crosser.plant.ConcretePlant
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import org.tearne.crosser.distribution._
-import sampler.math.StatisticsComponent
-import org.tearne.crosser.distribution.components._
-import sampler.data.Distribution
+import org.tearne.crosser.plant.Plant
+import org.tearne.crosser.plant.Species
 
-@RunWith(classOf[JUnitRunner])
-class DistributionCrosserSpec extends Specification with Mockito{
+import sampler.data.Distribution
+import sampler.math.Random
+
+class DistributionCrosserSpec extends FreeSpec {
 	val name = "myCross"
 	
-	"PlantDistCrosser" should {
+	"PlantDistCrosser should" - {
 		"build distribution using samples obtained via CrossSamplable" in new MockCrossDistributionsService {
 			val result = instance.build(leftParentDist, rightParentDist, cross)
-			result mustEqual dist3
+			assertResult(dist3)(result)
 		}
-		"not crash if no good offsping on first chunk" in todo
-		"keep sampling until fewest plants criteria met" in {
-			
-		}
+		"not crash if no good offsping on first chunk" in pending
+		"keep sampling until fewest plants criteria met" in pending
 	}
 	
-	trait MockCrossDistributionsService extends Scope
-			with CrossDistributionsComponent 
+	trait MockCrossDistributionsService 
+			extends CrossDistributionsComponent 
 			with CacheComponent 
-			with DistributionCrosserComponent {
+			with DistributionCrosserComponent 
+			with MockitoSugar{
 		
 		val statistics = null//mock[StatisticsComponent]
 		val crossDistributions = null//mock[CrossSamplable]
@@ -51,9 +45,9 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		
 		val species = mock[Species]
 		val protocol = mock[Protocol]
-		cross.name returns name
-		cross.protocol returns protocol
-		cross.species returns species
+		when(cross.name).thenReturn(name)
+		when(cross.protocol).thenReturn(protocol)
+		when(cross.species).thenReturn(species)
 		
 		val rnd = mock[Random]
 		val chunkSize = 2
@@ -64,7 +58,7 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		val sampleLeft4 = mock[Plant]
 		val sampleLeft5 = mock[Plant]
 		val sampleLeft6 = mock[Plant]
-		leftParentDist.sample returns (
+		when(leftParentDist.sample).thenReturn(
 			sampleLeft1,
 			sampleLeft2, 
 			sampleLeft3, 
@@ -79,7 +73,7 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		val sampleRight4 = mock[Plant]
 		val sampleRight5 = mock[Plant]
 		val sampleRight6 = mock[Plant]
-		rightParentDist.sample returns (
+		when(rightParentDist.sample).thenReturn(
 			sampleRight1, 
 			sampleRight2, 
 			sampleRight3, 
@@ -95,19 +89,19 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		val sampleCross4 = mock[Plant]
 		val sampleCross5 = mock[Plant]
 		val sampleCross6 = mock[Plant]
-		crosser(sampleLeft1, sampleRight1, cross) returns sampleCross1
-		crosser(sampleLeft2, sampleRight2, cross) returns sampleCross2
-		crosser(sampleLeft3, sampleRight3, cross) returns sampleCross3
-		crosser(sampleLeft4, sampleRight4, cross) returns sampleCross4
-		crosser(sampleLeft5, sampleRight5, cross) returns sampleCross5
-		crosser(sampleLeft6, sampleRight6, cross) returns sampleCross6
+		when(crosser(sampleLeft1, sampleRight1, cross)).thenReturn(sampleCross1)
+		when(crosser(sampleLeft2, sampleRight2, cross)).thenReturn(sampleCross2)
+		when(crosser(sampleLeft3, sampleRight3, cross)).thenReturn(sampleCross3)
+		when(crosser(sampleLeft4, sampleRight4, cross)).thenReturn(sampleCross4)
+		when(crosser(sampleLeft5, sampleRight5, cross)).thenReturn(sampleCross5)
+		when(crosser(sampleLeft6, sampleRight6, cross)).thenReturn(sampleCross6)
 		
-		protocol.isSatisfiedBy(sampleCross1) returns false
-		protocol.isSatisfiedBy(sampleCross2) returns true
-		protocol.isSatisfiedBy(sampleCross3) returns true
-		protocol.isSatisfiedBy(sampleCross4) returns true
-		protocol.isSatisfiedBy(sampleCross5) returns false
-		protocol.isSatisfiedBy(sampleCross6) returns false
+		when(protocol.isSatisfiedBy(sampleCross1)).thenReturn(false)
+		when(protocol.isSatisfiedBy(sampleCross2)).thenReturn(true)
+		when(protocol.isSatisfiedBy(sampleCross3)).thenReturn(true)
+		when(protocol.isSatisfiedBy(sampleCross4)).thenReturn(true)
+		when(protocol.isSatisfiedBy(sampleCross5)).thenReturn(false)
+		when(protocol.isSatisfiedBy(sampleCross6)).thenReturn(false)
 		
 		val distFactory = mock[PlantEmpiricalFactory]
 		val dist0 = mock[PlantEmpirical]
@@ -115,15 +109,15 @@ class DistributionCrosserSpec extends Specification with Mockito{
 		val dist2 = mock[PlantEmpirical]
 		val dist3 = mock[PlantEmpirical]
 		
-		distFactory.build(cross) returns dist0
-		dist0 ++(Seq(sampleCross2), 1) returns dist1
-		dist1 ++(Seq(sampleCross3, sampleCross4), 0) returns dist2
-		dist2 ++(Nil, 2) returns dist3
+		when(distFactory.build(cross)).thenReturn(dist0)
+		when(dist0.++(Seq(sampleCross2), 1)).thenReturn(dist1)
+		when(dist1.++(Seq(sampleCross3, sampleCross4), 0)).thenReturn(dist2)
+		when(dist2.++(Nil, 2)).thenReturn(dist3)
 		
-		convergenceCriterion.hasConverged(dist0, dist1) returns false
-		convergenceCriterion.hasConverged(dist1, dist2) returns false
-		convergenceCriterion.hasConverged(dist2, dist3) returns true
-		convergenceCriterion.hasConverged(org.mockito.Matchers.eq(dist3), any[PlantEmpirical]) throws new RuntimeException("This shouldn't happen")
+		when(convergenceCriterion.hasConverged(dist0, dist1)).thenReturn(false)
+		when(convergenceCriterion.hasConverged(dist1, dist2)).thenReturn(false)
+		when(convergenceCriterion.hasConverged(dist2, dist3)).thenReturn(true)
+		when(convergenceCriterion.hasConverged(org.mockito.Matchers.eq(dist3), any[PlantEmpirical])).thenThrow(new RuntimeException("This shouldn't happen"))
 		
 		val distributionCrosser = new DistributionCrosser(crosser, distFactory, chunkSize, convergenceCriterion)
 		

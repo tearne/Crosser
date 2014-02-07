@@ -106,17 +106,17 @@ object Crosser{
 			log.trace("init Chunk size "+chunkSize)
 		}
 		
-		val services = new SystemConfigImpl with ServicesImpl {
-			val statistics = Statistics
-			val statisticsService = new StatisticsService(
-				 conf.chunkSize,
-				 conf.tolerance
-			)
-		}
+		val services = new SystemConfigImpl with ServicesImpl //{
+//			val statistics = Statistics
+//			val crossStatistics = new CrossStatistics(
+//				 conf.chunkSize,
+//				 conf.tolerance
+//			)
+//		}
 		
 		val outDir = workingDir
 		if(!Files.exists(outDir)) Files.createDirectories(outDir)
-		val writer = new Writer
+		val writer = new Writer()
 		val outputsRequested = conf.outputs
 		outputsRequested.map(out => 
 			writer.write(outDir.resolve(out.fileName + ".csv"), out.buildCSVLines(services))
