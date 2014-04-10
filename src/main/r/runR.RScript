@@ -87,7 +87,7 @@ if(length(fileNames) > 0){
 		labs(title="Distribution of Contribution")
 }
 
-fileName = "ProbSuccess.csv"
+fileName = "SuccessTable.csv"
 fileName = paste(workingDir, fileName, sep = "/")
 if(file.exists(fileName)){
 	data = melt(read.csv(fileName))
