@@ -29,7 +29,7 @@ class WebConfig(val typesafeConfig: TypesafeConfig) extends Config{
 					SuccessTable(innerDataConfig.getConfigList("require").map{ subConf =>
 						Tuple3(
 								crosses(subConf.getString("cross")),
-								subConf.getInt("quantity"),
+								subConf.getInt("num_required"),
 								subConf.getDouble("confidence")
 						)
 					})
