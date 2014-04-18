@@ -16,7 +16,7 @@ import org.tearne.crosser.plant.Species
 import sampler.data.Distribution
 import sampler.math.Random
 
-class DistributionCrosserSpec extends FreeSpec {
+class DistributionCrosserTest extends FreeSpec {
 	val name = "myCross"
 	
 	"PlantDistCrosser should" - {
@@ -34,9 +34,9 @@ class DistributionCrosserSpec extends FreeSpec {
 			with DistributionCrosserComponent 
 			with MockitoSugar{
 		
-		val statistics = null//mock[StatisticsComponent]
-		val crossDistributions = null//mock[CrossSamplable]
-		val cache = null//mock[Cache]
+		val statistics = null
+		val crossDistributions = null
+		val cache = null
 		val convergenceCriterion = mock[ConvergenceCriterion]
 		
 		val leftParentDist = mock[Distribution[ConcretePlant]]

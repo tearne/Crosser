@@ -1,24 +1,20 @@
 package org.tearne.crosser.config
 
-import org.specs2.mutable._
-import org.specs2.specification.Scope
 import java.nio.file.Paths
-import org.specs2.matcher.TraversableBaseMatchers
 import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
 import java.io.File
 import java.nio.file.Files
-
 import org.tearne.crosser.cross._
 import org.tearne.crosser.plant.Species
 import org.tearne.crosser.plant.RootPlant
 import org.tearne.crosser.output._
 import com.typesafe.config.{ConfigFactory => TypesafeConfigFactory}
+import org.scalatest.FreeSpec
 
-@RunWith(classOf[JUnitRunner])
-class WebConfigSpec extends Specification {
+class WebConfigTest extends FreeSpec {
+	
 	val path = Paths.get("src/test/resource/testWeb.config")
-	Files.exists(path) must beTrue
+	assert(Files.exists(path))
 	val scheme: Config = new WebConfig(TypesafeConfigFactory.parseFile(path.toFile()))
 	
 	val species: Species = Species("Phaseolus_Vulgaris", IndexedSeq(11,23,45,22,10,80,121))
@@ -58,29 +54,29 @@ class WebConfigSpec extends Specification {
 		"Self"
 	)
 	
-	"Example scheme" should {
-		"have a name" in { 
-			scheme.name must_== "MyCross"
+	"WebConfig should read" - {
+		"Cross Name" in { 
+			assertResult("MyCross")(scheme.name)
 		}
 		
-		"have root plants" in {
-			rootPlants must_== scheme.plants
+		"Root plants" in {
+			assertResult(rootPlants)(scheme.plants)
 		}
 		
-		"have correct crosses" in {
+		"Cross configurations" in {
 			val crosses: Map[String, Cross] = scheme.crosses
-			(crosses.size must_== 3) and
-			(crosses("BC1") must_== bc1) and
-			(crosses("Self") must_== self)
+			assertResult(3)(crosses.size)
+			assertResult(bc1)(crosses("BC1"))
+			assertResult(self)(crosses("Self"))
 		}
 		
-		"specify convergence details size" in {
-			(scheme.chunkSize must_== 100) and
-			(scheme.tolerance must_== 0.05) and
-			(scheme.fewestPlants must_== 100)
+		"Convergence details" in {
+			assertResult(100)(scheme.chunkSize)
+			assertResult(0.05)(scheme.tolerance)
+			assertResult(100)(scheme.fewestPlants)
 		}
 		
-		"list required outputs" in {
+		"Required outputs" in {
 			 val expected = List[Output](
 				ProportionDistribution(bc1, prefVar),
 				ProportionDistribution(self, prefVar),
@@ -92,7 +88,7 @@ class WebConfigSpec extends Specification {
 				LociComposition(self, rootPlants.values.toSeq),
 				MeanCrossComposition(Seq(f1, bc1, self), Seq(prefVar, donor1, donor2))
 			)
-			scheme.outputs must_== expected
+			assertResult(expected)(scheme.outputs)
 		}
 	}
 }

@@ -1,16 +1,15 @@
 package org.tearne.crosser.plant
 
 import org.junit.runner.RunWith
-import org.specs2.mock.Mockito
-import org.specs2.mutable.Specification
 import sampler.math.Random
-import org.specs2.runner.JUnitRunner
+import org.mockito.Mockito._
+import org.scalatest.FreeSpec
+import org.scalatest.mock.MockitoSugar
 
-@RunWith(classOf[JUnitRunner])
-class GameterSpec extends Specification with Mockito{
+class GameterTest extends FreeSpec with MockitoSugar{
 	val half = 0.5
 	
-	"Gameter" should {
+	"Gameter should" - {
 		"build from chromosomes" in {
 			val pA = mock[RootPlant]
 			val pB = mock[RootPlant]
@@ -21,11 +20,11 @@ class GameterSpec extends Specification with Mockito{
 			val chromosome = Chromosome(tidA, tidB)
 			val recombProb = 0.01
 			val rnd = mock[Random]
-			rnd.nextBoolean(half) returns true //start on A
-			rnd.nextBoolean(recombProb) returns (false, true, true, false) //A, B, A, A
+			when(rnd.nextBoolean(half)) thenReturn true //start on A side
+			when(rnd.nextBoolean(recombProb)) thenReturn (false, true, true, false) //A, B, A, A
 			
 			val instance = new Gameter(rnd, recombProb)
-			instance(chromosome) mustEqual Tid(IndexedSeq(pA,pB,pA,pA))
+			assertResult(Tid(IndexedSeq(pA,pB,pA,pA)))(instance(chromosome))
 		}
 	}
 }

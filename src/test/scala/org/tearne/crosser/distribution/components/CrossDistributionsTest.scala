@@ -1,45 +1,47 @@
 package org.tearne.crosser.distribution.components
 
-import org.specs2.mutable.Specification
-import org.specs2.mock.Mockito
-import org.specs2.specification.Scope
-import org.junit.runner.RunWith
 import sampler.math.Random
 import org.tearne.crosser.distribution.components._
 import org.tearne.crosser.distribution.PlantEmpirical
-import org.specs2.runner.JUnitRunner
 import org.tearne.crosser.cross.Cross
 import org.tearne.crosser.plant.ConcretePlant
 import sampler.data.Samplable
 import org.tearne.crosser.plant.Plant
 import sampler.data.Distribution
+import org.scalatest.FreeSpec
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
 
-@RunWith(classOf[JUnitRunner])
-class CrossSamplableSpec extends Specification with Mockito{
+class CrossDistributionsTest extends FreeSpec with MockitoSugar{
 	val name = "crossName"
 	
-	"CrossDistributions" should {
-		"return cross samplables based on distributions in the cache" in new Instance{
+	"CrossDistributions" - {
+		"return cross samplables based on distributions in the cache" in new Instance {
 			//val random = mock[Random]
 			val cross = mock[Cross]
 			val plantSamplable = mock[Distribution[Plant]]
 			val plantEmpirical = mock[PlantEmpirical]
 			
-			cache.get(cross) returns plantEmpirical
-			plantEmpirical.toDistribution(random) returns plantSamplable
+			when(cache.get(cross)) thenReturn plantEmpirical 
+			when(plantEmpirical.toDistribution(random)) thenReturn plantSamplable 
 			
-			instance.get(cross) mustEqual plantSamplable
+			assertResult(plantSamplable)(instance.get(cross))
 		}
 		
-		"return identity samplable for concrete plants" in new Instance{
+		"return identity samplable for concrete plants" in new Instance {
 			val concretePlant = mock[ConcretePlant]
-			instance.get(concretePlant).until(_.size == 1000).sample.exists(_ != concretePlant) must_== false
+			assertResult(false){
+				instance.get(concretePlant)
+					.until(_.size == 1000)
+					.sample
+					.exists(_ != concretePlant)
+			}
 		}
 	}
 	
 	//TODO this looks a bit mad
-	trait Instance extends Scope 
-			with CrossDistributionsComponent 
+	trait Instance 
+			extends CrossDistributionsComponent 
 			with CacheComponent 
 			with DistributionCrosserComponent {
 		val random = mock[Random]

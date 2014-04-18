@@ -18,7 +18,6 @@ import sampler.math.StatisticsComponent
 import sampler.math.Statistics
 
 object Crosser{
-	
 	def main(args: Array[String]) { 
 		try{
 			System.setProperty("LOG_DIR", "logs")
@@ -106,13 +105,7 @@ object Crosser{
 			log.trace("init Chunk size "+chunkSize)
 		}
 		
-		val services = new SystemConfigImpl with ServicesImpl //{
-//			val statistics = Statistics
-//			val crossStatistics = new CrossStatistics(
-//				 conf.chunkSize,
-//				 conf.tolerance
-//			)
-//		}
+		val services = new SystemConfigImpl with ServicesImpl
 		
 		val outDir = workingDir
 		if(!Files.exists(outDir)) Files.createDirectories(outDir)

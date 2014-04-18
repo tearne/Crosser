@@ -1,7 +1,5 @@
 package org.tearne.crosser.output
 
-import org.scalatest.junit.AssertionsForJUnit
-import org.junit.Test
 import org.scalatest.mock.MockitoSugar
 import org.tearne.crosser.cross.Cross
 import org.mockito.Mockito._
@@ -20,7 +18,6 @@ import sampler.math.Statistics
 import org.tearne.crosser.distribution.CrossingService
 import org.tearne.crosser.Services
 import org.tearne.crosser.output.composition.CompositionComponent
-import sun.awt.geom.Crossings
 import org.tearne.crosser.distribution.CrossingComponent
 
 class OutputTest extends FreeSpec with MockitoSugar {
@@ -53,7 +50,7 @@ class OutputTest extends FreeSpec with MockitoSugar {
 		assert(result.head === Seq("donor_in_cross"))
 		assert(result.tail.map(_.head) === expectedValues)
 		
-		//Verify the right distribution was sent to crossStatistics
+		//Verify the right distribution was passed to crossStatistics
 		val argCaptor = ArgumentCaptor.forClass(classOf[Distribution[Double]])
 		verify(services.crossStatistics, times(1)).gatherSamples(argCaptor.capture())
 		assert(argCaptor.getValue().until(_.size == 3).sample === expectedValues)

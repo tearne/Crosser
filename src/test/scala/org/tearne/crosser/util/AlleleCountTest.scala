@@ -3,7 +3,7 @@ package org.tearne.crosser.util
 import org.junit.runner.RunWith
 import org.scalatest.FreeSpec
 
-class AlleleCountSpec extends FreeSpec{
+class AlleleCountTest extends FreeSpec{
 	"AlleleCount should"  - {
 		"contain both success and total counts" in {
 			val instance = AlleleCount(3,4)
@@ -31,10 +31,10 @@ class AlleleCountSpec extends FreeSpec{
 			
 			assertResult(instance1b)(instance1a) 
 			assertResult(instance1b.hashCode)(instance1a.hashCode)
-			assertResult(false)(instance1a == instance2)
-			assertResult(false)(instance1a.hashCode == instance2.hashCode)
-			assertResult(false)(instance1a == instance3)
-			assertResult(false)(instance1a.hashCode == instance3.hashCode)
+			assert(instance1a != instance2)
+			assert(instance1a.hashCode != instance2.hashCode)
+			assert(instance1a != instance3)
+			assert(instance1a.hashCode != instance3.hashCode)
 		}
 	}
 }

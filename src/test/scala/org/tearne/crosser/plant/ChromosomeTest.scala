@@ -1,24 +1,22 @@
 package org.tearne.crosser.plant
 
-import org.specs2.mutable.Specification
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import org.specs2.mock.Mockito
 import org.tearne.crosser.cross.Locus
 import org.tearne.crosser.cross.LocusPresence._
 import org.tearne.crosser.util.AlleleCount
+import org.scalatest.FreeSpec
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
 
-@RunWith(classOf[JUnitRunner])
-class ChromosomeSpec extends Specification with Mockito {
+class ChromosomeTest extends FreeSpec with MockitoSugar {
 	val p1 = mock[RootPlant]
 	val p2 = mock[RootPlant]
 	val leftTid = Tid(IndexedSeq(p1, p1, p1, p2))
 	val rightTid = Tid(IndexedSeq(p1, p1, p2, p2))
 	val instance = Chromosome(leftTid, rightTid)
 	
-	def makeMockTid(length: Int) = {val t = mock[Tid]; t.size returns length; t}
+	def makeMockTid(length: Int) = {val t = mock[Tid]; when(t.size) thenReturn length; t}
 	
-	"Chromosome" should {
+	"Chromosome should" - {
 		"give a count of donor alleles present" in {
 			val rootPlant = mock[RootPlant]
 			val leftTid = mock[Tid]
@@ -27,41 +25,45 @@ class ChromosomeSpec extends Specification with Mockito {
 			val alleleCount1 = mock[AlleleCount]
 			val alleleCount2 = mock[AlleleCount]
 			val alleleCount3 = mock[AlleleCount]
-			alleleCount1 + alleleCount2 returns alleleCount3
+			when(alleleCount1 + alleleCount2) thenReturn alleleCount3
 			
-			leftTid.alleleCount(rootPlant) returns alleleCount1
-			rightTid.alleleCount(rootPlant) returns alleleCount2
+			when(leftTid.alleleCount(rootPlant)) thenReturn alleleCount1
+			when(rightTid.alleleCount(rootPlant)) thenReturn alleleCount2
 			
-			Chromosome(leftTid, rightTid).alleleCount(rootPlant) mustEqual alleleCount3
+			assertResult(alleleCount3){
+				Chromosome(leftTid, rightTid).alleleCount(rootPlant)
+			}
 		}
 		"throw exception if left and right tid differ in length" in {
 			val leftTid = Tid(5, mock[RootPlant])
 			val rightTid = Tid(4, mock[RootPlant])
 			
-			Chromosome(leftTid, rightTid) must throwA[ChromosomeException]
+			intercept[ChromosomeException]{
+				Chromosome(leftTid, rightTid)
+			}
 		}
-		"have value based hashcode and equals" in{
+		"have value based hashcode and equals" in {
 			val instance2 = Chromosome(leftTid, rightTid)
 			val instance3 = Chromosome(rightTid, leftTid)
 			
-			(instance mustEqual instance2) and
-			(instance.hashCode mustEqual instance2.hashCode) and
-			(instance mustNotEqual instance3) and
-			(instance.hashCode mustNotEqual instance3.hashCode)
+			assertResult(instance2)(instance)
+			assertResult(instance.hashCode)(instance2.hashCode)
+			assert(instance != instance3)
+			assert(instance.hashCode != instance3.hashCode)
 		}
 		"report it's size" in {
-			instance.size mustEqual 4
+			assertResult(4)(instance.size)
 		}
 		"confirm loci heterozygous" in {
 			val leftTid = makeMockTid(5)
 			val rightTid = makeMockTid(5)
 			
 			val locus = mock[Locus]
-			leftTid.satisfies(locus) returns true
-			rightTid.satisfies(locus) returns false
+			when(leftTid.satisfies(locus)) thenReturn true
+			when(rightTid.satisfies(locus)) thenReturn false
 			
 			val instance = Chromosome(rightTid, leftTid)
-			instance.satisfies(locus) mustEqual Heterozygously
+			assertResult(Heterozygously)(instance.satisfies(locus))
 		}
 		"confirm loci at least heterozugous even if might be hom when using short circuit" in {
 			val leftTid = makeMockTid(5)
@@ -69,12 +71,12 @@ class ChromosomeSpec extends Specification with Mockito {
 			
 			val locus = mock[Locus]
 			
-			leftTid.satisfies(locus) returns true
+			when(leftTid.satisfies(locus)) thenReturn true
 			
 			val instance = Chromosome(leftTid,rightTid)
 			
-			(there were no(rightTid).satisfies(locus)) and
-			(instance.satisfies(locus, true) mustEqual AtLeastHeterozygously)
+			verify(rightTid.satisfies(locus), never)
+			assertResult(AtLeastHeterozygously)(instance.satisfies(locus, true))
 		}
 		"confirm loci homozygous" in {
 			val leftTid = makeMockTid(5)
@@ -82,11 +84,11 @@ class ChromosomeSpec extends Specification with Mockito {
 			
 			val locus = mock[Locus]
 			
-			leftTid.satisfies(locus) returns true
-			rightTid.satisfies(locus) returns true
+			when(leftTid.satisfies(locus)) thenReturn true
+			when(rightTid.satisfies(locus)) thenReturn true
 			
 			val instance = Chromosome(rightTid, leftTid)
-			instance.satisfies(locus) mustEqual Homozygously
+			assertResult(Homozygously)(instance.satisfies(locus))
 		}
 		"confirm it doesn't satisfy loci" in{
 			val leftTid = makeMockTid(5)
@@ -94,11 +96,11 @@ class ChromosomeSpec extends Specification with Mockito {
 			
 			val locus = mock[Locus]
 			
-			leftTid.satisfies(locus) returns false
-			rightTid.satisfies(locus) returns false
+			when(leftTid.satisfies(locus)) thenReturn false
+			when(rightTid.satisfies(locus)) thenReturn false
 			
 			val instance = Chromosome(rightTid, leftTid)
-			instance.satisfies(locus) mustEqual No
+			assertResult(No)(instance.satisfies(locus))
 		}
 		"confirm it doesn't satisfy loci with short circuit" in{
 			val leftTid = makeMockTid(5)
@@ -106,11 +108,11 @@ class ChromosomeSpec extends Specification with Mockito {
 			
 			val locus = mock[Locus]
 			
-			leftTid.satisfies(locus) returns false
-			rightTid.satisfies(locus) returns false
+			when(leftTid.satisfies(locus)) thenReturn false
+			when(rightTid.satisfies(locus)) thenReturn false
 			
 			val instance = Chromosome(rightTid, leftTid)
-			instance.satisfies(locus, true) mustEqual No
+			assertResult(No)(instance.satisfies(locus, true))
 		}
 	}
 }

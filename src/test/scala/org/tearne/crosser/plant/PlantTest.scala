@@ -1,51 +1,50 @@
 package org.tearne.crosser.plant
 
-import org.junit.runner.RunWith
-import org.specs2.runner.JUnitRunner
-import org.specs2.mutable.Specification
 import org.tearne.crosser.cross.Crossable
-import org.specs2.mock.Mockito
 import org.tearne.crosser.util.AlleleCount
 import sampler.data.Samplable
 import sampler.data.Distribution
+import org.scalatest.FreeSpec
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
 
-@RunWith(classOf[JUnitRunner])
-class PlantSpec extends Specification with Mockito{
+class PlantTest extends FreeSpec with MockitoSugar{
 	val species = Species("foo", 1,2,3)
 	val instance = Plant("bar", species.buildChromosomesFrom(mock[RootPlant]), species)
 	val otherSpecies = Species("foo2", 1,2,3,4)
 	
-	"Plant" should {
+	"Plant should" - {
 		"give a count of donor alleles present" in {
 			val chromosomes = IndexedSeq(mock[Chromosome],mock[Chromosome],mock[Chromosome])
 			val donor = mock[RootPlant]
 			
-			chromosomes(0).size returns 1
-			chromosomes(1).size returns 2
-			chromosomes(2).size returns 3
+			when(chromosomes(0).size) thenReturn 1
+			when(chromosomes(1).size) thenReturn 2
+			when(chromosomes(2).size) thenReturn 3
 			
-			chromosomes(0).alleleCount(donor) returns AlleleCount(10,20)
-			chromosomes(1).alleleCount(donor) returns AlleleCount(11,30)
-			chromosomes(2).alleleCount(donor) returns AlleleCount(12,40)
+			when(chromosomes(0).alleleCount(donor)) thenReturn AlleleCount(10,20)
+			when(chromosomes(1).alleleCount(donor)) thenReturn AlleleCount(11,30)
+			when(chromosomes(2).alleleCount(donor)) thenReturn AlleleCount(12,40)
 			
 			val instance = Plant("bar", chromosomes, species)
-			instance.alleleCount(donor) mustEqual AlleleCount(33, 90)
+			assertResult(AlleleCount(33, 90))(instance.alleleCount(donor)) 
 		}
 		"be a concrete plant" in {
-			instance must beAnInstanceOf[ConcretePlant]
+			assert(instance.isInstanceOf[ConcretePlant])
 		}
 		"be crossable" in {
-			instance must beAnInstanceOf[Crossable]
+			assert(instance.isInstanceOf[Crossable])
 		}
 		"be samplable" in{
-			instance must beAnInstanceOf[Distribution[ConcretePlant]]
+			assert(instance.isInstanceOf[Distribution[ConcretePlant]])
 		}
 		"return itself when sampled" in {
-			instance.sample mustEqual instance
+			assertResult(instance)(instance.sample)
 		}
 		"throw exception if chromosome lengths incompatible with species" in {
-			Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species) must
-				throwA[PlantException]
+			intercept[PlantException]{
+				Plant("bar", otherSpecies.buildChromosomesFrom(mock[RootPlant]), species)
+			}
 		}
 		"have value based hashcode and equals" in {
 			val chromosomes1 = species.buildChromosomesFrom(mock[RootPlant])
@@ -56,12 +55,12 @@ class PlantSpec extends Specification with Mockito{
 			val instance2 = Plant("bar2", chromosomes1, species)
 			val instance3 = Plant("bar", chromosomes2, otherSpecies)
 			
-			(instance1a mustEqual instance1b) and
-			(instance1a mustNotEqual instance2) and
-			(instance1a mustNotEqual instance3) and
-			(instance1a.hashCode mustEqual instance1b.hashCode) and
-			(instance1a.hashCode mustNotEqual instance2.hashCode) and
-			(instance1a.hashCode mustNotEqual instance3.hashCode)
+			assertResult(instance1b)(instance1a)
+			assert(instance1a != instance2)
+			assert(instance1a != instance3)
+			assertResult(instance1b.hashCode)(instance1a.hashCode)
+			assert(instance1a.hashCode != instance2.hashCode)
+			assert(instance1a.hashCode != instance3.hashCode)
 		}
 	}
 }
