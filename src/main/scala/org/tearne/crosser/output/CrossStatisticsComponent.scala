@@ -11,6 +11,8 @@ import sampler.data.Distribution
 import sampler.data.ParallelSampler
 import sampler.Implicits._
 import sampler.math.Statistics
+import sampler.data.ConvergenceProtocol
+import sampler.data.MaxMetric
 
 trait CrossStatisticsComponent {
 	this: StatisticsComponent => 
@@ -19,11 +21,10 @@ trait CrossStatisticsComponent {
 	
 	class CrossStatistics(chunkSize: Int, tolerance: Double) {
 		def gatherSamples[T](distribution: Distribution[T]): Seq[T] = {
-			new ParallelSampler(chunkSize)(distribution)(seq => {
-				statistics.maxDistance(seq.take(seq.size - chunkSize).toEmpiricalSeq, seq.toEmpiricalSeq) < tolerance ||
-					seq.size == 1e8
-			})
-			.seq
+			
+			ParallelSampler(distribution)(
+				new ConvergenceProtocol[T](chunkSize, tolerance, 100000000) with MaxMetric
+			).seq
 		}
 		
 		def numPlantsForConfidence(confidenceReq: Double, selectionProb: Double, numPlantsReq: Int): Int = {
