@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	    <encoder>
+	    	<pattern>%date{ISO8601} %-5level - %msg%n</pattern>
+	    </encoder>
+	</appender>
+	     
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+	    <File>${LOG_DIR}/Crosser.log</File>
+		<encoder>
+			<pattern>%date{ISO8601} %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<root>
+	    <level value="INFO" />
+	    <appender-ref ref="STDOUT" />
+	    <appender-ref ref="FILE" />
+	</root>
+</configuration>

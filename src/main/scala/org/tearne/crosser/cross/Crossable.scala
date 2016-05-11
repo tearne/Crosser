@@ -6,9 +6,15 @@ import org.tearne.crosser.plant.Plant
 
 trait Crossable{
 	val species: Species
+	val name: String
 }
 
-case class Cross(left: Crossable, right: Crossable, protocol: Protocol, name: String) extends Crossable{
+case class Cross(
+		left: Crossable, 
+		right: Crossable, 
+		protocol: Protocol, 
+		name: String
+) extends Crossable{
 	val species = {
 		if(left.species != right.species) throw new CrossableException("Left and right parents are of different species")
 		else left.species

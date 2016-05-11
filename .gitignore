@@ -3,3 +3,10 @@ target/
 .project
 .classpath
 lib
+logs
+LOG_DIR_IS_UNDEFINED
+lib_managed
+bin
+*.csv
+*.pdf
+*.jar

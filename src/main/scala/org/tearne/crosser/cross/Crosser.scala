@@ -7,7 +7,6 @@ import org.tearne.crosser.plant.ConcretePlant
 
 class Crosser(plantFactory: PlantFactory, chromosomeCrosser: ChromosomeCrosser) {
 	def apply(left: ConcretePlant, right: ConcretePlant, cross: Cross): Plant = {
-		//TODO what about the cross protocol?
 		if(left.species != right.species) throw new CrosserException("Parents are of different species")
 		val chromosomes = (left.chromosomes zip right.chromosomes).map{case (lch, rch) => chromosomeCrosser(lch, rch)}
 		plantFactory(cross.name, chromosomes, cross.species)
