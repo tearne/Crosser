@@ -32,7 +32,7 @@ RUN apt-get update &&\
 ##########
 ## Crosser
 ##########
-RUN curl -L https://dl.bintray.com/tearne/generic/crosser-0.2.10.tar.gz \
+RUN curl -L https://dl.bintray.com/tearne/generic/crosser-0.2.10-3.tgz \
 | tar xz --strip 1 
 
-CMD ["/bin/bash", "runCrosser.sh"]
+ENTRYPOINT ["/bin/bash", "run.sh"]
