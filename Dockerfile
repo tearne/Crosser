@@ -1,12 +1,16 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 ##########
 ## R
 ##########
+RUN echo "deb http://cran.ma.imperial.ac.uk/bin/linux/ubuntu xenial/" >> /etc/apt/sources.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+RUN apt-get update && \
+    apt-get install -y r-base
 RUN echo 'install.packages(\n\
 	c(\n\
 		"ggplot2",\n\
-		"reshapei2",\n\
+		"reshape",\n\
 		"jsonlite",\n\
 		"plyr"\n\
 	),\n\
@@ -14,9 +18,7 @@ RUN echo 'install.packages(\n\
 	repos="http://cran.ma.imperial.ac.uk"\n\
 )'\
 >> install.r
-RUN apt-get update && \
-apt-get install -y r-base && \
-Rscript install.r
+RUN Rscript install.r
 
 ##########
 ## Java
@@ -33,3 +35,4 @@ RUN apt-get update &&\
 RUN curl -L https://dl.bintray.com/tearne/generic/crosser-0.2.10.tar.gz \
 | tar xz --strip 1 
 
+CMD ["/bin/bash", "runCrosser.sh"]
